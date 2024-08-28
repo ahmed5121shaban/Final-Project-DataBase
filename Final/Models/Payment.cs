@@ -21,13 +21,13 @@ namespace zaeid.models
         public virtual Auction Auction { get; set; }
 
     }
-    //add three object auction,event and admin with edit the relations and add them to configuration
 
     public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
     {
         public void Configure(EntityTypeBuilder<Payment> builder)
         {
-
+            builder.HasOne(p=>p.User).WithMany(u=>u.Payments).HasForeignKey(p=>p.UserId);
+            builder.HasOne(p => p.Auction).WithOne(u => u.Payment).HasForeignKey<Payment>(p=>p.UserId);
         }
     }
 }

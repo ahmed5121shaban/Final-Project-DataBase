@@ -29,7 +29,7 @@ namespace finalproject.Models
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
-
+            builder.HasOne(n=>n.User).WithMany(u=>u.Notifacations).HasForeignKey(n=>n.UserId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

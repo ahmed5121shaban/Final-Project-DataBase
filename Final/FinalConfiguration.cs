@@ -13,7 +13,7 @@ namespace Final
     public class FinalConfiguration : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-            optionsBuilder.UseSqlServer("");
+            optionsBuilder.UseSqlServer("Data Source = AHMEDSH\\SQLEXPRESS;Initial Catalog = FinalProject ; Integrated Security =true;TrustServerCertificate=true");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

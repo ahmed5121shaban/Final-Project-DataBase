@@ -14,8 +14,8 @@ namespace zaeid.models
         public int ID { get; set; }
         public string Src {  get; set; }
 
-        public int userID { get; set; }
-        public virtual User User { get; set; }
+        public int ItemID { get; set; }
+        public virtual Item Item { get; set; }
 
 
     }
@@ -24,7 +24,7 @@ namespace zaeid.models
     {
         public void Configure(EntityTypeBuilder<Image> builder)
         {
-
+            builder.HasOne(i=>i.Item).WithMany(u=>u.Images).HasForeignKey(i=>i.ItemID).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

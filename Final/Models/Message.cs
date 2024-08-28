@@ -23,7 +23,7 @@ namespace Final
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
-
+            builder.HasOne(m=>m.Chat).WithMany(c=>c.ChatMessages).HasForeignKey(m=>m.ChatId);
         }
     }
 }

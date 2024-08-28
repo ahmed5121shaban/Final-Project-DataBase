@@ -26,7 +26,7 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<Admin> builder)
         {
-
+            
         }
     }
 }

@@ -13,7 +13,7 @@ namespace zaeid.models
 {
     public class Item
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string Name { get; set; }
         public int CategoryID { get; set; }
         public virtual Category Category { get; set; }
@@ -24,6 +24,8 @@ namespace zaeid.models
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
+        public int UserID { get; set; }
+        public virtual User User { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
         public virtual ICollection<Image> Images { get; set; }
@@ -36,7 +38,8 @@ namespace zaeid.models
     {
         public void Configure(EntityTypeBuilder<Item> builder)
         {
-
+            builder.HasOne(i=>i.User).WithMany(u=>u.Items).HasForeignKey(i=>i.UserID);
+            builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
         }
     }
 }

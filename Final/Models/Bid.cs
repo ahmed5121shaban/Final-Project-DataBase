@@ -30,7 +30,8 @@ namespace finalproject.Models
     {
         public void Configure(EntityTypeBuilder<Bid> builder)
         {
-
+            builder.HasOne(b=>b.User).WithMany(u=>u.Bids).HasForeignKey(b=>b.UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(b => b.Auction).WithMany(a => a.Bids).HasForeignKey(b => b.AuctionID).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<Auction> builder)
         {
-
+            builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
         }
     }
 }
