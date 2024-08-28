@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Final
 {
-    internal class Notifecation
+    public class Notifecation
     {
+        public int ID {  get; set; }
+        public string Massege { get; set; }
+
+        public DateTime DateTime { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+
 
     }
 }
