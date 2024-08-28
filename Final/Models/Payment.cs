@@ -1,5 +1,7 @@
 ﻿using Final.Enums;
 using Final.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,13 @@ namespace zaeid.models
         public int AuctionId {  get; set; }
         public virtual Auction Auction { get; set; }
 
+    }
 
+    public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
+    {
+        public void Configure(EntityTypeBuilder<Payment> builder)
+        {
 
+        }
     }
 }

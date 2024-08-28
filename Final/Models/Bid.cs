@@ -1,4 +1,6 @@
 ﻿using Final.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,5 +22,13 @@ namespace finalproject.Models
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
+    }
+
+    public class BidConfiguration : IEntityTypeConfiguration<Bid>
+    {
+        public void Configure(EntityTypeBuilder<Bid> builder)
+        {
+
+        }
     }
 }

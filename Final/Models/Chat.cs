@@ -1,4 +1,6 @@
 ﻿using Final.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +20,13 @@ namespace Final
         public virtual User Seller { get; set; }
         public virtual ICollection<Message> ChatMessages { get; set; }
 
+    }
+
+    public class ChatConfiguration : IEntityTypeConfiguration<Chat>
+    {
+        public void Configure(EntityTypeBuilder<Chat> builder)
+        {
+
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Final;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +20,13 @@ namespace finalproject.Models
 
         public virtual ICollection<Item> Items { get; set; }
 
+    }
+
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    {
+        public void Configure(EntityTypeBuilder<Category> builder)
+        {
+
+        }
     }
 }

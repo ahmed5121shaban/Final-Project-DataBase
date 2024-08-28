@@ -1,4 +1,7 @@
-﻿using finalproject.Models;
+﻿using Final;
+using finalproject.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,5 +27,13 @@ namespace zaeid.models
 
 
 
+    }
+
+    public class ItemConfiguration : IEntityTypeConfiguration<Item>
+    {
+        public void Configure(EntityTypeBuilder<Item> builder)
+        {
+
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using finalproject.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +17,13 @@ namespace Final
         public int ChatId { get; set; }
 
         public virtual Chat Chat { get; set; }
+    }
+
+    public class MessageConfiguration : IEntityTypeConfiguration<Message>
+    {
+        public void Configure(EntityTypeBuilder<Message> builder)
+        {
+
+        }
     }
 }
