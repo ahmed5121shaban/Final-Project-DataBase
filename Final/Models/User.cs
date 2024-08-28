@@ -37,7 +37,7 @@ namespace Final.Models
 
         public virtual ICollection<Notification> Notifacations { get; set; }
 
-        public virtual ICollection<Auction> Auctions { get; set; }
+        public virtual ICollection<Payment> Payments { get; set; }
 
 
 
