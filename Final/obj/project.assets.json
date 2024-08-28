@@ -4106,20 +4106,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\14\\.nuget\\packages\\": {},
+    "C:\\Users\\Geniius\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
+      "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Final.csproj",
       "projectName": "Final",
-      "projectPath": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
-      "packagesPath": "C:\\Users\\14\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\obj\\",
+      "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Final.csproj",
+      "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\14\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4128,6 +4131,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
