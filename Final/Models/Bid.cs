@@ -21,6 +21,8 @@ namespace finalproject.Models
 
         public int UserId { get; set; }
         public virtual User User { get; set; }
+        public int AuctionID { get; set; }
+        public virtual Auction Auction { get; set; }
 
     }
 

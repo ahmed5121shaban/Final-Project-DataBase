@@ -27,6 +27,9 @@ namespace Final
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration(new PhoneNumberConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new AdminConfiguration());
+            modelBuilder.ApplyConfiguration(new AuctionConfiguration());
+            modelBuilder.ApplyConfiguration(new EventConfiguration());
 
         }
 
@@ -41,5 +44,8 @@ namespace Final
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Event> Events { get; set; }
+        public virtual DbSet<Auction> Auctions { get; set; }
+        public virtual DbSet<Admin> Admins { get; set; }
     }
 }

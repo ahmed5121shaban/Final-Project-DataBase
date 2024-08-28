@@ -17,10 +17,11 @@ namespace zaeid.models
         public bool IsDone { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
-        public int AuctionId {  get; set; }
+        public int AuctionID {  get; set; }
         public virtual Auction Auction { get; set; }
 
     }
+    //add three object auction,event and admin with edit the relations and add them to configuration
 
     public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
     {

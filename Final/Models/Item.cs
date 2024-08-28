@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Final.Models;
 
 namespace zaeid.models
 {
@@ -23,8 +24,10 @@ namespace zaeid.models
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
+        public int? EventID { get; set; }
+        public virtual Event Event { get; set; }
         public virtual ICollection<Image> Images { get; set; }
-
+        public virtual ICollection<Admin> Admins { get; set; }
 
 
     }

@@ -29,17 +29,14 @@ namespace Final.Models
         public int NationalId { get; set; }
         public string TimeZone { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
 
+        public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<Chat> Chats { get;set; }
-
-
         public virtual ICollection<Bid> Bids { get; set; }
-
         public virtual ICollection<Notification> Notifacations { get; set; }
-
         public virtual ICollection<Payment> Payments { get; set; }
+        public virtual ICollection<Admin> Admins { get; set; }
 
 
 
