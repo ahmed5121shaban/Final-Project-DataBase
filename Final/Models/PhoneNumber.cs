@@ -1,4 +1,4 @@
-﻿namespace Final
+﻿namespace Final.Models
 {
     public class PhoneNumber
     {

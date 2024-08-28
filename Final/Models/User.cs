@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final
+namespace Final.Models
 {
     internal class User
     {
@@ -15,7 +15,7 @@ namespace Final
         public string Password { get; set; }
         public DateTime BarthDate { get; set; }
         public int Rate { get; set; }
-        public string City {  get; set; }
+        public string City { get; set; }
         public string Country { get; set; }
         public int Age { get; set; }
         public string Street { get; set; }

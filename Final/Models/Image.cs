@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final
+namespace zaeid.models
 {
-    internal class Notifecation
+    public class Image
     {
+        public int Id { get; set; }
+        public string Src {  get; set; }
+
 
     }
 }
