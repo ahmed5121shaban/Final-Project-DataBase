@@ -1,20 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\CEO Nemo\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj": {}
+    "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj": {}
   },
   "projects": {
-    "C:\\Users\\CEO Nemo\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj": {
+    "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CEO Nemo\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
+        "projectUniqueName": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
         "projectName": "Final",
-        "projectPath": "C:\\Users\\CEO Nemo\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
-        "packagesPath": "C:\\Users\\CEO Nemo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CEO Nemo\\Source\\Repos\\Final-Project-DataBase\\Final\\obj\\",
+        "projectPath": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\Final.csproj",
+        "packagesPath": "C:\\Users\\14\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\14\\Source\\Repos\\Final-Project-DataBase\\Final\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\CEO Nemo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\14\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
