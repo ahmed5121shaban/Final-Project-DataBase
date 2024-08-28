@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Final
 {
-    internal class FinalConfiguration : DbContext
+    public class FinalConfiguration : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
             optionsBuilder.UseSqlServer("");
