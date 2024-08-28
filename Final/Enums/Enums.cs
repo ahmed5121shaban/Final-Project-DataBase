@@ -8,6 +8,13 @@ namespace Final.Enums
 {
     public class Enums
     {
+        public enum Gender
+        {
+            male,
+            female
+
+        }
+
         public enum PaymentMetod
         {
             paypal,

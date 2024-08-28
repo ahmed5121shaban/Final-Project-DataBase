@@ -1,9 +1,12 @@
-﻿using System;
+﻿using finalproject.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using zaeid.models;
+using static Final.Enums.Enums;
 
 namespace Final.Models
 {
@@ -19,26 +22,22 @@ namespace Final.Models
         public string Country { get; set; }
         public int Age { get; set; }
         public string Street { get; set; }
-
         public string PostalCode { get; set; }
-
-        public string Gender { get; set; }
-        public string Address { get; set; }
+        public Gender Gender { get; set; }
         public int NationalId { get; set; }
         public string TimeZone { get; set; }
-
         public string Description { get; set; }
-        public int PhoneNosID { get; set; }
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
-        //public virtual ICollection<Item> Items { get; set; }
-        //public virtual ICollection<Chat> Chats { get;set; }
 
-        //public virtual ICollection<SavedItem> SavedItems { get; set; }
-        //public virtual ICollection<Bid> Bids { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
+        public virtual ICollection<Chat> Chats { get;set; }
 
-        //public virtual ICollection<Notifacation> Notifacations { get; set; }
 
-        //public virtual ICollection<Auction> Auctions { get; set; }
+        public virtual ICollection<Bid> Bids { get; set; }
+
+        public virtual ICollection<Notification> Notifacations { get; set; }
+
+        public virtual ICollection<Auction> Auctions { get; set; }
 
 
 

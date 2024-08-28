@@ -1,4 +1,5 @@
 ﻿using Final.Enums;
+using Final.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace finalproject.Models
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public bool IsReaded { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
 
     }
 }
