@@ -12,9 +12,11 @@ namespace Final
     public class Chat
     {
         public int ID { get; set; }
-        public int UserID { get; set; }
+        public int SellerID { get; set; }
+        public int BuyerID { get; set; }
         public DateTime StartDate { get; set; }
-        public virtual User User { get; set; }
+        public virtual User Seller { get; set; }
+        public virtual User Buyer { get; set; }
         public virtual ICollection<Message> ChatMessages { get; set; }
 
     }
@@ -23,8 +25,9 @@ namespace Final
     {
         public void Configure(EntityTypeBuilder<Chat> builder)
         {
-            builder.HasOne(c=>c.User).WithMany(s=>s.Chats).HasForeignKey(c=>c.UserID);
-           
+            builder.HasOne(c=>c.Seller).WithMany(s=>s.SellerChats).HasForeignKey(c=>c.SellerID);
+            builder.HasOne(c => c.Buyer).WithMany(s => s.BuyerChats).HasForeignKey(c => c.BuyerID);
+
         }
     }
 }

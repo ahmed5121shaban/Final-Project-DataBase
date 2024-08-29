@@ -12,8 +12,13 @@ namespace Final
 {
     public class FinalConfiguration : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-            optionsBuilder.UseSqlServer("Data Source = AHMEDSH\\SQLEXPRESS;Initial Catalog = FinalProject ; Integrated Security =true;TrustServerCertificate=true");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseSqlServer("Data Source = AHMEDSH\\SQLEXPRESS;Initial Catalog = FinalProject ; Integrated Security =true;TrustServerCertificate=true;MultibleActiveResultsSets=true");
+        }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

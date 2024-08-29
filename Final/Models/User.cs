@@ -32,11 +32,13 @@ namespace Final.Models
 
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public virtual ICollection<Item> Items { get; set; }
-        public virtual ICollection<Chat> Chats { get;set; }
+        public virtual ICollection<Chat> BuyerChats { get;set; }
+        public virtual ICollection<Chat> SellerChats { get;set; }
         public virtual ICollection<Bid> Bids { get; set; }
         public virtual ICollection<Notification> Notifacations { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
+        public virtual ICollection<Auction> Auctions { get; set; }
 
 
 

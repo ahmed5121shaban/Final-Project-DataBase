@@ -13,15 +13,17 @@ namespace Final.Models
     public class Auction
     {
         public int ID { get; set; }
-        public int UserID { get; set; }
         public int ItemID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int PaymentID { get; set; }
         public virtual Payment Payment { get; set; }
+        public int UserID { get; set; }
+        public virtual User User { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
-        public virtual ICollection<User> Users { get; set; }
+        public bool Completed { get; set; }
 
+       // public virtual ICollection<User> Users { get; set; }
 
 
     }
@@ -31,6 +33,7 @@ namespace Final.Models
         public void Configure(EntityTypeBuilder<Auction> builder)
         {
             builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
+            builder.HasOne(a => a.User).WithMany(u => u.Auctions).HasForeignKey(a => a.UserID);
         }
     }
 }
