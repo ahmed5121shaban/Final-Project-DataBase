@@ -17,8 +17,8 @@ namespace Final.Models
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public virtual ICollection<Admin> admins { get; set; }
-        public virtual ICollection<Item> Items { get;set; }
+        public ICollection<Admin> admins { get; set; }
+        public ICollection<Item> Items { get;set; }
 
     }
     public class EventConfiguration : IEntityTypeConfiguration<Event>

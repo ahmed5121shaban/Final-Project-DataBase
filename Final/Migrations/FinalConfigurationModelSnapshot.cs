@@ -18,9 +18,6 @@ namespace Final.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -78,20 +75,15 @@ namespace Final.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("BuyerID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SellerID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("BuyerID");
-
-                    b.HasIndex("SellerID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Chats");
                 });
@@ -154,9 +146,6 @@ namespace Final.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<bool>("Completed")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -176,8 +165,6 @@ namespace Final.Migrations
 
                     b.HasIndex("PaymentID")
                         .IsUnique();
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Auctions");
                 });
@@ -246,6 +233,9 @@ namespace Final.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AuctionID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("BarthDate")
                         .HasColumnType("datetime2");
 
@@ -295,6 +285,8 @@ namespace Final.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("AuctionID");
 
                     b.ToTable("Users");
                 });
@@ -538,21 +530,13 @@ namespace Final.Migrations
 
             modelBuilder.Entity("Final.Chat", b =>
                 {
-                    b.HasOne("Final.Models.User", "Buyer")
-                        .WithMany("BuyerChats")
-                        .HasForeignKey("BuyerID")
+                    b.HasOne("Final.Models.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Final.Models.User", "Seller")
-                        .WithMany("SellerChats")
-                        .HasForeignKey("SellerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Buyer");
-
-                    b.Navigation("Seller");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Final.Message", b =>
@@ -574,15 +558,7 @@ namespace Final.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Final.Models.User", "User")
-                        .WithMany("Auctions")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Payment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Final.Models.PhoneNumber", b =>
@@ -594,6 +570,13 @@ namespace Final.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Final.Models.User", b =>
+                {
+                    b.HasOne("Final.Models.Auction", null)
+                        .WithMany("Users")
+                        .HasForeignKey("AuctionID");
                 });
 
             modelBuilder.Entity("finalproject.Models.Bid", b =>
@@ -681,6 +664,8 @@ namespace Final.Migrations
             modelBuilder.Entity("Final.Models.Auction", b =>
                 {
                     b.Navigation("Bids");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Final.Models.Event", b =>
@@ -690,11 +675,9 @@ namespace Final.Migrations
 
             modelBuilder.Entity("Final.Models.User", b =>
                 {
-                    b.Navigation("Auctions");
-
                     b.Navigation("Bids");
 
-                    b.Navigation("BuyerChats");
+                    b.Navigation("Chats");
 
                     b.Navigation("Items");
 
@@ -703,8 +686,6 @@ namespace Final.Migrations
                     b.Navigation("Payments");
 
                     b.Navigation("PhoneNumbers");
-
-                    b.Navigation("SellerChats");
                 });
 
             modelBuilder.Entity("finalproject.Models.Category", b =>
