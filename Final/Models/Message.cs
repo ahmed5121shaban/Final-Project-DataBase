@@ -15,6 +15,8 @@ namespace Final
         public string Text { get; set; }
         public DateTime Time { get; set; }
         public int ChatId { get; set; }
+
+
         public virtual Chat Chat { get; set; }
     }
 
@@ -22,7 +24,16 @@ namespace Final
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
-            builder.HasOne(m=>m.Chat).WithMany(c=>c.ChatMessages).HasForeignKey(m=>m.ChatId);
+            builder.HasOne(m=>m.Chat)
+                   .WithMany(c=>c.ChatMessages)
+                   .HasForeignKey(m=>m.ChatId);
+
+            builder.Property(m => m.Text)
+                   .IsRequired()
+                   .HasMaxLength(1000);
+
+            builder.Property(m => m.Time)
+                   .IsRequired();
         }
     }
 }
