@@ -40,6 +40,7 @@ namespace Final.Models
         public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
         public virtual ICollection<Auction> Auctions { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
 
 
 
