@@ -25,7 +25,12 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<Event> builder)
         {
-
+            builder.HasKey(e => e.ID);
+            builder.Property(e => e.Title).IsRequired().HasMaxLength(100);
+            builder.Property(e => e.Description).HasMaxLength(500);
+            builder.Property(e => e.Type).HasMaxLength(50);
+            builder.Property(e => e.StartDate).IsRequired();
+            builder.Property(e => e.EndDate).IsRequired();
         }
     }
 }

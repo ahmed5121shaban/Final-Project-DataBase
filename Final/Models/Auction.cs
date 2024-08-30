@@ -32,6 +32,9 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<Auction> builder)
         {
+            builder.HasKey(a => a.ID);
+            builder.Property(a => a.StartDate).IsRequired();
+            builder.Property(a => a.EndDate).IsRequired();
             builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
             builder.HasOne(a => a.User).WithMany(u => u.Auctions).HasForeignKey(a => a.UserID);
         }
