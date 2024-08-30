@@ -17,9 +17,7 @@ namespace finalproject.Models
 
         public DateTime Time { get; set; }
 
-        public int Auction_Id { get; set; }    
-
-        public int UserId { get; set; }
+        public int UserID { get; set; }
         public virtual User User { get; set; }
         public int AuctionID { get; set; }
         public virtual Auction Auction { get; set; }
@@ -30,8 +28,11 @@ namespace finalproject.Models
     {
         public void Configure(EntityTypeBuilder<Bid> builder)
         {
-            builder.HasOne(b=>b.User).WithMany(u=>u.Bids).HasForeignKey(b=>b.UserId);
+            builder.HasOne(b=>b.User).WithMany(u=>u.Bids).HasForeignKey(b=>b.UserID);
             builder.HasOne(b => b.Auction).WithMany(a => a.Bids).HasForeignKey(b => b.AuctionID);
+            builder.Property(b => b.Amount).IsRequired();
+            builder.Property(b => b.Time).IsRequired();
+
         }
     }
 }
