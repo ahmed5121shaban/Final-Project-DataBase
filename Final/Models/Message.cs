@@ -15,8 +15,6 @@ namespace Final
         public string Text { get; set; }
         public DateTime Time { get; set; }
         public int ChatId { get; set; }
-
-
         public virtual Chat Chat { get; set; }
     }
 

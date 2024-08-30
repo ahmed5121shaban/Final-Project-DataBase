@@ -16,6 +16,10 @@ namespace Final.Models
         public void Configure(EntityTypeBuilder<PhoneNumber> builder)
         {
             builder.HasOne(p=>p.User).WithMany(u=>u.PhoneNumbers).HasForeignKey(p=>p.UserID).OnDelete(DeleteBehavior.Cascade);
+            builder.Property(p => p.UserID).IsRequired();
+            builder.Property(p => p.Phone).IsRequired().HasMaxLength(15);
+            builder.HasKey(p => p.ID);
+
         }
     }
 }

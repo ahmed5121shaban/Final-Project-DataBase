@@ -24,6 +24,9 @@ namespace zaeid.models
     {
         public void Configure(EntityTypeBuilder<Image> builder)
         {
+            builder.HasKey(i => i.ID);
+            builder.Property(i => i.Src).HasMaxLength(300).IsRequired();
+            builder.Property(i => i.ItemID).IsRequired();
             builder.HasOne(i=>i.Item).WithMany(u=>u.Images).HasForeignKey(i=>i.ItemID).OnDelete(DeleteBehavior.Cascade);
         }
     }
