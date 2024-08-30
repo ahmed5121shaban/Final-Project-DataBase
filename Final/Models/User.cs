@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,21 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            
+            builder.HasKey(u=>u.ID);
+            builder.Property(u => u.Name).HasMaxLength(40).IsRequired();
+            builder.Property(u => u.Email).HasAnnotation("EmailAddress","true").IsRequired();
+            builder.Property(u => u.Password).IsRequired();
+            builder.Property(u => u.Rate).HasMaxLength(5).HasDefaultValue(0);
+            builder.Property(u => u.City).HasMaxLength(100);
+            builder.Property(u => u.Country).HasMaxLength(100);
+            builder.Property(u => u.Age).IsRequired();
+            builder.Property(u => u.Street).HasMaxLength(200);
+            builder.Property(u => u.PostalCode).HasMaxLength(20);
+            builder.Property(u => u.Gender).HasConversion<string>().IsRequired();
+            builder.Property(u => u.NationalId).IsRequired();
+            builder.Property(u => u.TimeZone).HasMaxLength(50);
+            builder.Property(u => u.Description).HasMaxLength(500);
+
         }
     }
 }

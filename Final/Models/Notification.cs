@@ -29,6 +29,12 @@ namespace finalproject.Models
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
+            builder.HasKey(n => n.Id);
+            builder.Property(n => n.Title).IsRequired().HasConversion<string>();
+            builder.Property(n => n.Date).IsRequired();
+            builder.Property(n => n.Description).IsRequired().HasMaxLength(500);
+            builder.Property(n => n.IsReaded).IsRequired();
+            builder.Property(n => n.UserId).IsRequired();
             builder.HasOne(n=>n.User).WithMany(u=>u.Notifacations).HasForeignKey(n=>n.UserId).OnDelete(DeleteBehavior.Cascade);
         }
     }
