@@ -38,8 +38,17 @@ namespace zaeid.models
     {
         public void Configure(EntityTypeBuilder<Item> builder)
         {
+            builder.HasKey(i => i.ID);
+            builder.Property(i => i.Name).IsRequired();
+            builder.Property(i => i.StartPrice).IsRequired();
+            builder.Property(i => i.EndPrice).IsRequired();
+            builder.Property(i => i.UserID).IsRequired();
+            builder.Property(i => i.CategoryID).IsRequired();
+            builder.Property(i => i.IsReviewed).IsRequired().HasDefaultValue(false);
             builder.HasOne(i=>i.User).WithMany(u=>u.Items).HasForeignKey(i=>i.UserID);
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
+            builder.HasOne(i => i.Category).WithMany(c => c.Items).HasForeignKey(i => i.CategoryID);
+            
         }
     }
 }

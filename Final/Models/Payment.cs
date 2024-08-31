@@ -28,7 +28,7 @@ namespace zaeid.models
         {
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Method).IsRequired().HasConversion<string>();
-            builder.Property(p => p.IsDone).IsRequired();
+            builder.Property(p => p.IsDone).IsRequired().HasDefaultValue(false);
             builder.Property(p => p.UserId).IsRequired();
             builder.Property(p => p.AuctionID).IsRequired();
             builder.HasOne(p=>p.User).WithMany(u=>u.Payments).HasForeignKey(p=>p.UserId);
