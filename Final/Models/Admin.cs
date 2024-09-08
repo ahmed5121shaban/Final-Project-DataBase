@@ -26,6 +26,11 @@ namespace Final.Models
     {
         public void Configure(EntityTypeBuilder<Admin> builder)
         {
+            builder.HasKey(i => i.ID);
+            builder.Property(i => i.Name).IsRequired();
+            builder.Property(i => i.Email).IsRequired();
+            builder.Property(i => i.Password).IsRequired();
+
 
         }
     }
