@@ -28,8 +28,12 @@ namespace zaeid.models
         public virtual User User { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
+        public int ReviewID {  get; set; }
+        public Review Review { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
+
+
 
 
     }
@@ -47,6 +51,7 @@ namespace zaeid.models
             builder.Property(i => i.IsReviewed).IsRequired().HasDefaultValue(false);
             builder.HasOne(i=>i.User).WithMany(u=>u.Items).HasForeignKey(i=>i.UserID);
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
+            builder.HasOne(i => i.Review).WithOne(i => i.Item).HasForeignKey<Item>(i => i.ReviewID);
             builder.HasOne(i => i.Category).WithMany(c => c.Items).HasForeignKey(i => i.CategoryID);
             
         }
