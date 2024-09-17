@@ -29,6 +29,7 @@ namespace Final
         public virtual Review Review { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
+        public virtual ICollection<Buyer> Buyers { get; set; }
 
 
 

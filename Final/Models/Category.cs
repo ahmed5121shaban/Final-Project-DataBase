@@ -18,7 +18,7 @@ namespace Final
         public string Description { get; set; }
 
         public virtual ICollection<Item> Items { get; set; }
-
+        public virtual ICollection<Buyer> Buyers { get; set; }
     }
 
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
