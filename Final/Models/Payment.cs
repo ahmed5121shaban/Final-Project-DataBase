@@ -14,7 +14,7 @@ namespace Final
         public int Id { get; set; }
         public Enums.PaymentMetod Method {  get; set; }
         public bool IsDone { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public virtual User User { get; set; }
         public int AuctionID {  get; set; }
         public virtual Auction Auction { get; set; }

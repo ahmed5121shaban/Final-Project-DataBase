@@ -14,11 +14,11 @@ namespace Final
         public int ID { get; set; }
         public string Descrip { get; set; }
         public byte Range {  get; set; }  
-        public int UserID { get; set; }
-        public User User { get; set; }
+        public string UserID { get; set; }
+        public virtual User User { get; set; }
         public int ItemID { get; set; }
      
-        public Item Item { get; set; }
+        public virtual Item Item { get; set; }
     }
 
     public class ReviewConfiguration : IEntityTypeConfiguration<Review>

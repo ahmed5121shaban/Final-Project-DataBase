@@ -7,8 +7,8 @@ namespace Final
     {
         public int ID { get; set; }
         public string Phone { get; set; }
-        public int UserID { get; set; }
-        public User User { get; set; }
+        public string UserID { get; set; }
+        public virtual User User { get; set; }
     }
 
     public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>

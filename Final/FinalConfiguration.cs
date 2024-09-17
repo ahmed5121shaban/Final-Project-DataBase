@@ -22,6 +22,7 @@ namespace Final
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             modelBuilder.ApplyConfiguration(new BidConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ChatConfiguration());
@@ -35,6 +36,9 @@ namespace Final
             modelBuilder.ApplyConfiguration(new AdminConfiguration());
             modelBuilder.ApplyConfiguration(new AuctionConfiguration());
             modelBuilder.ApplyConfiguration(new EventConfiguration());
+            modelBuilder.ApplyConfiguration(new SellerConfiguration());
+            modelBuilder.ApplyConfiguration(new BuyerConfiguration());
+            base.OnModelCreating(modelBuilder);
 
         }
 
@@ -48,9 +52,11 @@ namespace Final
         public virtual DbSet<Notification> Notification { get; set; }
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<Auction> Auctions { get; set; }
-        public virtual DbSet<Admin> Admins { get; set; }
+        public virtual DbSet<Admin> Admin { get; set; }
+        public virtual DbSet<Seller> Seller { get; set; }
+        public virtual DbSet<Buyer> Buyer { get; set; }
+
     }
 }

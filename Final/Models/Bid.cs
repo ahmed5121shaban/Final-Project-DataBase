@@ -17,7 +17,7 @@ namespace Final
 
         public DateTime Time { get; set; }
 
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public virtual User User { get; set; }
         public int AuctionID { get; set; }
         public virtual Auction Auction { get; set; }

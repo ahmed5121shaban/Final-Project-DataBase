@@ -12,8 +12,8 @@ namespace Final
     public class Chat
     {
         public int ID { get; set; }
-        public int SellerID { get; set; }
-        public int BuyerID { get; set; }
+        public string SellerID { get; set; }
+        public string BuyerID { get; set; }
         public DateTime StartDate { get; set; }
         public bool IsActive { get; set; }
 

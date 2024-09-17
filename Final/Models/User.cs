@@ -16,8 +16,6 @@ namespace Final
     public class User : IdentityUser
     {
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
         public DateTime BarthDate { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
@@ -28,7 +26,9 @@ namespace Final
         public int NationalId { get; set; }
         public string TimeZone { get; set; }
         public string Description { get; set; }
-
+        public virtual Seller Seller { get; set; }
+        public virtual Buyer Buyer { get; set; }
+        public virtual Admin Admin { get; set; }
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<Chat> BuyerChats { get;set; }
@@ -48,11 +48,8 @@ namespace Final
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(u=>u.ID);
             builder.Property(u => u.Name).HasMaxLength(40).IsRequired();
             builder.Property(u => u.Email).HasAnnotation("EmailAddress","true").IsRequired();
-            builder.Property(u => u.Password).IsRequired();
-            builder.Property(u => u.Rate).HasMaxLength(5).HasDefaultValue(0);
             builder.Property(u => u.City).HasMaxLength(100);
             builder.Property(u => u.Country).HasMaxLength(100);
             builder.Property(u => u.Age).IsRequired();

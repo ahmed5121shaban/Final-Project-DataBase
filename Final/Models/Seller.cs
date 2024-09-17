@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,16 @@ namespace Final
 {
     public class Seller
     {
+        public string ID { get; set; }
         public string UserID { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
+    }
+    public class SellerConfiguration : IEntityTypeConfiguration<Seller>
+    {
+        public void Configure(EntityTypeBuilder<Seller> builder)
+        {
+            builder.HasKey(x => x.ID);
+            builder.HasOne(x => x.User).WithOne(s => s.Seller).HasForeignKey<Seller>(s => s.UserID);
+        }
     }
 }

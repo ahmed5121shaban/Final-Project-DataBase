@@ -21,12 +21,12 @@ namespace Final
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public virtual User User { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
         public int ReviewID {  get; set; }
-        public Review Review { get; set; }
+        public virtual Review Review { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
 
