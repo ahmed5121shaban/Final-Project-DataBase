@@ -1,4 +1,4 @@
-﻿using Final.Models;
+﻿
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace finalproject.Models
+namespace Final
 {
     public class Bid
     {

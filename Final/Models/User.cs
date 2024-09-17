@@ -1,4 +1,4 @@
-﻿using finalproject.Models;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -8,19 +8,17 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using zaeid.models;
-using static Final.Enums.Enums;
+using static Final.Enums;
 
-namespace Final.Models
+
+namespace Final
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int ID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime BarthDate { get; set; }
-        public int Rate { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
         public int Age { get; set; }

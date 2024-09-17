@@ -1,16 +1,16 @@
-﻿using Final.Models;
-using finalproject.Models;
+﻿using Final;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using zaeid.models;
+
 
 namespace Final
 {
-    public class FinalConfiguration : DbContext
+    public class FinalConfiguration : IdentityDbContext<User>
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

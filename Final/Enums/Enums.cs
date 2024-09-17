@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final.Enums
+namespace Final
 {
     public class Enums
     {
