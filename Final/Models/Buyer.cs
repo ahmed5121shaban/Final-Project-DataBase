@@ -12,9 +12,7 @@ namespace Final
     {
         public string ID { get; set; }
         public int Rate { get; set; }
-        public int SavedItemID { get; set; }
         public virtual ICollection<Item> SavedItems { get; set; }
-        public int SavedCategoryID { get; set; }
         public virtual ICollection<Category> SavedCategories { get; set; }
         public string UserID { get; set; }
         public virtual User User { get; set; }
