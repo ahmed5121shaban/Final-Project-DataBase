@@ -21,6 +21,8 @@ namespace Final
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
+        public int AuctionID { get; set; }
+        public virtual Auction Auction {  get; set; }
         public string UserID { get; set; }
         public virtual User User { get; set; }
         public int? EventID { get; set; }
