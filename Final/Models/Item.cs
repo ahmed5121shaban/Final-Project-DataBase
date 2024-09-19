@@ -53,7 +53,7 @@ namespace Final
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
             builder.HasOne(i => i.Review).WithOne(i => i.Item).HasForeignKey<Item>(i => i.ReviewID);
             builder.HasOne(i => i.Category).WithMany(c => c.Items).HasForeignKey(i => i.CategoryID);
-            
+            builder.HasOne(i => i.Auction).WithOne(a=>a.Item).HasForeignKey<Item>(i=>i.AuctionID);
         }
     }
 }

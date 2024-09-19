@@ -1,0 +1,12 @@
+D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.deps.json
+D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.dll
+D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.pdb
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.GeneratedMSBuildEditorConfig.editorconfig
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.AssemblyInfoInputs.cache
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.AssemblyInfo.cs
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.CoreCompileInputs.cache
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.sourcelink.json
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.dll
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\refint\Managers.dll
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.pdb
+D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\ref\Managers.dll

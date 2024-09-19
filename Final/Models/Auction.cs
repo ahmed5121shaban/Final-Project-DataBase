@@ -36,6 +36,7 @@ namespace Final
             builder.Property(a => a.EndDate).IsRequired();
             builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
             builder.HasOne(a => a.User).WithMany(u => u.Auctions).HasForeignKey(a => a.UserID);
+            builder.HasOne(i => i.Item).WithOne(a => a.Auction).HasForeignKey<Auction>(i => i.ItemID);
         }
     }
 }
