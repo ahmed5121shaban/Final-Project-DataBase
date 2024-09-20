@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Final.Migrations
 {
-    [DbContext(typeof(FinalConfiguration))]
+    [DbContext(typeof(FinalDbContext))]
     [Migration("20240917190423_the-last-migration")]
     partial class thelastmigration
     {

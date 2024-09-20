@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Final
 {
-    public class FinalConfiguration : IdentityDbContext<User>
+    public class FinalDbContext: IdentityDbContext<User>
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
