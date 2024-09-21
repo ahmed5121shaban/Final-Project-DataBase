@@ -1,4 +1,5 @@
 ﻿using Final;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,48 +22,48 @@ namespace Managers
             return dbContext.Set<T>().AsQueryable();
         }
 
-        public T Get(object _ID)
+        public async Task<T> Get(object _ID)
         {
-            return dbContext.Set<T>().Find(_ID);
+            return await dbContext.Set<T>().FindAsync(_ID);
         }
 
-        public bool Add(T _Item)
+        public async Task Add(T _Item)
         {
             try
             {
-                dbContext.Set<T>().Add(_Item);
-                return true;
+                await dbContext.Set<T>().AddAsync(_Item);
+                await dbContext.SaveChangesAsync();
             }
             catch (Exception ex) 
             {
-               throw ex.InnerException;
+               throw ex;
             }
             
         }
 
-        public bool Delete(T _Item)
+        public async Task Delete(T _Item)
         {
             try 
-            { 
-                dbContext.Set<T>().Remove(_Item);
-                return true;
+            {
+                 dbContext.Set<T>().Remove(_Item);
+                await dbContext.SaveChangesAsync();
             } 
             catch (Exception ex) 
             {
-                throw ex.InnerException;
+                throw ex;
             }
         }
 
-        public bool Update(T _Item)
+        public async Task Update(T _Item)
         {
             try
             {
                 dbContext.Set<T>().Update(_Item);
-                return true;
+                await dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                throw ex;
             }
         }
     }

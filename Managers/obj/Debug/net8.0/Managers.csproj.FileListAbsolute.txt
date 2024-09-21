@@ -18,3 +18,5 @@ D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\Models.pdb
 D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\Infrastructure.pdb
 D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.Up2Date
 D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.genruntimeconfig.cache
+D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.dll
+D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.pdb

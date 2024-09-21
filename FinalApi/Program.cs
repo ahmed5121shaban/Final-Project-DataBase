@@ -1,4 +1,5 @@
 using Final;
+using Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,11 @@ builder.Services.AddDbContext<FinalDbContext>(
         .UseLazyLoadingProxies(); }
 );
 builder.Services.AddControllers();
+
+//register your manager hereeee
+builder.Services.AddScoped<ChatManager>();
+builder.Services.AddScoped<MessageManager>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

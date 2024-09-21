@@ -12,7 +12,7 @@ namespace Final
 {
     public class FinalDbContext: IdentityDbContext<User>
     {
-        public FinalDbContext(DbContextOptions _contextOptions):base(_contextOptions)
+        public FinalDbContext(DbContextOptions<FinalDbContext> _contextOptions):base(_contextOptions)
         {
             
         }
