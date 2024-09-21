@@ -10,7 +10,12 @@ namespace Managers
 
     public class MainManager<T> where T : class
     {
-        FinalDbContext dbContext = new FinalDbContext();
+        private readonly FinalDbContext dbContext;
+
+        public MainManager(FinalDbContext _dbContext)
+        {
+            dbContext = _dbContext;
+        }
         public IQueryable<T> GetAll()
         {
             return dbContext.Set<T>().AsQueryable();

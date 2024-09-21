@@ -1,0 +1,15 @@
+D:\projects\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.deps.json
+D:\projects\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.runtimeconfig.json
+D:\projects\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.dll
+D:\projects\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.pdb
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.csproj.AssemblyReference.cache
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.GeneratedMSBuildEditorConfig.editorconfig
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.AssemblyInfoInputs.cache
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.AssemblyInfo.cs
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.csproj.CoreCompileInputs.cache
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.sourcelink.json
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.dll
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\refint\ModelView.dll
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.pdb
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.genruntimeconfig.cache
+D:\projects\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ref\ModelView.dll

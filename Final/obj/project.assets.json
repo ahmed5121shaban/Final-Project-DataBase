@@ -4417,9 +4417,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Final\\Final.csproj",
-      "projectName": "Final",
-      "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Final.csproj",
+      "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
+      "projectName": "Models",
+      "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
       "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
       "outputPath": "D:\\projects\\Final-Project-DataBase\\Final\\obj\\",
       "projectStyle": "PackageReference",
