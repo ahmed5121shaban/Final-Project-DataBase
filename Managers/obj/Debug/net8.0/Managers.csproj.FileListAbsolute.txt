@@ -20,3 +20,47 @@ D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.Up2
 D:\projects\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.genruntimeconfig.cache
 D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.dll
 D:\projects\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\refint\Managers.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Managers.deps.json
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Managers.runtimeconfig.json
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Managers.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Managers.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Infrastructure.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Models.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\ModelView.dll
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Models.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\Infrastructure.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\bin\Debug\net8.0\ModelView.pdb
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.csproj.AssemblyReference.cache
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.AssemblyInfoInputs.cache
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.AssemblyInfo.cs
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.csproj.CoreCompileInputs.cache
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.sourcelink.json
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.csproj.Up2Date
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\Managers.genruntimeconfig.cache
+C:\Users\Geniius\Desktop\.net\ORM\Managers\obj\Debug\net8.0\ref\Managers.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.AssemblyReference.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.AssemblyInfoInputs.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.AssemblyInfo.cs
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.CoreCompileInputs.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.sourcelink.json
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\refint\Managers.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.pdb
+C:\Users\Modern Computer\source\repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.deps.json
+C:\Users\Modern Computer\source\repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.runtimeconfig.json
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Managers.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Infrastructure.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Models.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Models.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\Infrastructure.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\Managers\bin\Debug\net8.0\ModelView.pdb
+C:\Users\Modern Computer\source\repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.csproj.Up2Date
+C:\Users\Modern Computer\source\repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\Managers.genruntimeconfig.cache
+C:\Users\Modern Computer\source\repos\ahmed5121shaban\Final-Project-DataBase\Managers\obj\Debug\net8.0\ref\Managers.dll

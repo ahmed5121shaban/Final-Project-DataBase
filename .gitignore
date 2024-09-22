@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+**/obj/
+**/bin/
+
+# Ignore NuGet package caches
+**/*.nuget.cache
