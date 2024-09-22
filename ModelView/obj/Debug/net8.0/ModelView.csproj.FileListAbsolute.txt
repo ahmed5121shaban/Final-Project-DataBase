@@ -34,3 +34,21 @@ C:\Users\Geniius\Desktop\.net\ORM\ModelView\obj\Debug\net8.0\refint\ModelView.dl
 C:\Users\Geniius\Desktop\.net\ORM\ModelView\obj\Debug\net8.0\ModelView.pdb
 C:\Users\Geniius\Desktop\.net\ORM\ModelView\obj\Debug\net8.0\ModelView.genruntimeconfig.cache
 C:\Users\Geniius\Desktop\.net\ORM\ModelView\obj\Debug\net8.0\ref\ModelView.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.deps.json
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.runtimeconfig.json
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\ModelView.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\Models.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\bin\Debug\net8.0\Models.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.csproj.AssemblyReference.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.AssemblyInfoInputs.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.AssemblyInfo.cs
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.csproj.CoreCompileInputs.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.sourcelink.json
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.csproj.Up2Date
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\refint\ModelView.dll
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.pdb
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ModelView.genruntimeconfig.cache
+C:\Users\Modern Computer\Source\Repos\ahmed5121shaban\Final-Project-DataBase\ModelView\obj\Debug\net8.0\ref\ModelView.dll

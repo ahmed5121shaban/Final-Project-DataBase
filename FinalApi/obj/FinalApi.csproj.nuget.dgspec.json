@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj": {}
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj": {
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj",
+        "projectUniqueName": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj",
         "projectName": "FinalApi",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\obj\\",
+        "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj",
+        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\FinalApi\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -33,14 +29,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\Managers.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\Managers.csproj"
               }
             }
           }
@@ -112,25 +108,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
+        "projectUniqueName": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj",
         "projectName": "Models",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\obj\\",
+        "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj",
+        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -207,25 +199,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -240,8 +228,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj"
               }
             }
           }
@@ -306,25 +294,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\Managers.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
+        "projectUniqueName": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\Managers.csproj",
         "projectName": "Managers",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\obj\\",
+        "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\Managers.csproj",
+        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Managers\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -339,14 +323,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
               }
             }
           }
@@ -415,25 +399,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
+    "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
+        "projectUniqueName": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
         "projectName": "ModelView",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\obj\\",
+        "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
+        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\ModelView\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -448,8 +428,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Modern Computer\\Source\\Repos\\ahmed5121shaban\\Final-Project-DataBase\\Final\\Models.csproj"
               }
             }
           }
@@ -514,7 +494,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
