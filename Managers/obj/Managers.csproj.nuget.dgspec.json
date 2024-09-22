@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj": {}
+    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {}
   },
   "projects": {
-    "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
+    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
+        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
         "projectName": "Models",
-        "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
-        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Final-Project-DataBase\\Final\\obj\\",
+        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
+        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -95,24 +95,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -128,8 +128,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
-                "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj"
+              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
               }
             }
           }
@@ -194,24 +194,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj": {
+    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj",
+        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
         "projectName": "Managers",
-        "projectPath": "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj",
-        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Final-Project-DataBase\\Managers\\obj\\",
+        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
+        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -227,14 +227,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
-                "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj"
+              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
               },
-              "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
+              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
               },
-              "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
-                "projectPath": "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
+              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
+                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj"
               }
             }
           }
@@ -254,9 +254,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+            "Microsoft.AspNetCore.Identity": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[2.2.0, )"
             },
             "Microsoft.AspNetCore.Mvc.Abstractions": {
               "target": "Package",
@@ -303,24 +303,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
+    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
+        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
         "projectName": "ModelView",
-        "projectPath": "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
-        "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Final-Project-DataBase\\ModelView\\obj\\",
+        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
+        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -336,8 +336,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
-                "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj"
+              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
+                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
               }
             }
           }
@@ -402,7 +402,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

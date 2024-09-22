@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ModelView")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6dfb11bcf51eda21b496c02d0f50b02a683861f3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79cd82e3e71ec10d9b5d8cfa7cece9c371599019")]
 [assembly: System.Reflection.AssemblyProductAttribute("ModelView")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ModelView")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
