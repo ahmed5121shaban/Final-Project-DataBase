@@ -5323,24 +5323,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Geniius\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\store\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
+      "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj",
       "projectName": "Managers",
-      "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
-      "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\obj\\",
+      "projectPath": "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj",
+      "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+      "outputPath": "E:\\New folder\\Final-Project-DataBase\\Managers\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5355,14 +5350,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-              "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+            "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
+              "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
             },
-            "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
+            "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
             },
-            "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
-              "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj"
+            "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
+              "projectPath": "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
             }
           }
         }
@@ -5434,5 +5429,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file E:\\New folder\\Final-Project-DataBase\\Managers\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

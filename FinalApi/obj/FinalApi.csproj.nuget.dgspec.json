@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj": {}
+    "E:\\New folder\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj": {
+    "E:\\New folder\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj",
+        "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj",
         "projectName": "FinalApi",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\FinalApi.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\FinalApi\\obj\\",
+        "projectPath": "E:\\New folder\\Final-Project-DataBase\\FinalApi\\FinalApi.csproj",
+        "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+        "outputPath": "E:\\New folder\\Final-Project-DataBase\\FinalApi\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -33,14 +29,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj"
               }
             }
           }
@@ -116,21 +112,17 @@
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
+    "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
+        "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj",
         "projectName": "Models",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\obj\\",
+        "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj",
+        "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+        "outputPath": "E:\\New folder\\Final-Project-DataBase\\Final\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -211,21 +203,17 @@
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
+    "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\obj\\",
+        "projectPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+        "outputPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -240,8 +228,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
               }
             }
           }
@@ -310,21 +298,17 @@
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj": {
+    "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
+        "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj",
         "projectName": "Managers",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\Managers.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Managers\\obj\\",
+        "projectPath": "E:\\New folder\\Final-Project-DataBase\\Managers\\Managers.csproj",
+        "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+        "outputPath": "E:\\New folder\\Final-Project-DataBase\\Managers\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -339,14 +323,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Infrastructure\\Infrastructure.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
               },
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
               }
             }
           }
@@ -419,21 +403,17 @@
         }
       }
     },
-    "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj": {
+    "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
+        "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
         "projectName": "ModelView",
-        "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\ModelView.csproj",
-        "packagesPath": "C:\\Users\\Geniius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\ModelView\\obj\\",
+        "projectPath": "E:\\New folder\\Final-Project-DataBase\\ModelView\\ModelView.csproj",
+        "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
+        "outputPath": "E:\\New folder\\Final-Project-DataBase\\ModelView\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Geniius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -448,8 +428,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj": {
-                "projectPath": "C:\\Users\\Geniius\\Desktop\\.net\\ORM\\Final\\Models.csproj"
+              "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
+                "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
               }
             }
           }
