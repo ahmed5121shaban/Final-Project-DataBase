@@ -10,8 +10,11 @@ namespace ModelView
     public class RegisterViewModel
     {
 
-        [Required, StringLength(20, MinimumLength = 8)]
-        public string FullName { get; set; }
+        [Required, StringLength(15, MinimumLength = 3)]
+        public string FirstName { get; set; }
+
+        [Required, StringLength(15, MinimumLength = 3)]
+        public string LastName { get; set; }
 
         [Required, EmailAddress]
         public string Email { get; set; }

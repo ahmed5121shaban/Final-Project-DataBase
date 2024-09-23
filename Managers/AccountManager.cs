@@ -13,14 +13,14 @@ namespace Managers
     public class AccountManager :MainManager<User>
     {
          private UserManager<User> userManager;
-        private SignInManager<User> signInManager;
+         private SignInManager<User> signInManager;
         public AccountManager(FinalDbContext _finalDbContext , UserManager<User> _userManager, SignInManager<User> _signInManager) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
 
         }
-        public async Task<IdentityResult> SignUp(RegisterViewModel viewModel)
+        public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
             User user = viewModel.ToModel();
             var result = await userManager.CreateAsync(user, viewModel.Password);
@@ -28,7 +28,7 @@ namespace Managers
             return result;
         }
 
-        public async Task<SignInResult> SignIn(LoginViewModel viewModel)
+        public async Task<SignInResult> Login(LoginViewModel viewModel)
         {
             var user = await userManager.FindByEmailAsync(viewModel.Email);
             if (user == null)
@@ -39,7 +39,7 @@ namespace Managers
 
             return await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
         }
-        public async void SignOut()
+        public async void Logout()
         {
             await signInManager.SignOutAsync();
 
@@ -80,6 +80,64 @@ namespace Managers
                         Description = "Invalid"
                     });
             }
+        }
+
+        public async Task<IdentityResult> UpdateUserProfileAsync(User user, UpdateProfileViewModel model)
+        {
+            // Check if each field is provided and update it accordingly
+            if (!string.IsNullOrWhiteSpace(model.FirstName))
+                user.Name = model.FirstName;
+
+            if (!string.IsNullOrWhiteSpace(model.LastName))
+                user.Name = model.LastName;
+
+            if (!string.IsNullOrWhiteSpace(model.City))
+                user.City = model.City;
+
+            if (!string.IsNullOrWhiteSpace(model.Country))
+                user.Country = model.Country;
+
+            if (!string.IsNullOrWhiteSpace(model.Street))
+                user.Street = model.Street;
+
+            if (!string.IsNullOrWhiteSpace(model.PostalCode))
+                user.PostalCode = model.PostalCode;
+
+            if (!string.IsNullOrWhiteSpace(model.Description))
+                user.Description = model.Description;
+
+            if (model.Age > 0)
+                user.Age = model.Age;
+
+            if (model.NationalId > 0)
+                user.NationalId = model.NationalId;
+
+            if (!string.IsNullOrWhiteSpace(model.TimeZone))
+                user.TimeZone = model.TimeZone;
+
+            if (model.Gender != null)
+                user.Gender = model.Gender;
+
+            // Update phone numbers if provided
+            if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
+            {
+                user.PhoneNumbers.Clear(); // Clear existing numbers
+                foreach (var phone in model.PhoneNumbers)
+                {
+                    user.PhoneNumbers.Add(new PhoneNumber { Phone = phone, UserID = user.Id });
+                }
+            }
+
+            // Save changes to the database
+            var result = await userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                // Optionally re-sign-in the user if any sensitive information (like email) was updated
+                await signInManager.RefreshSignInAsync(user);
+            }
+
+            return result;
         }
     }
 }
