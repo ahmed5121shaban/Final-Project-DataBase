@@ -12,13 +12,13 @@ namespace Final
     public class Review
     {
         public int ID { get; set; }
-        public string Descrip { get; set; }
+        public string Description { get; set; }
         public byte Range {  get; set; }  
-        public string UserID { get; set; }
-        public virtual User User { get; set; }
-        public int ItemID { get; set; }
-     
-        public virtual Item Item { get; set; }
+        public string SellerID { get; set; }
+        public virtual Seller Seller { get; set; }
+        public string BuyerID { get; set; }
+        public virtual Buyer Buyer { get; set; }
+
     }
 
     public class ReviewConfiguration : IEntityTypeConfiguration<Review>
@@ -26,8 +26,10 @@ namespace Final
         public void Configure(EntityTypeBuilder<Review> builder)
         {
             builder.HasKey(x => x.ID);
-            builder.HasOne(x => x.User).WithMany(x => x.Reviews).HasForeignKey(r=>r.UserID);
-            builder.HasOne(x => x.Item).WithOne(x => x.Review).HasForeignKey<Review>(r=>r.ItemID);
+            //seller take review
+            builder.HasOne(x => x.Seller).WithMany(x => x.Reviews).HasForeignKey(r=>r.SellerID);
+            // buyer add review
+            builder.HasOne(x => x.Buyer).WithMany(x => x.Reviews).HasForeignKey(r=>r.BuyerID);
         }
     }
 }

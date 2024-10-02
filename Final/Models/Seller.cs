@@ -10,15 +10,18 @@ namespace Final
 {
     public class Seller
     {
-        public string ID { get; set; }
         public string UserID { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Chat> Chats { get; set; }
+
     }
     public class SellerConfiguration : IEntityTypeConfiguration<Seller>
     {
         public void Configure(EntityTypeBuilder<Seller> builder)
         {
-            builder.HasKey(x => x.ID);
+            builder.HasKey(x => x.UserID);
             builder.HasOne(x => x.User).WithOne(s => s.Seller).HasForeignKey<Seller>(s => s.UserID);
         }
     }

@@ -13,9 +13,19 @@ namespace ModelView.Account
         {
             return new User
             {
-                Name = model.FullName,
+                UserName = $"{model.FirstName}{model.LastName}",
+                Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
             };
         }
+
+        //public static User ToModel(this LoginViewModel model) 
+        //{
+        //    return new User 
+        //    {
+        //       Email = model.Email,
+               
+        //    };
+        //}
     }
 }

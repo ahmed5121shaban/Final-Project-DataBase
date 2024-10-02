@@ -17,12 +17,10 @@ namespace Final
         public virtual Item Item { get; set; }
         public int PaymentID { get; set; }
         public virtual Payment Payment { get; set; }
-        public string UserID { get; set; }
-        public virtual User User { get; set; }
+        public string BuyerID { get; set; }
+        public virtual Buyer Buyer { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
         public bool Completed { get; set; }
-
-       // public virtual ICollection<User> Users { get; set; }
 
 
     }
@@ -35,7 +33,9 @@ namespace Final
             builder.Property(a => a.StartDate).IsRequired();
             builder.Property(a => a.EndDate).IsRequired();
             builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
-            builder.HasOne(a => a.User).WithMany(u => u.Auctions).HasForeignKey(a => a.UserID);
+            //buyer won Auctoins
+            builder.HasOne(a => a.Buyer).WithMany(u => u.Auctions).HasForeignKey(a => a.BuyerID);
+
             builder.HasOne(i => i.Item).WithOne(a => a.Auction).HasForeignKey<Auction>(i => i.ItemID);
         }
     }

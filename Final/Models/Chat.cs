@@ -18,8 +18,8 @@ namespace Final
         public bool IsActive { get; set; }
 
 
-        public virtual User Seller { get; set; }
-        public virtual User Buyer { get; set; }
+        public virtual Seller Seller { get; set; }
+        public virtual Buyer Buyer { get; set; }
         public virtual ICollection<Message> ChatMessages { get; set; }
 
     }
@@ -28,12 +28,14 @@ namespace Final
     {
         public void Configure(EntityTypeBuilder<Chat> builder)
         {
+            //Seller Chats with Some Buyer
             builder.HasOne(c=>c.Seller)
-                   .WithMany(s=>s.SellerChats)
+                   .WithMany(s=>s.Chats)
                    .HasForeignKey(c=>c.SellerID);
 
+            //Buyer Chats with Some Seller
             builder.HasOne(c => c.Buyer)
-                   .WithMany(s => s.BuyerChats)
+                   .WithMany(s => s.Chats)
                    .HasForeignKey(c => c.BuyerID);
 
             builder.Property(c => c.StartDate)

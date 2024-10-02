@@ -14,30 +14,36 @@ namespace Managers
     {
          private UserManager<User> userManager;
          private SignInManager<User> signInManager;
-        public AccountManager(FinalDbContext _finalDbContext , UserManager<User> _userManager, SignInManager<User> _signInManager) : base(_finalDbContext)
+        private readonly TokenManager tokenManager;
+
+        public AccountManager(FinalDbContext _finalDbContext ,
+            UserManager<User> _userManager,
+            SignInManager<User> _signInManager,
+            TokenManager _tokenManager
+            ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
-
+            tokenManager = _tokenManager;
         }
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
             User user = viewModel.ToModel();
             var result = await userManager.CreateAsync(user, viewModel.Password);
-            result = await userManager.AddToRoleAsync(user, viewModel.Role);
+            result = await userManager.AddToRolesAsync(user,new List<string>{"User","Buyer"});
             return result;
         }
 
-        public async Task<SignInResult> Login(LoginViewModel viewModel)
+        public async Task<string> Login(LoginViewModel viewModel)
         {
             var user = await userManager.FindByEmailAsync(viewModel.Email);
             if (user == null)
             {
-                    return SignInResult.Failed;
+                    return string.Empty;
                 
             }
-
-            return await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+            await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+            return await tokenManager.GenerateToken(user);
         }
         public async void Logout()
         {

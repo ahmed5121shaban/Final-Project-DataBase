@@ -16,6 +16,7 @@ namespace Final
         public DateTime Time { get; set; }
         public int ChatId { get; set; }
         public virtual Chat Chat { get; set; }
+        //
     }
 
     public class MessageConfiguration : IEntityTypeConfiguration<Message>

@@ -9,10 +9,10 @@ namespace ModelView
 {
     public class LoginViewModel
     {
-        [Required, StringLength(10, MinimumLength = 8)]
+        [Required, StringLength(50, MinimumLength = 8)]
         public string Email { get; set; }
 
-        [Required, StringLength(10, MinimumLength = 8)]
+        [Required, StringLength(50, MinimumLength = 8)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

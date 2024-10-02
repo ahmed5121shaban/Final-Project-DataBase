@@ -21,20 +21,15 @@ namespace Final
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
-        public int AuctionID { get; set; }
+        public int? AuctionID { get; set; }
         public virtual Auction Auction {  get; set; }
-        public string UserID { get; set; }
-        public virtual User User { get; set; }
+        public string SellerID { get; set; }
+        public virtual Seller Seller { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
-        public int ReviewID {  get; set; }
-        public virtual Review Review { get; set; }
+
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
-        public virtual ICollection<Buyer> Buyers { get; set; }
-
-
-
 
     }
 
@@ -46,12 +41,12 @@ namespace Final
             builder.Property(i => i.Name).IsRequired();
             builder.Property(i => i.StartPrice).IsRequired();
             builder.Property(i => i.EndPrice).IsRequired();
-            builder.Property(i => i.UserID).IsRequired();
+            builder.Property(i => i.SellerID).IsRequired();
             builder.Property(i => i.CategoryID).IsRequired();
             builder.Property(i => i.IsReviewed).IsRequired().HasDefaultValue(false);
-            builder.HasOne(i=>i.User).WithMany(u=>u.Items).HasForeignKey(i=>i.UserID);
+            //seller has many items
+            builder.HasOne(i=>i.Seller).WithMany(u=>u.Items).HasForeignKey(i=>i.SellerID);
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
-            builder.HasOne(i => i.Review).WithOne(i => i.Item).HasForeignKey<Item>(i => i.ReviewID);
             builder.HasOne(i => i.Category).WithMany(c => c.Items).HasForeignKey(i => i.CategoryID);
             builder.HasOne(i => i.Auction).WithOne(a=>a.Item).HasForeignKey<Item>(i=>i.AuctionID);
         }
