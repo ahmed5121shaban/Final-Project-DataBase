@@ -1,4 +1,5 @@
 ﻿using Final;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -35,6 +36,13 @@ namespace Final
             modelBuilder.ApplyConfiguration(new SellerConfiguration());
             modelBuilder.ApplyConfiguration(new BuyerConfiguration());
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Name = "User", NormalizedName = "USER" },
+                new IdentityRole { Name = "Seller", NormalizedName = "SELLER" },
+                new IdentityRole { Name = "Buyer", NormalizedName = "BUYER" }
+            );
 
         }
 

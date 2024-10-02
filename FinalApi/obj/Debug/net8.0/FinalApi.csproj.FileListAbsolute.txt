@@ -304,3 +304,5 @@ C:\Users\Geniius\Desktop\.net\ORM\FinalApi\obj\Debug\net8.0\scopedcss\bundle\Fin
 C:\Users\Geniius\Desktop\.net\ORM\FinalApi\obj\Debug\net8.0\FinalApi.csproj.Up2Date
 C:\Users\Geniius\Desktop\.net\ORM\FinalApi\obj\Debug\net8.0\FinalApi.genruntimeconfig.cache
 C:\Users\Geniius\Desktop\.net\ORM\FinalApi\obj\Debug\net8.0\ref\FinalApi.dll
+D:\projects\Final-Project-DataBase\FinalApi\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\projects\Final-Project-DataBase\FinalApi\bin\Debug\net8.0\Microsoft.Bcl.TimeProvider.dll

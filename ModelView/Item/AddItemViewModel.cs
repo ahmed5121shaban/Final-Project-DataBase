@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,6 @@ namespace ModelView
         public int? sellPrice { get; set; }
         public int startPrice { get; set; }
         public string PaymentMethod { get; set; }
-
         public IFormFile? Contract { get; set; }
         public List<IFormFile> Images { get; set; }
 

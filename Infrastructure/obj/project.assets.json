@@ -4433,19 +4433,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\store\\.nuget\\packages\\": {}
+    "C:\\Users\\Modern Computer\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
+      "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
       "projectName": "Infrastructure",
-      "projectPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\store\\.nuget\\packages\\",
-      "outputPath": "E:\\New folder\\Final-Project-DataBase\\Infrastructure\\obj\\",
+      "projectPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
+      "outputPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\store\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Modern Computer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4460,8 +4465,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj": {
-              "projectPath": "E:\\New folder\\Final-Project-DataBase\\Final\\Models.csproj"
+            "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
+              "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj"
             }
           }
         }
@@ -4526,16 +4531,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file E:\\New folder\\Final-Project-DataBase\\Infrastructure\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }

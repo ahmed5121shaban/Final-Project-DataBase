@@ -17,17 +17,17 @@ namespace Final
     {
         public string Name { get; set; }
         public DateTime BarthDate { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public int Age { get; set; }
-        public string Street { get; set; }
-        public string PostalCode { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public int? Age { get; set; } = 0;
+        public string? Street { get; set; }
+        public string? PostalCode { get; set; }
         public Gender Gender { get; set; }
-        public int NationalId { get; set; }
-        public string TimeZone { get; set; }
-        public string Description { get; set; }
-        public string Currency {  get; set; }
-        public string Image { get; set; }
+        public int? NationalId { get; set; } = 0;
+        public string? TimeZone { get; set; }
+        public string? Description { get; set; }
+        public string? Currency {  get; set; }
+        public string? Image { get; set; }
         public virtual Seller Seller { get; set; }
         public virtual Buyer Buyer { get; set; }
         public virtual Admin Admin { get; set; }
