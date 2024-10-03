@@ -5329,11 +5329,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj",
+      "projectUniqueName": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Managers\\Managers.csproj",
       "projectName": "Managers",
-      "projectPath": "D:\\projects\\Final-Project-DataBase\\Managers\\Managers.csproj",
+      "projectPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Managers\\Managers.csproj",
       "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-      "outputPath": "D:\\projects\\Final-Project-DataBase\\Managers\\obj\\",
+      "outputPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Managers\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5355,14 +5355,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
-              "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj"
+            "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj": {
+              "projectPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj"
             },
-            "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "D:\\projects\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
+            "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Infrastructure\\Infrastructure.csproj"
             },
-            "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
-              "projectPath": "D:\\projects\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
+            "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\ModelView\\ModelView.csproj": {
+              "projectPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\ModelView\\ModelView.csproj"
             }
           }
         }
@@ -5434,13 +5434,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file D:\\projects\\Final-Project-DataBase\\Managers\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'logs[0].warningLevel', line 122, position 0."
-    }
-  ]
+  }
 }

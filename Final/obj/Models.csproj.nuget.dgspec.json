@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {}
+    "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj": {}
   },
   "projects": {
-    "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj": {
+    "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
+        "projectUniqueName": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj",
         "projectName": "Models",
-        "projectPath": "D:\\projects\\Final-Project-DataBase\\Final\\Models.csproj",
+        "projectPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\Models.csproj",
         "packagesPath": "C:\\Users\\Modern Computer\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Final-Project-DataBase\\Final\\obj\\",
+        "outputPath": "D:\\projects\\Final Project Latest Version\\Final-Project-DataBase\\Final\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
