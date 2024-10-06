@@ -11,7 +11,7 @@ namespace FinalApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("Api/[controller]")]
+    [Route("api/[controller]")]
     public class CategoryController:ControllerBase
     {
         private CategoryManager manager;
@@ -78,7 +78,7 @@ namespace FinalApi.Controllers
         }
 
         [HttpGet]
-        [Route("GetAlll")]
+        [Route("GetAll")]
         public IActionResult GetAll()
         {
             var res = manager.GetAll().ToList();

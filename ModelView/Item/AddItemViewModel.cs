@@ -12,7 +12,7 @@ namespace ModelView
         public string Title { get; set; }
         public int Category { get; set; }
         public string Description { get; set; }
-
+        public string SellerId {  get; set; }
         public int? sellPrice { get; set; }
         public int startPrice { get; set; }
         public string PaymentMethod { get; set; }
