@@ -55,12 +55,13 @@ namespace FinalApi.Controllers
 
 
         }
-
-        
+        //to display only items of this user by its id
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-            var items = itemManager.GetAll().Select(i=>i.toItemViewModel());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
             return Ok(items);
         }
 
