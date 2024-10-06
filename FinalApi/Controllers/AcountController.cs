@@ -34,6 +34,6 @@ namespace FinalApi.Controllers
             var res = await acountManager.Register(_registerView);
             if (!res.Succeeded) return BadRequest(new { Message = "Error In Register Operation" });
             return Ok(new { status = 200 });
-            }
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace Managers
                 var result = await userManager.CreateAsync(user, viewModel.Password);
                 result = await userManager.AddToRolesAsync(user,new List<string>{"User","Buyer"});
                 return result;
-            }
+        }
 
         public async Task<string> Login(LoginViewModel viewModel)
         {
