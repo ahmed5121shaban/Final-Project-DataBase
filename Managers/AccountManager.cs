@@ -28,10 +28,18 @@ namespace Managers
         }
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
-            User user = viewModel.ToModel();
-            var result = await userManager.CreateAsync(user, viewModel.Password);
-            result = await userManager.AddToRolesAsync(user,new List<string>{"User","Buyer"});
-            return result;
+            try
+            {
+
+                User user = viewModel.ToModel();
+                var result = await userManager.CreateAsync(user, viewModel.Password);
+                result = await userManager.AddToRolesAsync(user,new List<string>{"User","Buyer"});
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return new IdentityResult();
+            }
         }
 
         public async Task<string> Login(LoginViewModel viewModel)
