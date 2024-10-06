@@ -22,7 +22,7 @@ namespace Final
         public int? Age { get; set; } = 0;
         public string? Street { get; set; }
         public string? PostalCode { get; set; }
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         public int? NationalId { get; set; } = 0;
         public string? TimeZone { get; set; }
         public string? Description { get; set; }
