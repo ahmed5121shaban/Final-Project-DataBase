@@ -55,7 +55,8 @@ namespace ModelView
                 AuctionID = 0,
                 Images = images,
                 ContractFile = contractfile,
-                SellerID = "1"
+                SellerID = "1",
+
             };
         }
     }
