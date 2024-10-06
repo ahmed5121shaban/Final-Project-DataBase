@@ -27,26 +27,28 @@ namespace Managers
             return await dbContext.Set<T>().FindAsync(_ID);
         }
 
-        public async Task Add(T _Item)
+        public async Task<bool> Add(T _Item)
         {
             try
             {
                 await dbContext.Set<T>().AddAsync(_Item);
                 await dbContext.SaveChangesAsync();
+                return true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-               throw ex;
+                throw ex;
             }
-            
+
         }
 
-        public async Task Delete(T _Item)
+        public async Task<bool> Delete(T _Item)
         {
             try 
             {
                  dbContext.Set<T>().Remove(_Item);
                 await dbContext.SaveChangesAsync();
+                return true;
             } 
             catch (Exception ex) 
             {

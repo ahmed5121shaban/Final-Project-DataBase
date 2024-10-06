@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 namespace ModelView
 {
-    public static class ItemExtensions
+    public static class ItemExtesions
     {
         public static Item toItemModel(this AddItemViewModel model)
         {
@@ -51,11 +51,26 @@ namespace ModelView
                 EndPrice = model.sellPrice ?? 0,
                 AddTime = DateTime.Now,
                 PublishDate = DateTime.Now,
-                
-                AuctionID = 0,
-                Images = images,
+                Images = images.ToArray(),
                 ContractFile = contractfile,
-                SellerID = "1"
+                SellerID=model.sellerId
+            };
+        }
+
+        public static ItemViewModel toItemViewModel(this Item model)
+        {
+            return new ItemViewModel
+            {
+                ID = model.ID,
+                Title = model.Name,
+                Description = model.Description,
+                startPrice = model.StartPrice,
+                sellPrice = model.EndPrice,
+                Images = model.Images.ToArray(),
+                Contract = model.ContractFile,
+                Category = model.Category.Name,
+                status=model.Status
+
             };
         }
     }

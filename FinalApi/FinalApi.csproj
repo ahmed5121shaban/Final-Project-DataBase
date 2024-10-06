@@ -30,4 +30,9 @@
     <ProjectReference Include="..\Managers\Managers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\Items\" />
+    <Folder Include="wwwroot\Contracts\" />
+  </ItemGroup>
+
 </Project>
