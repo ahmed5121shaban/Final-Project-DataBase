@@ -30,6 +30,12 @@ namespace Final
             auction
         }
 
+        public enum ItemStatus
+        {
+            pending,
+            accepted,
+            rejected
+        }
 
 
     }

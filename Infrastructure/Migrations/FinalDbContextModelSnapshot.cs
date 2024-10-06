@@ -37,7 +37,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EventsID");
 
-                    b.ToTable("AdminEvent");
+                    b.ToTable("AdminEvent", (string)null);
                 });
 
             modelBuilder.Entity("AdminItem", b =>
@@ -52,7 +52,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ItemsID");
 
-                    b.ToTable("AdminItem");
+                    b.ToTable("AdminItem", (string)null);
                 });
 
             modelBuilder.Entity("AdminUser", b =>
@@ -67,7 +67,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AdminUser");
+                    b.ToTable("AdminUser", (string)null);
                 });
 
             modelBuilder.Entity("BuyerCategory", b =>
@@ -82,7 +82,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SavedCategoriesID");
 
-                    b.ToTable("BuyerCategory");
+                    b.ToTable("BuyerCategory", (string)null);
                 });
 
             modelBuilder.Entity("Final.Admin", b =>
@@ -99,7 +99,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("Final.Auction", b =>
@@ -139,7 +139,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PaymentID")
                         .IsUnique();
 
-                    b.ToTable("Auctions");
+                    b.ToTable("Auctions", (string)null);
                 });
 
             modelBuilder.Entity("Final.Bid", b =>
@@ -169,7 +169,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BuyerID");
 
-                    b.ToTable("Bids");
+                    b.ToTable("Bids", (string)null);
                 });
 
             modelBuilder.Entity("Final.Buyer", b =>
@@ -185,7 +185,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Buyer");
+                    b.ToTable("Buyer", (string)null);
                 });
 
             modelBuilder.Entity("Final.Category", b =>
@@ -213,7 +213,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -246,7 +246,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("Final.Event", b =>
@@ -280,7 +280,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Final.Image", b =>
@@ -303,7 +303,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ItemID");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("Final.Item", b =>
@@ -369,7 +369,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("Final.Message", b =>
@@ -395,7 +395,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Message", (string)null);
                 });
 
             modelBuilder.Entity("Final.Notification", b =>
@@ -429,7 +429,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notification", (string)null);
                 });
 
             modelBuilder.Entity("Final.Payment", b =>
@@ -460,7 +460,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("Final.PhoneNumber", b =>
@@ -484,7 +484,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("PhoneNumbers");
+                    b.ToTable("PhoneNumbers", (string)null);
                 });
 
             modelBuilder.Entity("Final.Review", b =>
@@ -516,7 +516,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Review");
+                    b.ToTable("Review", (string)null);
                 });
 
             modelBuilder.Entity("Final.Seller", b =>
@@ -526,7 +526,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Seller");
+                    b.ToTable("Seller", (string)null);
                 });
 
             modelBuilder.Entity("Final.User", b =>

@@ -337,6 +337,16 @@ namespace Infrastructure.Migrations
                 principalTable: "Seller",
                 principalColumn: "UserID",
                 onDelete: ReferentialAction.NoAction);
+            migrationBuilder.DropColumn(
+                name: "IsReviewed",
+                table: "Items");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Status",
+                table: "Items",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
@@ -709,6 +719,17 @@ namespace Infrastructure.Migrations
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.NoAction);
+
+            migrationBuilder.DropColumn(
+    name: "Status",
+    table: "Items");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsReviewed",
+                table: "Items",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
     }
 }

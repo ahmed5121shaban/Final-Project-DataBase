@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace Final
 {
-
-
     public class Notification
     {
         public int Id { get; set; }

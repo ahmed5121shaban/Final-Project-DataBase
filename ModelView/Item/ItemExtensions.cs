@@ -51,7 +51,7 @@ namespace ModelView
                 EndPrice = model.sellPrice ?? 0,
                 AddTime = DateTime.Now,
                 PublishDate = DateTime.Now,
-                IsReviewed = false,
+                
                 AuctionID = 0,
                 Images = images,
                 ContractFile = contractfile,

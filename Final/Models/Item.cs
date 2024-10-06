@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Final.Enums;
 
 namespace Final
 {
@@ -16,7 +17,8 @@ namespace Final
         public virtual Category Category { get; set; }
         public string Description { get; set; }
         public DateTime AddTime { get; set; }
-        public bool IsReviewed { get; set; }
+        public ItemStatus Status { get; set; }
+
         public DateTime PublishDate { get; set; }
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
@@ -43,7 +45,7 @@ namespace Final
             builder.Property(i => i.EndPrice).IsRequired();
             builder.Property(i => i.SellerID).IsRequired();
             builder.Property(i => i.CategoryID).IsRequired();
-            builder.Property(i => i.IsReviewed).IsRequired().HasDefaultValue(false);
+            builder.Property(i => i.Status).IsRequired().HasDefaultValue(ItemStatus.pending);
             //seller has many items
             builder.HasOne(i=>i.Seller).WithMany(u=>u.Items).HasForeignKey(i=>i.SellerID);
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
