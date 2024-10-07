@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241006081145_updateuser")]
-    partial class updateuser
+    [Migration("20241007110116_updated")]
+    partial class updated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -343,17 +343,15 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsReviewed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PublishDate")
+                    b.Property<DateTime?>("PublishDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PublishFeedback")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SellerID")
                         .IsRequired()
@@ -361,6 +359,11 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("StartPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("ID");
 
@@ -572,11 +575,16 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlocked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -591,6 +599,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<int?>("NationalId")
                         .HasColumnType("int");
+
+                    b.Property<string>("NationalIdBackImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalIdFrontImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -615,6 +629,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PostalCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Reports")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -676,25 +695,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ec2d9381-e743-4345-8b74-e82ef97bb7fb",
+                            Id = "005a6ca6-3d61-46d8-8592-74fb9c7adfd1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3ceecf5d-a462-42b4-a6f3-d5f13172e7f0",
+                            Id = "5a61e5ca-b524-4b0a-8b49-5c2de0a37347",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "373be9da-4eac-4ab5-9f80-88d6aac10605",
+                            Id = "5a55878d-612b-4250-962b-9b9b9d659583",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "66bcce4f-ecd1-4908-bd79-4416e2b7f741",
+                            Id = "4aaf8baa-5e9b-42a7-a13e-0ec0a0cab8ee",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

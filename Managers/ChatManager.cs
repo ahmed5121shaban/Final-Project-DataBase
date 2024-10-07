@@ -17,7 +17,7 @@ namespace Managers
 
         public async Task<Chat> GetChatByID(int id)
         {
-            return await base.Get(id);
+            return await base.GetOne(id);
         }
 
         public List<Chat> GetChatsByUserID(string sellerID, string buyerID)
@@ -33,7 +33,7 @@ namespace Managers
 
         public async Task DeleteChat(int id)
         {
-            var chat =await base.Get(id);
+            var chat =await base.GetOne(id);
             await base.Delete(chat);
         }
 

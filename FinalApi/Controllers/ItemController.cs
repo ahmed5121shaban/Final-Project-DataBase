@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
+using System.Net.WebSockets;
 using System.Security.Claims;
+using System.Text;
 namespace FinalApi.Controllers
 {
 
@@ -35,7 +37,7 @@ namespace FinalApi.Controllers
                 _item.sellerId = userId;
             }
             //get user by id 
-            User user =await accountManager.Get(userId);
+            User user =await accountManager.GetOne(userId);
             //to check if user is seller
             await accountManager.CheckIfSeller(user);
             //if user is seller, continue adding item,
@@ -50,11 +52,12 @@ namespace FinalApi.Controllers
                     return BadRequest(result);
                 }
             
+        }
 
            
 
 
-        }
+        
         //to display only items of this user by its id
         [Authorize]
         [HttpGet]
@@ -72,6 +75,57 @@ namespace FinalApi.Controllers
             return Ok(item);
         }
 
+        [HttpPut("Edit")]
+        public async Task<IActionResult> Edit(AddItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+               var res = await itemManager.Update(model.toItemModel());
+                if (res)
+                {
+                    return new JsonResult(new ApiResultModel<bool>()
+                    {
+                        result = res,
+                        StatusCode = 200,
+                        success = true,
+                        Message = "done successfully"
+
+                    });
+
+                }
+                else
+                {
+                    return new JsonResult(new ApiResultModel<string>()
+                    {
+                        result = "",
+                        StatusCode = 200,
+                        success = true,
+                        Message = "An Error Has Occured"
+
+                    });
+                }
+
+            }
+            else
+            {
+                var builder = new StringBuilder();
+                foreach (var item in ModelState.Values)
+                {
+                    foreach (var error in item.Errors)
+                    {
+                        builder.Append(builder.ToString());
+                    }
+                }
+                return new JsonResult(new ApiResultModel<string>()
+                {
+                    result = builder.ToString(),
+                    StatusCode = 400,
+                    success = false,
+                    Message = "Not Valid Model"
+                });
+            }
+        }
+       
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteItem(int id)
