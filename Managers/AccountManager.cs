@@ -10,28 +10,38 @@ using System.Threading.Tasks;
 
 namespace Managers
 {
-    public class AccountManager :MainManager<User>
+    public class AccountManager : MainManager<User>
     {
-         private UserManager<User> userManager;
-         private SignInManager<User> signInManager;
+        private UserManager<User> userManager;
+        private SignInManager<User> signInManager;
         private readonly TokenManager tokenManager;
-
-        public AccountManager(FinalDbContext _finalDbContext ,
+        private SellerManager sellerManager;
+        public AccountManager(FinalDbContext _finalDbContext,
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
-            TokenManager _tokenManager
+            TokenManager _tokenManager,
+            SellerManager _sellerManager
             ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             tokenManager = _tokenManager;
+            sellerManager= _sellerManager;
         }
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
+            try
+            {
+
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
-                result = await userManager.AddToRolesAsync(user,new List<string>{"User","Buyer"});
+                result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return new IdentityResult();
+            }
         }
 
         public async Task<string> Login(LoginViewModel viewModel)
@@ -39,8 +49,8 @@ namespace Managers
             var user = await userManager.FindByEmailAsync(viewModel.Email);
             if (user == null)
             {
-                    return string.Empty;
-                
+                return string.Empty;
+
             }
             await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
             return await tokenManager.GenerateToken(user);
@@ -145,5 +155,28 @@ namespace Managers
 
             return result;
         }
+
+        public async Task CheckIfSeller(User user)
+        {
+            //get roles of user
+            var roleList = await userManager.GetRolesAsync(user);
+            //if user is not seller
+            if (!roleList.Contains("Seller"))
+            {
+                //add seller role to it
+                var result = await userManager.AddToRolesAsync(user, new List<string> { "seller" });
+                //and add seller row in seller table
+                if (result.Succeeded)
+                {
+                    var res = await sellerManager.Add(new Seller
+                    {
+                        UserID = user.Id,
+                        User = user
+                    });
+                }
+            }
+        }
+
+
     }
 }

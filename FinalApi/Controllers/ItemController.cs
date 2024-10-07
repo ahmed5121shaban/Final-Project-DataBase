@@ -37,7 +37,7 @@ namespace FinalApi.Controllers
                 _item.sellerId = userId;
             }
             //get user by id 
-            User user =await accountManager.Get(userId);
+            User user =await accountManager.GetOne(userId);
             //to check if user is seller
             await accountManager.CheckIfSeller(user);
             //if user is seller, continue adding item,
@@ -51,18 +51,24 @@ namespace FinalApi.Controllers
                 {
                     return BadRequest(result);
                 }
-
+            
         }
 
+           
+
+
         
+        //to display only items of this user by its id
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-            var items = itemManager.GetAll().Select(i=>i.toItemViewModel());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
             return Ok(items);
         }
 
-        [HttpGet("GetOne/{itemId}")]
+        [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
         {
             var item = itemManager.GetAll().Where(i=>i.ID==itemId).Select(i=>i.toItemViewModel()).FirstOrDefault();
@@ -74,7 +80,7 @@ namespace FinalApi.Controllers
         {
             if (ModelState.IsValid)
             {
-               var res =  itemManager.Update(model.toItemModel());
+               var res = await itemManager.Update(model.toItemModel());
                 if (res)
                 {
                     return new JsonResult(new ApiResultModel<bool>()
@@ -124,7 +130,7 @@ namespace FinalApi.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var item = await itemManager.GetOne(id);
+            var item = await itemManager.Get(id);
             var result = await itemManager.Delete(item);
             if (result)
                 return Ok();

@@ -28,6 +28,10 @@ namespace Managers
         {
             return await dbSet.FindAsync(_ID);
         }
+        public async Task<T> Get(object _ID)
+        {
+            return await dbSet.FindAsync(_ID);
+        }
 
         public async Task<bool> Add(T _Item)
         {
@@ -37,8 +41,9 @@ namespace Managers
                 await dbContext.SaveChangesAsync();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                throw ex;
                 //throw ex;
                 return false;
             }
@@ -52,11 +57,9 @@ namespace Managers
                 dbSet.Remove(_Item);
                 await dbContext.SaveChangesAsync();
                 return true;
-            }
-            catch
-            {
-
-                return false;
+            } 
+            catch (Exception ex) {  
+                  return false;
             }
         }
 
