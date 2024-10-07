@@ -18,8 +18,8 @@ namespace Final
         public string Description { get; set; }
         public DateTime AddTime { get; set; }
         public ItemStatus Status { get; set; }
-
-        public DateTime PublishDate { get; set; }
+        public string? PublishFeedback { get; set; }
+        public DateTime? PublishDate { get; set; }
         public decimal EndPrice { get; set; }
         public decimal StartPrice { get; set; }
         public string ContractFile {  get; set; }
@@ -45,6 +45,7 @@ namespace Final
             builder.Property(i => i.EndPrice).IsRequired();
             builder.Property(i => i.SellerID).IsRequired();
             builder.Property(i => i.CategoryID).IsRequired();
+            builder.Property(i => i.PublishDate).IsRequired(false);
             builder.Property(i => i.Status).IsRequired().HasDefaultValue(ItemStatus.pending);
             //seller has many items
             builder.HasOne(i=>i.Seller).WithMany(u=>u.Items).HasForeignKey(i=>i.SellerID);
