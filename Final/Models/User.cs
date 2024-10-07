@@ -24,6 +24,11 @@ namespace Final
         public string? PostalCode { get; set; }
         public Gender? Gender { get; set; }
         public int? NationalId { get; set; } = 0;
+        public string? NationalIdFrontImage { get; set; } 
+        public string? NationalIdBackImage { get; set; }
+        public bool IsBlocked { get; set; }
+        public int Reports { get; set; }
+
         public string? TimeZone { get; set; }
         public string? Description { get; set; }
         public string? Currency {  get; set; }
@@ -52,7 +57,8 @@ namespace Final
             builder.Property(u => u.NationalId).IsRequired(false);
             builder.Property(u => u.TimeZone).HasMaxLength(50).IsRequired(false);
             builder.Property(u => u.Description).HasMaxLength(500).IsRequired(false);
-
+            builder.Property(u => u.IsBlocked).HasDefaultValue(false);
+            builder.Property(u => u.Reports).HasDefaultValue(0);
         }
     }
 }
