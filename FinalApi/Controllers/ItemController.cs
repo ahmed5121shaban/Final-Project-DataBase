@@ -61,7 +61,7 @@ namespace FinalApi.Controllers
         //to display only items of this user by its id
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetItems()
+        public async Task<IActionResult> GetUserItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
@@ -136,6 +136,59 @@ namespace FinalApi.Controllers
                 return Ok();
             else
                 return BadRequest("failed to delete");
+        }
+        [HttpGet("getPending")]
+        [Authorize(Roles = "Admin")]
+        public  IActionResult GetPendingItems()
+        {
+
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending);
+            return Ok(res);
+        }
+        [HttpGet("getAccepted")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAcceptedItems()
+        {
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted);
+            return Ok(res);
+        }
+        [HttpGet("getRejected")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetRejectedItems()
+        {
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected);
+            return Ok(res);
+        }
+        [HttpPut("Accept/{id}")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> AcceptItem(int id)
+        {
+            var item = await itemManager.GetOne(id);
+            item.Status = Enums.ItemStatus.accepted;
+            var res = await itemManager.Update(item);
+            if (res)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        public async Task<IActionResult> RejectItem(int id,string RejectReason)
+        {
+            var item = await itemManager.GetOne(id);
+            item.Status = Enums.ItemStatus.rejected;
+            //////// assign the rejection message to item
+            var res = await itemManager.Update(item);
+            if (res)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
     }
