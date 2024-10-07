@@ -50,7 +50,6 @@ namespace ModelView
                 StartPrice = model.startPrice,
                 EndPrice = model.sellPrice ?? 0,
                 AddTime = DateTime.Now,
-                PublishDate = DateTime.Now,
                 Images = images.ToArray(),
                 ContractFile = contractfile,
                 SellerID=model.sellerId
