@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ModelView
 {
-    public class AddAuctionViewModel
+    public class AddAuctionModel
     {
+        public DateTime StartDate { get; set; }
+        public int Duration { get; set; }
+        public int ItemId { get; set; }
     }
 }

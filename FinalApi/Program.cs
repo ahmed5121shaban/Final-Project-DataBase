@@ -17,12 +17,20 @@ builder.Services.AddDbContext<FinalDbContext>(
 );
 builder.Services.AddControllers();
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+
+
 //register your manager hereeee
 builder.Services.AddScoped<ChatManager>();
 builder.Services.AddScoped<AccountManager>();
 builder.Services.AddScoped<MessageManager>();
 builder.Services.AddScoped<TokenManager>();
-
+builder.Services.AddScoped<SellerManager>();
+builder.Services.AddScoped<ItemManager>();
+builder.Services.AddScoped<AuctionManager>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
