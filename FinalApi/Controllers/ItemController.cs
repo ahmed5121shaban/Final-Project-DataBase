@@ -137,37 +137,42 @@ namespace FinalApi.Controllers
             else
                 return BadRequest("failed to delete");
         }
-        [HttpGet("Unreviewed")]
        [Authorize(Roles = "Admin")]
+        [HttpGet("Unreviewed")]
         public  IActionResult GetAdminPendingItems()
         {
 
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending);
             return Ok(res);
         }
-        [HttpGet("Pending")]
+
        [Authorize(Roles = "Seller")]
+        [HttpGet("Pending")]
         public IActionResult GetPendingItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId);
-            return Ok(res);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId).ToList();
+            return new JsonResult(res);
         }
-        [HttpGet("Accepted")]
+
          [Authorize(Roles = "Seller")]
+        [HttpGet("Accepted")]
         public IActionResult GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId);
-            return Ok(res);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
+            return new JsonResult(res);
         }
+
+
+
+        [Authorize(Roles = "Seller")]
         [HttpGet("Rejected")]
-         [Authorize(Roles = "Seller")]
         public IActionResult GetRejectedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId);
-            return Ok(res);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId).ToList();
+            return new JsonResult(res);
         }
         [HttpPut("Accept/{id}")]
        // [Authorize(Roles ="Seller")]
