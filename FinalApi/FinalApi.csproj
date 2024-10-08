@@ -34,6 +34,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\Images\Items\" />
     <Folder Include="wwwroot\Contracts\" />
+    <Folder Include="wwwroot\Images\Categories\" />
   </ItemGroup>
 
 </Project>

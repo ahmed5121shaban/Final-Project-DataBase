@@ -31,6 +31,8 @@ builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<SellerManager>();
 builder.Services.AddScoped<ItemManager>();
 builder.Services.AddScoped<AuctionManager>();
+builder.Services.AddScoped<CategoryManager>();
+builder.Services.AddScoped<BidManager>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -138,7 +138,7 @@ namespace FinalApi.Controllers
                 return BadRequest("failed to delete");
         }
         [HttpGet("getPending")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public  IActionResult GetPendingItems()
         {
 
@@ -146,21 +146,21 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
         [HttpGet("getAccepted")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult GetAcceptedItems()
         {
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted);
             return Ok(res);
         }
         [HttpGet("getRejected")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult GetRejectedItems()
         {
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected);
             return Ok(res);
         }
         [HttpPut("Accept/{id}")]
-        [Authorize(Roles ="Admin")]
+       // [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AcceptItem(int id)
         {
             var item = await itemManager.GetOne(id);
@@ -175,11 +175,13 @@ namespace FinalApi.Controllers
                 return BadRequest();
             }
         }
+        [HttpPut("Reject/{id}")]
+        // [Authorize(Roles ="Admin")]
         public async Task<IActionResult> RejectItem(int id,string RejectReason)
         {
             var item = await itemManager.GetOne(id);
             item.Status = Enums.ItemStatus.rejected;
-            //////// assign the rejection message to item
+            item.PublishFeedback = RejectReason;
             var res = await itemManager.Update(item);
             if (res)
             {
