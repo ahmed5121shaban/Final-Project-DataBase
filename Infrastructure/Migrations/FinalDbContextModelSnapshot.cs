@@ -37,7 +37,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EventsID");
 
-                    b.ToTable("AdminEvent", (string)null);
+                    b.ToTable("AdminEvent");
                 });
 
             modelBuilder.Entity("AdminItem", b =>
@@ -52,7 +52,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ItemsID");
 
-                    b.ToTable("AdminItem", (string)null);
+                    b.ToTable("AdminItem");
                 });
 
             modelBuilder.Entity("AdminUser", b =>
@@ -67,7 +67,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AdminUser", (string)null);
+                    b.ToTable("AdminUser");
                 });
 
             modelBuilder.Entity("BuyerCategory", b =>
@@ -82,7 +82,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SavedCategoriesID");
 
-                    b.ToTable("BuyerCategory", (string)null);
+                    b.ToTable("BuyerCategory");
                 });
 
             modelBuilder.Entity("Final.Admin", b =>
@@ -99,7 +99,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Admin", (string)null);
+                    b.ToTable("Admin");
                 });
 
             modelBuilder.Entity("Final.Auction", b =>
@@ -139,7 +139,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PaymentID")
                         .IsUnique();
 
-                    b.ToTable("Auctions", (string)null);
+                    b.ToTable("Auctions");
                 });
 
             modelBuilder.Entity("Final.Bid", b =>
@@ -169,7 +169,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BuyerID");
 
-                    b.ToTable("Bids", (string)null);
+                    b.ToTable("Bids");
                 });
 
             modelBuilder.Entity("Final.Buyer", b =>
@@ -185,7 +185,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Buyer", (string)null);
+                    b.ToTable("Buyer");
                 });
 
             modelBuilder.Entity("Final.Category", b =>
@@ -213,7 +213,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -246,7 +246,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Chats", (string)null);
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Final.Event", b =>
@@ -280,7 +280,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Final.Image", b =>
@@ -303,7 +303,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ItemID");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Final.Item", b =>
@@ -340,17 +340,15 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsReviewed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PublishDate")
+                    b.Property<DateTime?>("PublishDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PublishFeedback")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SellerID")
                         .IsRequired()
@@ -358,6 +356,11 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("StartPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("ID");
 
@@ -369,7 +372,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("Final.Message", b =>
@@ -395,7 +398,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("Message", (string)null);
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Final.Notification", b =>
@@ -429,7 +432,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification", (string)null);
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("Final.Payment", b =>
@@ -460,7 +463,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Payment", (string)null);
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("Final.PhoneNumber", b =>
@@ -484,7 +487,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("PhoneNumbers", (string)null);
+                    b.ToTable("PhoneNumbers");
                 });
 
             modelBuilder.Entity("Final.Review", b =>
@@ -516,7 +519,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("Final.Seller", b =>
@@ -526,7 +529,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Seller", (string)null);
+                    b.ToTable("Seller");
                 });
 
             modelBuilder.Entity("Final.User", b =>
@@ -569,11 +572,16 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlocked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -588,6 +596,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<int?>("NationalId")
                         .HasColumnType("int");
+
+                    b.Property<string>("NationalIdBackImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalIdFrontImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -612,6 +626,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PostalCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Reports")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -673,25 +692,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ec2d9381-e743-4345-8b74-e82ef97bb7fb",
+                            Id = "005a6ca6-3d61-46d8-8592-74fb9c7adfd1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3ceecf5d-a462-42b4-a6f3-d5f13172e7f0",
+                            Id = "5a61e5ca-b524-4b0a-8b49-5c2de0a37347",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "373be9da-4eac-4ab5-9f80-88d6aac10605",
+                            Id = "5a55878d-612b-4250-962b-9b9b9d659583",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "66bcce4f-ecd1-4908-bd79-4416e2b7f741",
+                            Id = "4aaf8baa-5e9b-42a7-a13e-0ec0a0cab8ee",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

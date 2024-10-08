@@ -26,7 +26,7 @@ namespace Managers
         }
         public async Task<Message> GetMessageByID(int _ID)
         {
-            var message = await base.Get(_ID);
+            var message = await base.GetOne(_ID);
             return message;
         }
         public Task AddMessage(MessageViewModel messageView)

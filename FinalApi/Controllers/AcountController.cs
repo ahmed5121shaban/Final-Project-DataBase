@@ -35,6 +35,13 @@ namespace FinalApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel _registerView)
         {
+            if (!ModelState.IsValid) return BadRequest(new {Message= "This Data Is Not Completed" });
+            var res = await acountManager.Register(_registerView);
+            if (!res.Succeeded) return BadRequest(new { Message = "Error In Register Operation" });
+            return Ok(new { status = 200 });
+        }
+    }
+}
             try
             {
 

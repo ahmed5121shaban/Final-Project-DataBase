@@ -19,7 +19,7 @@ namespace ModelView.Account
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
             };
-        }
+            }
 
         public static User ToModel(this UpdateProfileViewModel model)
         {
