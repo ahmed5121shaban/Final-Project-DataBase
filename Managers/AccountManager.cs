@@ -26,6 +26,7 @@ namespace Managers
             signInManager = _signInManager;
             tokenManager = _tokenManager;
         }
+        public UserManager<User> UserManager => userManager;
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
             try
@@ -152,6 +153,38 @@ namespace Managers
             }
 
             return result;
+        
         }
+        public async Task<IdentityResult> VerifyIdentity(string userId, string token)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return IdentityResult.Failed(new IdentityError()
+                    {
+                        Description = "User not found"
+                    });
+                }
+
+                // Verifying the token provided by the user
+                var result = await userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    // Optionally, mark the user as verified in other ways or update specific claims
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError()
+                {
+                    Description = $"An error occurred: {ex.Message}"
+                });
+            }
+        }
+
     }
 }

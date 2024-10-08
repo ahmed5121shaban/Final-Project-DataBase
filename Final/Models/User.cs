@@ -24,6 +24,7 @@ namespace Final
         public string? PostalCode { get; set; }
         public Gender? Gender { get; set; }
         public int? NationalId { get; set; } = 0;
+
         public string? TimeZone { get; set; }
         public string? Description { get; set; }
         public string? Currency {  get; set; }
