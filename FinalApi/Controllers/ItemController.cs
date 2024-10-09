@@ -142,7 +142,7 @@ namespace FinalApi.Controllers
         public  IActionResult GetAdminPendingItems()
         {
 
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending).ToList();
             return Ok(res);
         }
 
