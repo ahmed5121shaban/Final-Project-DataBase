@@ -141,7 +141,7 @@ namespace FinalApi.Controllers
       // [Authorize(Roles = "Admin")]
         public async  Task<IActionResult> GetAdminPendingItems()
         {
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending).Select(i=>i.toItemViewModel());
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending).Select(i=>i.toItemViewModel()).ToList();
             return Ok(res);
         }
         [HttpGet("Pending")]
@@ -157,7 +157,7 @@ namespace FinalApi.Controllers
         public IActionResult GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
             return Ok(res);
         }
         [HttpGet("Rejected")]
@@ -165,7 +165,7 @@ namespace FinalApi.Controllers
         public IActionResult GetRejectedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId).ToList();
             return Ok(res);
         }
         [HttpGet("Accept/{id}")]
