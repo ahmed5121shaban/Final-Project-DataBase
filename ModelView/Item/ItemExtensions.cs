@@ -29,18 +29,22 @@ namespace ModelView
                 Image img = new Image { Src = Path.Combine("Images", "Items", filename) };
                 images.Add(img);
             }
+            string fileName = string.Empty;
+            if (model.Contract != null)
+            {
+                fileName = DateTime.Now.ToFileTime().ToString() + model.Contract.FileName;
+                string filePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "Contracts",
 
-            string fileName = DateTime.Now.ToFileTime().ToString() + model.Contract.FileName;
-            string filePath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot",
-                "Contracts",
-
-                fileName
-                );
-            FileStream stream = new FileStream(filePath, FileMode.Create);
-            model.Contract.CopyTo(stream);
-            stream.Close();
+                    fileName
+                    );
+                FileStream stream = new FileStream(filePath, FileMode.Create);
+                model.Contract.CopyTo(stream);
+                stream.Close();
+                
+            }
             var contractfile = Path.Combine("Contracts", fileName);
             return new Item
             {
@@ -51,7 +55,7 @@ namespace ModelView
                 EndPrice = model.sellPrice ?? 0,
                 AddTime = DateTime.Now,
                 Images = images.ToArray(),
-                ContractFile = contractfile,
+                ContractFile = contractfile??"N/A",
                 SellerID=model.sellerId
             };
         }

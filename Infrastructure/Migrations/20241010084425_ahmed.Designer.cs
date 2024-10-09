@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241008151316_updated-1")]
-    partial class updated1
+    [Migration("20241010084425_ahmed")]
+    partial class ahmed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,10 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PaymentEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
@@ -217,6 +221,50 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/214/300",
+                            Name = "Cars"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/213/300",
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/212/300",
+                            Name = "Electronic"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/211/300",
+                            Name = "Cloths"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/210/300",
+                            Name = "Toy"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/201/300",
+                            Name = "Others"
+                        });
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -597,8 +645,8 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<int?>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NationalIdBackImage")
                         .HasColumnType("nvarchar(max)");
@@ -617,7 +665,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PaymantEmail")
+                    b.Property<string>("PaypalEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -641,6 +689,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Street")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("StripeEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TimeZone")
                         .HasMaxLength(50)
@@ -695,25 +746,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3eba764c-914e-468a-9fda-1e22d4313f49",
+                            Id = "4b7668b4-67c4-4b07-a008-d5a403005061",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4a0d0c8c-aee7-40d5-8fb8-ffd7d7e4c101",
+                            Id = "01fdb9df-c901-4cc8-8066-c595f937de4c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c439a3a6-6069-418a-a820-f6bb17f49ecc",
+                            Id = "9d7287e5-4980-455d-85c0-07aa3af02a3d",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "cb54b2fc-329c-46a3-89d9-568170112d46",
+                            Id = "b80f1f72-c75c-4322-bf99-49c481cff883",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

@@ -30,7 +30,7 @@ namespace Final
         public int Reports { get; set; }
         public string? TimeZone { get; set; }
         public string? Description { get; set; }
-        public string? Currency { get; set; } = "EGY";
+        public string? Currency { get; set; } = "EGP";
         public string? Image { get; set; }
         //user have tow payment method
         public string? PaypalEmail { get; set; }

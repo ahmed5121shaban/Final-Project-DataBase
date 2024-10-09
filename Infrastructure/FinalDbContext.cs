@@ -46,36 +46,42 @@ namespace Final
             modelBuilder.Entity<Category>().HasData(
                 new Category
                 {
+                    ID =1,
                     Name = "Cars",
                     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                     Image = "https://picsum.photos/seed/picsum/214/300"
                 },
                 new Category
                 {
+                    ID = 2,
                     Name = "Food",
                     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                     Image = "https://picsum.photos/seed/picsum/213/300"
                 },
                  new Category
                  {
+                     ID = 3,
                      Name = "Electronic",
                      Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                      Image = "https://picsum.photos/seed/picsum/212/300"
                  },
                   new Category
                   {
+                      ID = 4,
                       Name = "Cloths",
                       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                       Image = "https://picsum.photos/seed/picsum/211/300"
                   },
                    new Category
                    {
+                       ID = 5,
                        Name = "Toy",
                        Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                        Image = "https://picsum.photos/seed/picsum/210/300"
                    },
                    new Category
                    {
+                       ID = 6,
                        Name = "Others",
                        Description = "Description scripe scripe scripe scripe scripe scripe scripe",
                        Image = "https://picsum.photos/seed/picsum/201/300"

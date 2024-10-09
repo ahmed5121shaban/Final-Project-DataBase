@@ -17,17 +17,21 @@ namespace Managers
         private SignInManager<User> signInManager;
         private readonly TokenManager tokenManager;
         private SellerManager sellerManager;
+        private readonly BuyerManager buyerManager;
+
         public AccountManager(FinalDbContext _finalDbContext,
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
             TokenManager _tokenManager,
-            SellerManager _sellerManager
+            SellerManager _sellerManager,
+            BuyerManager _buyerManager
             ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             tokenManager = _tokenManager;
             sellerManager= _sellerManager;
+            buyerManager = _buyerManager;
         }
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
@@ -47,14 +51,25 @@ namespace Managers
 
         public async Task<string> Login(LoginViewModel viewModel)
         {
-            var user = await userManager.FindByEmailAsync(viewModel.Email);
-            if (user == null)
+            try
+            {
+                var user = await userManager.FindByEmailAsync(viewModel.Email);
+                if (user == null)
+                {
+                    return string.Empty;
+                }
+                await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+                await buyerManager.Add(new Buyer
+                {
+                    UserID = user.Id,
+                    Rate=0
+                });
+                return await tokenManager.GenerateToken(user);
+            }catch (Exception ex)
             {
                 return string.Empty;
-
             }
-            await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
-            return await tokenManager.GenerateToken(user);
+           
         }
         public async void Logout()
         {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updated : Migration
+    public partial class ahmed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,7 +40,7 @@ namespace Infrastructure.Migrations
                     Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NationalId = table.Column<int>(type: "int", nullable: true),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalIdFrontImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalIdBackImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -49,7 +49,8 @@ namespace Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymantEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaypalEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StripeEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -417,7 +418,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chats_Seller_SellerID",
                         column: x => x.SellerID,
@@ -493,7 +494,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Review_Seller_SellerID",
                         column: x => x.SellerID,
@@ -538,7 +539,7 @@ namespace Infrastructure.Migrations
                         column: x => x.AdminsID,
                         principalTable: "Admin",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AdminItem_Items_ItemsID",
                         column: x => x.ItemsID,
@@ -556,8 +557,8 @@ namespace Infrastructure.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ItemID = table.Column<int>(type: "int", nullable: false),
-                    PaymentID = table.Column<int>(type: "int", nullable: false),
-                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PaymentID = table.Column<int>(type: "int", nullable: true),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Completed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -567,20 +568,18 @@ namespace Infrastructure.Migrations
                         name: "FK_Auctions_Buyer_BuyerID",
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "UserID");
                     table.ForeignKey(
                         name: "FK_Auctions_Items_ItemID",
                         column: x => x.ItemID,
                         principalTable: "Items",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Auctions_Payment_PaymentID",
                         column: x => x.PaymentID,
                         principalTable: "Payment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -611,6 +610,7 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AuctionID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -622,7 +622,7 @@ namespace Infrastructure.Migrations
                         column: x => x.AuctionID,
                         principalTable: "Auctions",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bids_Buyer_BuyerID",
                         column: x => x.BuyerID,
@@ -636,10 +636,23 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "005a6ca6-3d61-46d8-8592-74fb9c7adfd1", null, "Admin", "ADMIN" },
-                    { "4aaf8baa-5e9b-42a7-a13e-0ec0a0cab8ee", null, "Buyer", "BUYER" },
-                    { "5a55878d-612b-4250-962b-9b9b9d659583", null, "Seller", "SELLER" },
-                    { "5a61e5ca-b524-4b0a-8b49-5c2de0a37347", null, "User", "USER" }
+                    { "01fdb9df-c901-4cc8-8066-c595f937de4c", null, "User", "USER" },
+                    { "4b7668b4-67c4-4b07-a008-d5a403005061", null, "Admin", "ADMIN" },
+                    { "9d7287e5-4980-455d-85c0-07aa3af02a3d", null, "Seller", "SELLER" },
+                    { "b80f1f72-c75c-4322-bf99-49c481cff883", null, "Buyer", "BUYER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "ID", "Description", "Image", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/214/300", "Cars" },
+                    { 2, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/213/300", "Food" },
+                    { 3, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/212/300", "Electronic" },
+                    { 4, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/211/300", "Cloths" },
+                    { 5, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/210/300", "Toy" },
+                    { 6, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/201/300", "Others" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -717,7 +730,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Auctions_PaymentID",
                 table: "Auctions",
                 column: "PaymentID",
-                unique: true);
+                unique: true,
+                filter: "[PaymentID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bids_AuctionID",

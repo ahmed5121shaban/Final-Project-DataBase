@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241007110116_updated")]
-    partial class updated
+    [Migration("20241012175806_ahmedtow")]
+    partial class ahmedtow
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,7 +114,6 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("BuyerID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Completed")
@@ -126,7 +125,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ItemID")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentID")
+                    b.Property<int?>("PaymentID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -140,7 +139,8 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.HasIndex("PaymentID")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PaymentID] IS NOT NULL");
 
                     b.ToTable("Auctions");
                 });
@@ -162,6 +162,10 @@ namespace Infrastructure.Migrations
                     b.Property<string>("BuyerID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PaymentEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -217,6 +221,50 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/214/300",
+                            Name = "Cars"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/213/300",
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/212/300",
+                            Name = "Electronic"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/211/300",
+                            Name = "Cloths"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/210/300",
+                            Name = "Toy"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/201/300",
+                            Name = "Others"
+                        });
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -446,7 +494,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuctionID")
+                    b.Property<int?>("AuctionID")
                         .HasColumnType("int");
 
                     b.Property<string>("BuyerId")
@@ -597,8 +645,8 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<int?>("NationalId")
-                        .HasColumnType("int");
+                    b.Property<string>("NationalId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NationalIdBackImage")
                         .HasColumnType("nvarchar(max)");
@@ -617,7 +665,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PaymantEmail")
+                    b.Property<string>("PaypalEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -641,6 +689,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Street")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("StripeEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TimeZone")
                         .HasMaxLength(50)
@@ -695,25 +746,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "005a6ca6-3d61-46d8-8592-74fb9c7adfd1",
+                            Id = "a1c29856-4c8a-441b-b731-48f260c4a47c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5a61e5ca-b524-4b0a-8b49-5c2de0a37347",
+                            Id = "6a1689b3-7c20-4aa4-bff6-391c95408405",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5a55878d-612b-4250-962b-9b9b9d659583",
+                            Id = "9007bd55-50da-4398-aafa-44c727519ca0",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "4aaf8baa-5e9b-42a7-a13e-0ec0a0cab8ee",
+                            Id = "f30d73bf-5675-4ebf-889b-132080ca6956",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -900,9 +951,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Auctions")
-                        .HasForeignKey("BuyerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BuyerID");
 
                     b.HasOne("Final.Item", "Item")
                         .WithOne("Auction")
@@ -912,9 +961,7 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Final.Payment", "Payment")
                         .WithOne("Auction")
-                        .HasForeignKey("Final.Auction", "PaymentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Final.Auction", "PaymentID");
 
                     b.Navigation("Buyer");
 
