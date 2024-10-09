@@ -22,7 +22,7 @@ namespace FinalApi.Controllers
         }
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add([FromForm]AddCategoryViewModel model) {
+        public async Task<IActionResult> Add(AddCategoryViewModel model) {
 
             if (ModelState.IsValid)
             {

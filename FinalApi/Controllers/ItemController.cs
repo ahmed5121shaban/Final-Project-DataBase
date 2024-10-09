@@ -59,8 +59,8 @@ namespace FinalApi.Controllers
 
         
         //to display only items of this user by its id
-        [Authorize]
-        [HttpGet]
+        //[Authorize]
+        //[HttpGet]
         //public async Task<IActionResult> GetUserItems()
         //{
         //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -138,11 +138,10 @@ namespace FinalApi.Controllers
                 return BadRequest("failed to delete");
         }
         [HttpGet("Unreviewed")]
-       [Authorize(Roles = "Admin")]
-        public  IActionResult GetAdminPendingItems()
+      // [Authorize(Roles = "Admin")]
+        public async  Task<IActionResult> GetAdminPendingItems()
         {
-
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending).Select(i=>i.toItemViewModel());
             return Ok(res);
         }
         [HttpGet("Pending")]
@@ -154,7 +153,7 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
         [HttpGet("Accepted")]
-         [Authorize(Roles = "Seller")]
+        //[Authorize(Roles = "Seller")]
         public IActionResult GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -169,8 +168,8 @@ namespace FinalApi.Controllers
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId);
             return Ok(res);
         }
-        [HttpPut("Accept/{id}")]
-       // [Authorize(Roles ="Seller")]
+        [HttpGet("Accept/{id}")]
+        [Authorize]
         public async Task<IActionResult> AcceptItem(int id)
         {
             var item = await itemManager.GetOne(id);

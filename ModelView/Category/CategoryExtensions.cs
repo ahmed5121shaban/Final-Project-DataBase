@@ -13,14 +13,14 @@ namespace ModelView
         public static Category ToModel(this AddCategoryViewModel model)
         {
             string fileName = DateTime.Now.ToFileTime().ToString() + model.Image.FileName;
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Categories", fileName);
             FileStream stream = new(path, FileMode.Create);
             model.Image.CopyTo(stream);
             stream.Close();
-            var ImagePath = (Path.Combine("images", "products", fileName));
+            var ImagePath = (Path.Combine("Images", "Categories", fileName));
             return new Category
             {
-                ID = model.Id == null ? 0 : model.Id.Value,
+                //ID = model.Id == null ? 0 : model.Id.Value,
                 Name = model.Name,
                 Description = model.Description,
                 Image = ImagePath
