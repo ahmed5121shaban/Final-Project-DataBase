@@ -41,9 +41,9 @@ namespace Managers
                 await dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch 
             {
-                throw ex;
+              
                 //throw ex;
                 return false;
             }
@@ -58,7 +58,7 @@ namespace Managers
                 await dbContext.SaveChangesAsync();
                 return true;
             } 
-            catch (Exception ex) {  
+            catch  {  
                   return false;
             }
         }

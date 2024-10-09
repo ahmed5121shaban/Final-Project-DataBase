@@ -20,18 +20,13 @@ namespace FinalApi.Controllers
         {
             manager = _manager;
         }
-        [HttpGet]
+        [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add(AddCategoryViewModel model) {
+        public async Task<IActionResult> Add([FromForm]AddCategoryViewModel model) {
 
             if (ModelState.IsValid)
             {
-                string fileName = DateTime.Now.ToFileTime().ToString() + model.Image.FileName;
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
-                FileStream stream = new(path, FileMode.Create);
-                model.Image.CopyTo(stream);
-                stream.Close();
-                model.ImagePath = (Path.Combine("images", "products", fileName));
+               
                 var res = await manager.Add(model.ToModel());
                 if (res)
                 {

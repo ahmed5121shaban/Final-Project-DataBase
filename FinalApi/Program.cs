@@ -34,6 +34,7 @@ builder.Services.AddScoped<ItemManager>();
 builder.Services.AddScoped<AuctionManager>();
 builder.Services.AddScoped<PaymentManager>();
 builder.Services.AddScoped<BidManager>();
+builder.Services.AddScoped<CategoryManager>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -67,7 +68,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseAuthorization();
 app.UseCors();
 app.MapControllers();

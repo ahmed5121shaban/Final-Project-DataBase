@@ -61,12 +61,12 @@ namespace FinalApi.Controllers
         //to display only items of this user by its id
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetItems()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
-            return Ok(items);
-        }
+        //public async Task<IActionResult> GetUserItems()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
+        //    return Ok(items);
+        //}
 
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
@@ -136,6 +136,76 @@ namespace FinalApi.Controllers
                 return Ok();
             else
                 return BadRequest("failed to delete");
+        }
+       [Authorize(Roles = "Admin")]
+        [HttpGet("Unreviewed")]
+        public  IActionResult GetAdminPendingItems()
+        {
+
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending);
+            return Ok(res);
+        }
+
+       [Authorize(Roles = "Seller")]
+        [HttpGet("Pending")]
+        public IActionResult GetPendingItems()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId).ToList();
+            return new JsonResult(res);
+        }
+
+         [Authorize(Roles = "Seller")]
+        [HttpGet("Accepted")]
+        public IActionResult GetAcceptedItems()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
+            return new JsonResult(res);
+        }
+
+
+
+        [Authorize(Roles = "Seller")]
+        [HttpGet("Rejected")]
+        public IActionResult GetRejectedItems()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId).ToList();
+            return new JsonResult(res);
+        }
+        [HttpPut("Accept/{id}")]
+       // [Authorize(Roles ="Seller")]
+        public async Task<IActionResult> AcceptItem(int id)
+        {
+            var item = await itemManager.GetOne(id);
+            item.Status = Enums.ItemStatus.accepted;
+            var res = await itemManager.Update(item);
+            if (res)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPut("Reject/{id}")]
+        // [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> RejectItem(int id,string RejectReason)
+        {
+            var item = await itemManager.GetOne(id);
+            item.Status = Enums.ItemStatus.rejected;
+            item.PublishFeedback = RejectReason;
+            var res = await itemManager.Update(item);
+            if (res)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
     }
