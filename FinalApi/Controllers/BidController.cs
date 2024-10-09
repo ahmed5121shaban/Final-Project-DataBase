@@ -9,20 +9,78 @@ using System.Text;
 namespace FinalApi.Controllers
 {
     [ApiController]
-    [Route("Api/[controller]")]
+    [Route("api/[controller]")]
     public class BidController : ControllerBase
     {
         
         private BidManager manager;
-        public BidController(BidManager _manager )
+        private readonly UserManager<User> userManager;
+        private readonly PaymentManager paymentManager;
+
+        public BidController(BidManager _manager,UserManager<User> _userManager,PaymentManager _paymentManager)
         {
             manager= _manager;
-            
+            userManager = _userManager;
+            paymentManager = _paymentManager;
         }
+
+
+        [HttpGet("auction-payment-method{_auctionID:int}/{_paymentID:int}/{_metod}")]
+        public IActionResult AuctionPaymentMethod(int _auctionID,int _paymentID, Enums.PaymentMetod  _metod)
+        {
+            var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = userManager.Users.FirstOrDefault( u => u.Id == Id );
+            if (user == null) 
+            {
+                return NotFound();
+            }
+            
+            paymentManager.Add(new PaymentViewModel { AuctionID = _auctionID, BuyerId = Id,  Method = _metod });
+
+            return Ok();
+        }
+
+        [HttpPost("first-auction-payment")]
+        public IActionResult MinceFirstAuctionPayment(PaymentViewModel _paymentView)
+        {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(new { message = "this data is not completed"});
+            }
+            if (_paymentView.Method == Enums.PaymentMetod.paypal)
+            {
+                if (paymentManager.AddPayPalPayment(_paymentView)) return Ok();
+                return BadRequest(new { message = "the paypal payment is not completed" });
+
+            }
+            if (paymentManager.AddStripePayment(_paymentView)) return Ok();
+            return BadRequest(new { message = "the stripe payment is not completed" });
+
+        }
+
+
+        [HttpGet("user-have-payment")]
+        public IActionResult GetPaymentMethodsCount() 
+        {
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userID == null)
+                return BadRequest(new {message="the user not found"});
+            var user = userManager.Users.FirstOrDefault(u => u.Id == userID);
+            if (string.IsNullOrEmpty(user.PaypalEmail) && string.IsNullOrEmpty(user.StripeEmail))
+                return Ok(new {count = 0});
+            else if (string.IsNullOrEmpty(user.PaypalEmail) && !string.IsNullOrEmpty(user.StripeEmail))
+                return Ok(new { count = 1, payment = "stripe" });
+            else if (!string.IsNullOrEmpty(user.PaypalEmail) && string.IsNullOrEmpty(user.StripeEmail))
+                return Ok(new { count = 1, payment = "paypal" });
+            return Ok(new { count = 2 });
+        }
+
+
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add(AddBidViewModel model)
         {
+          
             if (ModelState.IsValid)
             {
                 model.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

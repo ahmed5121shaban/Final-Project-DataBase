@@ -23,17 +23,18 @@ namespace Final
         public string? Street { get; set; }
         public string? PostalCode { get; set; }
         public Gender? Gender { get; set; }
-        public int? NationalId { get; set; } = 0;
+        public string? NationalId { get; set; }
         public string? NationalIdFrontImage { get; set; } 
         public string? NationalIdBackImage { get; set; }
         public bool IsBlocked { get; set; }
         public int Reports { get; set; }
-
         public string? TimeZone { get; set; }
         public string? Description { get; set; }
-        public string? Currency {  get; set; }
+        public string? Currency { get; set; } = "EGY";
         public string? Image { get; set; }
-        public string? PaymantEmail { get; set; }
+        //user have tow payment method
+        public string? PaypalEmail { get; set; }
+        public string? StripeEmail { get; set; }
         public virtual Seller? Seller { get; set; }
         public virtual Buyer? Buyer { get; set; }
         public virtual Admin? Admin { get; set; }

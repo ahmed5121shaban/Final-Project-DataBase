@@ -1,5 +1,6 @@
 ﻿using Final;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using ModelView;
 using ModelView.Account;
 using System;
@@ -125,7 +126,7 @@ namespace Managers
             if (model.Age > 0)
                 user.Age = model.Age;
 
-            if (model.NationalId > 0)
+            if (!model.NationalId.IsNullOrEmpty())
                 user.NationalId = model.NationalId;
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))
