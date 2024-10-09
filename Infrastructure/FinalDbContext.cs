@@ -43,6 +43,44 @@ namespace Final
                 new IdentityRole { Name = "Seller", NormalizedName = "SELLER" },
                 new IdentityRole { Name = "Buyer", NormalizedName = "BUYER" }
             );
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Name = "Cars",
+                    Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                    Image = "https://picsum.photos/seed/picsum/214/300"
+                },
+                new Category
+                {
+                    Name = "Food",
+                    Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                    Image = "https://picsum.photos/seed/picsum/213/300"
+                },
+                 new Category
+                 {
+                     Name = "Electronic",
+                     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                     Image = "https://picsum.photos/seed/picsum/212/300"
+                 },
+                  new Category
+                  {
+                      Name = "Cloths",
+                      Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                      Image = "https://picsum.photos/seed/picsum/211/300"
+                  },
+                   new Category
+                   {
+                       Name = "Toy",
+                       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                       Image = "https://picsum.photos/seed/picsum/210/300"
+                   },
+                   new Category
+                   {
+                       Name = "Others",
+                       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                       Image = "https://picsum.photos/seed/picsum/201/300"
+                   }
+           );
 
         }
 
