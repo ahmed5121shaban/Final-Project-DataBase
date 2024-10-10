@@ -37,6 +37,22 @@ namespace FinalApi.Controllers
             }
         }
 
+        [HttpGet("Active")]
+        public async Task<IActionResult> GetAllActive()
+        {
+            var auctions = auctionManager.GetAll();
+            var ActiveAuctions = auctions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).ToList();
+            return Ok(ActiveAuctions);
+        }
+
+        [HttpGet("Ended")]
+        public async Task<IActionResult> GetAllEnded()
+        {
+            var auctions = auctionManager.GetAll();
+            var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).ToList();
+            return Ok(EndedAuctions);
+        }
+
 
     }
 }
