@@ -4,6 +4,7 @@ using Final;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    partial class FinalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008151316_updated-1")]
+    partial class updated1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,10 +162,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("BuyerID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PaymentEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -598,8 +597,8 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<string>("NationalId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("NationalId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NationalIdBackImage")
                         .HasColumnType("nvarchar(max)");
@@ -618,7 +617,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PaypalEmail")
+                    b.Property<string>("PaymantEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -642,9 +641,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Street")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("StripeEmail")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TimeZone")
                         .HasMaxLength(50)
@@ -699,25 +695,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4785f413-c2b0-4cb6-a9c3-2997fb87ca85",
+                            Id = "3eba764c-914e-468a-9fda-1e22d4313f49",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e2a45779-2e5f-4257-beca-44458dacbff9",
+                            Id = "4a0d0c8c-aee7-40d5-8fb8-ffd7d7e4c101",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d8ba2570-8b4c-4f7b-8ead-d5a17ed7d6d8",
+                            Id = "c439a3a6-6069-418a-a820-f6bb17f49ecc",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "8327cc2f-b61c-4a49-9f0d-526feee23e75",
+                            Id = "cb54b2fc-329c-46a3-89d9-568170112d46",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

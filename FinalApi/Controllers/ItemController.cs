@@ -144,13 +144,14 @@ namespace FinalApi.Controllers
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending).Select(i=>i.toItemViewModel()).ToList();
             return Ok(res);
         }
-        [HttpGet("Pending")]
+
        [Authorize(Roles = "Seller")]
+        [HttpGet("Pending")]
         public IActionResult GetPendingItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId);
-            return Ok(res);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId).ToList();
+            return new JsonResult(res);
         }
         [HttpGet("Accepted")]
         //[Authorize(Roles = "Seller")]
@@ -160,8 +161,11 @@ namespace FinalApi.Controllers
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
             return Ok(res);
         }
+
+
+
+        [Authorize(Roles = "Seller")]
         [HttpGet("Rejected")]
-         [Authorize(Roles = "Seller")]
         public IActionResult GetRejectedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

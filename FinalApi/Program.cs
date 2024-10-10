@@ -1,4 +1,5 @@
 using Final;
+using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -31,8 +32,9 @@ builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<SellerManager>();
 builder.Services.AddScoped<ItemManager>();
 builder.Services.AddScoped<AuctionManager>();
-builder.Services.AddScoped<CategoryManager>();
+builder.Services.AddScoped<PaymentManager>();
 builder.Services.AddScoped<BidManager>();
+builder.Services.AddScoped<CategoryManager>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -56,7 +58,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(i => i.AddDefaultPolicy(
     i => i.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
-
+builder.Services.AddScoped<PaymentManager>();
 
 var app = builder.Build();
 
@@ -66,7 +68,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseAuthorization();
 app.UseCors();
 app.MapControllers();
