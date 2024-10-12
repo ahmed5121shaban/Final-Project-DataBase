@@ -191,7 +191,7 @@ namespace FinalApi.Controllers
             }
         }
         [HttpPut("Reject/{id}")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> RejectItem(int id,[FromBody] string RejectReason)
         {
             var item = await itemManager.GetOne(id);
