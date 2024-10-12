@@ -19,10 +19,12 @@ namespace FinalApi.Controllers
     {
         private ItemManager itemManager;
         private AccountManager accountManager;
+       
         public ItemController(ItemManager _itemManager,AccountManager _accountManager)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
+           
         }
         [Authorize]
         [HttpPost]
@@ -189,8 +191,8 @@ namespace FinalApi.Controllers
             }
         }
         [HttpPut("Reject/{id}")]
-        // [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> RejectItem(int id,string RejectReason)
+       // [Authorize]
+        public async Task<IActionResult> RejectItem(int id,[FromBody] string RejectReason)
         {
             var item = await itemManager.GetOne(id);
             item.Status = Enums.ItemStatus.rejected;
@@ -206,5 +208,6 @@ namespace FinalApi.Controllers
             }
         }
 
+       
     }
 }

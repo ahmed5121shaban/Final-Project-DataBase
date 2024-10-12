@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
+using System.Security.Claims;
 namespace FinalApi.Controllers
 {
     [ApiController]
@@ -52,7 +53,12 @@ namespace FinalApi.Controllers
             var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).ToList();
             return Ok(EndedAuctions);
         }
-
-
+        [HttpGet("SellerLive")]
+        public async Task<IActionResult> SellerLiveAuction()
+        {
+            var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now).ToList();
+            return Ok(LiveAuctions);
+        }
     }
 }
