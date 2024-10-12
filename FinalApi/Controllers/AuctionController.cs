@@ -100,6 +100,39 @@ namespace FinalApi.Controllers
             }
         }
 
+        [HttpGet("SimilarActiveAuctions/{id}")]
+        public async Task<IActionResult> GetSimilarActiveAuctions(int id)
+        {
+            try
+            {
+                var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id);
+
+                if (auction == null)
+                {
+                    return NotFound(new { Message = $"Auction with ID {id} not found." });
+                }
+
+                var similarActiveAuctions = auctionManager.GetAll()
+                    .Where(a => a.Item.CategoryID == auction.Item.CategoryID
+                                && a.StartDate <= DateTime.Now
+                                && a.EndDate >= DateTime.Now
+                                && a.ID != auction.ID) // Exclude the auction itself
+                    .ToList();
+
+                if (similarActiveAuctions == null || !similarActiveAuctions.Any())
+                {
+                    return NotFound(new { Message = "No similar active auctions found." });
+                }
+
+                return Ok(similarActiveAuctions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching similar auctions.", Error = ex.Message });
+            }
+        }
+
+
         [HttpGet("SellerLive")]
         public async Task<IActionResult> SellerLiveAuction()
         {
