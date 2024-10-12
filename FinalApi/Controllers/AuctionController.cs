@@ -84,22 +84,17 @@ namespace FinalApi.Controllers
         {
             try
             {
-                // Fetch the auction by ID using the auction manager
                 var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id);
 
-
-                // Check if the auction was found
                 if (auction == null)
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
                 }
 
-                // Return the auction details
                 return Ok(auction);
             }
             catch (Exception ex)
             {
-                // Handle any errors
                 return StatusCode(500, new { Message = "An error occurred while fetching the auction.", Error = ex.Message });
             }
         }
