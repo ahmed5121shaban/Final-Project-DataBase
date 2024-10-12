@@ -1,5 +1,6 @@
 ﻿using Final;
 using Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
@@ -75,9 +76,8 @@ namespace FinalApi.Controllers
             return Ok(new { count = 2 });
         }
 
-
-        [HttpPost]
-        [Route("Add")]
+        [Authorize]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add(AddBidViewModel model)
         {
           

@@ -37,9 +37,8 @@
   <ItemGroup>
     <Folder Include="Helpers\" />
     <Folder Include="wwwroot\Images\Items\" />
+    <Folder Include="wwwroot\Images\Categories\" />
     <Folder Include="wwwroot\Contracts\" />
-    <Folder Include="wwwroot\Images\Categories\" />
-    <Folder Include="wwwroot\Images\Categories\" />
   </ItemGroup>
 
 </Project>

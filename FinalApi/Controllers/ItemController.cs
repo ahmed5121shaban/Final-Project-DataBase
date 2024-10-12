@@ -160,7 +160,7 @@ namespace FinalApi.Controllers
         public IActionResult GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId&&i.AuctionID==null).ToList();
             return new JsonResult(res);
         }
 
