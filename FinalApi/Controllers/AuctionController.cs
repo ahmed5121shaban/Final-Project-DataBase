@@ -1,4 +1,5 @@
 ﻿using Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
@@ -10,18 +11,35 @@ namespace FinalApi.Controllers
     public class AuctionController:ControllerBase
     {
         AuctionManager auctionManager;
-        public AuctionController(AuctionManager _auctionManager)
+        BidManager bidManager;
+        ItemManager itemManager;
+       public AuctionController(AuctionManager _auctionManager,BidManager _bidManager,ItemManager _itemManager)
         {
-            this.auctionManager= _auctionManager;   
+            this.auctionManager= _auctionManager;
+            this.bidManager = _bidManager;
+            this.itemManager = _itemManager;
         }
 
+        [Authorize]
+        [HttpGet("won")]
+        public async Task<IActionResult> GetWon()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId).ToList();
+            return new JsonResult(auctions);
+        }
 
-        //[HttpGet("getall")]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var auctions =  auctionManager.GetAll();
-        //    return Ok(auctions);
-        //}
+        [Authorize]
+        [HttpGet("lost")]
+        public async Task<IActionResult> GetLost()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
+            //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId&&a.Bids.Any(b=>userBids.Contains(b))).ToList();
+            return new JsonResult(auctions);
+        }
+
 
         //[HttpGet("GetAuctions")]
         //public IActionResult GetAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
@@ -49,16 +67,17 @@ namespace FinalApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAuction(AddAuctionModel _item)
         {
+           
 
-            var result =await auctionManager.Add(_item.toAuctionModel());
-            if (result == true)
+            var auction =await auctionManager.Add(_item.toAuctionModel());
+            if (auction !=null)
             {
-                return Ok();
+                var item = await itemManager.GetOne(_item.ItemId);
+                item.AuctionID = auction.ID;
+                item.Auction = auction;
+                await itemManager.Update(item);
             }
-            else
-            {
-                return BadRequest(result);
-            }
+            return new JsonResult(new ApiResultModel<string> { result="auction added successfully"});
         }
 
         [HttpGet("GetActiveAuctions")]

@@ -155,13 +155,14 @@ namespace FinalApi.Controllers
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.pending && i.SellerID==userId).ToList();
             return new JsonResult(res);
         }
+
+         [Authorize(Roles = "Seller")]
         [HttpGet("Accepted")]
-        //[Authorize(Roles = "Seller")]
         public IActionResult GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId).ToList();
-            return Ok(res);
+            var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.accepted && i.SellerID==userId&&i.AuctionID==null).ToList();
+            return new JsonResult(res);
         }
 
 

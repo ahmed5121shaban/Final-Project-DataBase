@@ -1,19 +1,22 @@
 ﻿using Final;
 using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Managers
 {
     public class AuctionManager:MainManager<Auction>
     {
+        private readonly FinalDbContext dbcontext;
+        private DbSet<Auction> dbset;
         public AuctionManager(FinalDbContext _dbContext) :base(_dbContext)
         {
-
+            dbcontext = _dbContext;
+            dbset = dbcontext.Set<Auction>();
         }
 
         //public Pagination<List<Auction>> Get(string searchtxt, string calumnName = "Id",
