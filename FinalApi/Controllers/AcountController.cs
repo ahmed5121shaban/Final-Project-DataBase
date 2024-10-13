@@ -69,7 +69,7 @@ namespace FinalApi.Controllers
                 Currency = user.Currency,
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
                 Age = user.Age.HasValue ? user.Age.Value : 0,
-                NationalId = user.NationalId.HasValue ? user.NationalId.Value : 0,
+                NationalId = user.NationalId,
                 Description = user.Description,
                 Gender = user.Gender.HasValue ? user.Gender.Value : Final.Enums.Gender.male,
                 Image = user.Image
@@ -202,7 +202,7 @@ public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewMod
     }
 
     // هنا يتم التحديث مباشرة بدون UpdateProfileViewModel
-    user.NationalId = int.Parse(model.IdNumber);
+    user.NationalId = (model.IdNumber);
     user.NationalIdFrontImage = nationalIdFrontPath; // افترض أن الحقل موجود في كلاس المستخدم
     user.NationalIdBackImage = nationalIdBackPath;
     user.BarthDate = model.BarthDate; // تأكد من أن هذا الحقل موجود في المستخدم

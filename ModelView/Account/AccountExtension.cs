@@ -62,7 +62,7 @@ namespace ModelView.Account
                 // يتم هنا تحويل بيانات التحقق إلى خصائص المستخدم
                 Name = $"{model.FirstName} {model.LastName}",
                 BarthDate = model.BarthDate,
-                NationalId = int.Parse(model.IdNumber), // تحويل IdNumber إلى NationalId كـ int
+                NationalId = (model.IdNumber), // تحويل IdNumber إلى NationalId كـ int
                 // يمكنك إضافة خصائص أخرى بناءً على النموذج
             };
         }
