@@ -23,30 +23,28 @@ namespace FinalApi.Controllers
         //    return Ok(auctions);
         //}
 
-        [HttpGet("GetAuctions")]
-        public IActionResult GetAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1)
-        {
-            try
-            {
-                // Call the service/repository method to fetch paginated auction data
-                var paginatedAuctions = auctionManager.Get(searchtxt, columnName, isAscending, pageSize, pageNumber);
+        //[HttpGet("GetAuctions")]
+        //public IActionResult GetAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
+        //{
+        //    try
+        //    {
+        //        var paginatedAuctions = auctionManager.Get(searchtxt, columnName, isAscending, pageSize, pageNumber, categoryName);
 
-                // If no auctions found
-                if (paginatedAuctions == null || !paginatedAuctions.List.Any())
-                {
-                    return NotFound(new { Message = "No auctions found." });
-                }
+        //        // If no auctions found
+        //        if (paginatedAuctions == null || !paginatedAuctions.List.Any())
+        //        {
+        //            return NotFound(new { Message = "No auctions found." });
+        //        }
 
-                // Return the paginated auction data
-                return Ok(paginatedAuctions);
-            }
-            catch (Exception ex)
-            {
-                // Handle any errors
-                return StatusCode(500, new { Message = "An error occurred while fetching auctions.", Error = ex.Message });
-            }
-        }
-
+        //        // Return the paginated auction data
+        //        return Ok(paginatedAuctions);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle any errors
+        //        return StatusCode(500, new { Message = "An error occurred while fetching auctions.", Error = ex.Message });
+        //    }
+        //}
 
         [HttpPost]
         public async Task<IActionResult> AddAuction(AddAuctionModel _item)
@@ -63,13 +61,74 @@ namespace FinalApi.Controllers
             }
         }
 
-        [HttpGet("Active")]
-        public async Task<IActionResult> GetAllActive()
+        [HttpGet("GetActiveAuctions")]
+        public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
         {
-            var auctions = auctionManager.GetAll();
-            var ActiveAuctions = auctions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).ToList();
-            return Ok(ActiveAuctions);
+            try
+            {
+                // Get all auctions
+                var allAuctions = auctionManager.Get(searchtxt, columnName, isAscending, int.MaxValue, 1, categoryName);
+
+                // Filter for active auctions
+                var activeAuctions = allAuctions.List.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).ToList();
+
+                // Paginate the filtered active auctions
+                var paginatedActiveAuctions = activeAuctions.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                // If no active auctions found
+                if (!paginatedActiveAuctions.Any())
+                {
+                    return NotFound(new { Message = "No active auctions found." });
+                }
+
+                // Return the paginated active auction data
+                var result = new
+                {
+                    List = paginatedActiveAuctions,
+                    TotalCount = activeAuctions.Count // Return the total count of active auctions for pagination
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                return StatusCode(500, new { Message = "An error occurred while fetching active auctions.", Error = ex.Message });
+            }
         }
+
+
+        [HttpGet("GetEndedAuctions")]
+        public IActionResult GetEndedAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
+        {
+            try
+            {
+                var allAuctions = auctionManager.Get(searchtxt, columnName, isAscending, int.MaxValue, 1, categoryName);
+
+                var EndedAuctions = allAuctions.List.Where(a => a.EndDate < DateTime.Now).ToList();
+
+                var paginatedEndedAuctions = EndedAuctions.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                if (!paginatedEndedAuctions.Any())
+                {
+                    return NotFound(new { Message = "No active auctions found." });
+                }
+
+                var result = new
+                {
+                    List = paginatedEndedAuctions,
+                    TotalCount = EndedAuctions.Count 
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                return StatusCode(500, new { Message = "An error occurred while fetching active auctions.", Error = ex.Message });
+            }
+        }
+
 
         [HttpGet("Ended")]
         public async Task<IActionResult> GetAllEnded()
