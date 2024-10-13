@@ -14,9 +14,9 @@ namespace ModelView
             return new Auction
             {
                 StartDate = model.StartDate,
-                EndDate =model.StartDate.AddDays(model.Duration),
+                EndDate = model.StartDate.AddDays(model.Duration),
                 ItemID = model.ItemId,
-                PaymentID = 1
+                Completed =false
             };
         }
     }

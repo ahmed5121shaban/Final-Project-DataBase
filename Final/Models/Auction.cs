@@ -15,9 +15,9 @@ namespace Final
         public DateTime EndDate { get; set; }
         public int ItemID { get; set; }
         public virtual Item Item { get; set; }
-        public int PaymentID { get; set; }
+        public int? PaymentID { get; set; }
         public virtual Payment Payment { get; set; }
-        public string BuyerID { get; set; }
+        public string? BuyerID { get; set; }
         public virtual Buyer Buyer { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
         public bool Completed { get; set; }

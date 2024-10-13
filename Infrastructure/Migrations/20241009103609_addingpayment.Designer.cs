@@ -4,6 +4,7 @@ using Final;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    partial class FinalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009103609_addingpayment")]
+    partial class addingpayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,50 +221,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/214/300",
-                            Name = "Cars"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/213/300",
-                            Name = "Food"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/212/300",
-                            Name = "Electronic"
-                        },
-                        new
-                        {
-                            ID = 4,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/211/300",
-                            Name = "Cloths"
-                        },
-                        new
-                        {
-                            ID = 5,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/210/300",
-                            Name = "Toy"
-                        },
-                        new
-                        {
-                            ID = 6,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/201/300",
-                            Name = "Others"
-                        });
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -743,25 +702,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "418baf7a-6a0b-4644-94f9-a73df0103440",
+                            Id = "4785f413-c2b0-4cb6-a9c3-2997fb87ca85",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6990afe6-8eaa-4642-b03d-347790195775",
+                            Id = "e2a45779-2e5f-4257-beca-44458dacbff9",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2b2ac735-ed10-4373-a814-5792b291c50d",
+                            Id = "d8ba2570-8b4c-4f7b-8ead-d5a17ed7d6d8",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "3b7f6258-d8d2-4fac-9a33-c7ec13b42384",
+                            Id = "8327cc2f-b61c-4a49-9f0d-526feee23e75",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

@@ -11,17 +11,29 @@ namespace Managers
 {
     public class BidManager :MainManager<Bid>
     {
-       
-        public BidManager(FinalDbContext context) : base(context)
-        {
+        private readonly PaymentManager paymentManager;
 
+        public BidManager(FinalDbContext context,PaymentManager _paymentManager) : base(context)
+        {
+            paymentManager = _paymentManager;
         }
+
         public Bid GetHighest(int AuctionId)
         {
             var all =  base.GetAll().Where(i => i.AuctionID == AuctionId);
             var highestBid =  all.OrderByDescending(b => b.Amount).FirstOrDefault();
 
             return highestBid;
+        }
+
+        public bool MinceAuctionStartrice(PaymentViewModel _paymentView)
+        {
+
+            if (_paymentView.Method == Enums.PaymentMetod.paypal)
+                return paymentManager.AddPayPalPayment(_paymentView); 
+            
+            return paymentManager.AddPayPalPayment(_paymentView);
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Final;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using ModelView;
 using ModelView.Account;
 using System;
@@ -16,17 +17,20 @@ namespace Managers
         private SignInManager<User> signInManager;
         private readonly TokenManager tokenManager;
         private SellerManager sellerManager;
+        private BuyerManager buyerManager;
         public AccountManager(FinalDbContext _finalDbContext,
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
             TokenManager _tokenManager,
-            SellerManager _sellerManager
+            SellerManager _sellerManager,
+            BuyerManager _buyerMamanger
             ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             tokenManager = _tokenManager;
             sellerManager= _sellerManager;
+            buyerManager = _buyerMamanger;
         }
         public UserManager<User> UserManager => userManager;
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
@@ -37,6 +41,11 @@ namespace Managers
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
                 result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
+                var res = buyerManager.Add(new Buyer
+                {
+                    User=user,
+                    UserID=user.Id
+                });
                 return result;
             }
             catch (Exception ex)
@@ -125,7 +134,7 @@ namespace Managers
             if (model.Age > 0)
                 user.Age = model.Age;
 
-            if (model.NationalId > 0)
+            if (!model.NationalId.IsNullOrEmpty())
                 user.NationalId = model.NationalId;
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))

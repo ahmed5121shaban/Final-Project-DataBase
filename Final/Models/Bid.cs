@@ -12,11 +12,12 @@ namespace Final
 {
     public class Bid
     {
+
         public int ID { get; set; }
-        public  decimal Amount { get; set; }    
+        public decimal Amount { get; set; }    
 
         public DateTime Time { get; set; }
-
+        public string PaymentEmail { get; set; }
         public string BuyerID { get; set; }
         public virtual Buyer Buyer { get; set; }
         public int AuctionID { get; set; }

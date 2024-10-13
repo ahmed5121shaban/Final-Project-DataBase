@@ -31,7 +31,7 @@ namespace ModelView.Account
       
 
         public int Age { get; set; }
-        public int NationalId { get; set; }
+        public string NationalId { get; set; }
         public string Description { get; set; }
       
         public Gender Gender { get; set; }

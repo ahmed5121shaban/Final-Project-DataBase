@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Final
 {
@@ -15,8 +16,10 @@ namespace Final
         public Enums.PaymentMetod Method {  get; set; }
         public bool IsDone { get; set; }
         public string BuyerId { get; set; }
+        [JsonIgnore]
         public virtual Buyer Buyer { get; set; }
         public int AuctionID {  get; set; }
+        [JsonIgnore]
         public virtual Auction Auction { get; set; }
 
     }

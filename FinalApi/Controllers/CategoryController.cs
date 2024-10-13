@@ -12,7 +12,7 @@ namespace FinalApi.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController:ControllerBase
+    public class CategoryController : ControllerBase
     {
         private CategoryManager manager;
 
@@ -20,18 +20,14 @@ namespace FinalApi.Controllers
         {
             manager = _manager;
         }
-        [HttpGet]
+        [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add(AddCategoryViewModel model) {
+        public async Task<IActionResult> Add([FromForm] AddCategoryViewModel model)
+        {
 
             if (ModelState.IsValid)
             {
-                string fileName = DateTime.Now.ToFileTime().ToString() + model.Image.FileName;
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
-                FileStream stream = new(path, FileMode.Create);
-                model.Image.CopyTo(stream);
-                stream.Close();
-                model.ImagePath = (Path.Combine("images", "products", fileName));
+
                 var res = await manager.Add(model.ToModel());
                 if (res)
                 {
@@ -40,7 +36,7 @@ namespace FinalApi.Controllers
                         result = res,
                         StatusCode = 200,
                         success = true,
-                        Message="done successfully"
+                        Message = "done successfully"
 
                     });
                 }
@@ -60,19 +56,19 @@ namespace FinalApi.Controllers
             else
             {
                 var builder = new StringBuilder();
-                foreach(var item in ModelState.Values)
+                foreach (var item in ModelState.Values)
                 {
-                    foreach(var error in item.Errors)
+                    foreach (var error in item.Errors)
                     {
-                        builder.Append (builder.ToString());
+                        builder.Append(builder.ToString());
                     }
                 }
                 return new JsonResult(new ApiResultModel<string>()
                 {
-                    result= builder.ToString(),
-                    StatusCode=400,
-                    success =false,
-                    Message ="Not Valid Model"
+                    result = builder.ToString(),
+                    StatusCode = 400,
+                    success = false,
+                    Message = "Not Valid Model"
                 });
             }
         }
@@ -82,7 +78,7 @@ namespace FinalApi.Controllers
         public IActionResult GetAll()
         {
             var res = manager.GetAll().ToList();
-            if(res!= null)
+            if (res != null)
             {
                 return new JsonResult(new ApiResultModel<List<Category>>()
                 {
@@ -109,7 +105,8 @@ namespace FinalApi.Controllers
 
         [HttpDelete]
         [Route("Delete/{Id}")]
-        public async Task<IActionResult> Delete(int id) {
+        public async Task<IActionResult> Delete(int id)
+        {
             var category = await manager.GetOne(id);
             var res = await manager.Delete(category);
             if (res)
@@ -139,16 +136,16 @@ namespace FinalApi.Controllers
         }
         [HttpGet]
         [Route("Filter")]
-        public IActionResult Pagination([FromQuery] string searchText,string calumnName,bool isAscending,int pageSize ,int PageNumber)
+        public IActionResult Pagination([FromQuery] string searchText, string calumnName, bool isAscending, int pageSize, int PageNumber)
         {
-            var res = manager.Get(searchText,calumnName,isAscending,pageSize,PageNumber);
-            if(res != null)
+            var res = manager.Get(searchText, calumnName, isAscending, pageSize, PageNumber);
+            if (res != null)
             {
                 return new JsonResult(new ApiResultModel<Pagination<List<Category>>>()
                 {
-                    result =res,
+                    result = res,
                     StatusCode = 200,
-                    success=true,
+                    success = true,
                     Message = "done successfully"
 
                 });
@@ -166,7 +163,7 @@ namespace FinalApi.Controllers
             }
 
         }
-        
+
 
     }
 }

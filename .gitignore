@@ -27,3 +27,6 @@
 **/*.tmp
 **/publish/
 /Final-Project.sln
+/FinalApi/wwwroot/Contracts
+/FinalApi/wwwroot/Images/Categories
+/FinalApi/wwwroot/Images/Items

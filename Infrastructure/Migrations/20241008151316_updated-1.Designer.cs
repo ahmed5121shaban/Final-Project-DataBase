@@ -4,6 +4,7 @@ using Final;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    partial class FinalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008151316_updated-1")]
+    partial class updated1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,10 +163,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PaymentEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
@@ -218,50 +217,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/214/300",
-                            Name = "Cars"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/213/300",
-                            Name = "Food"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/212/300",
-                            Name = "Electronic"
-                        },
-                        new
-                        {
-                            ID = 4,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/211/300",
-                            Name = "Cloths"
-                        },
-                        new
-                        {
-                            ID = 5,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/210/300",
-                            Name = "Toy"
-                        },
-                        new
-                        {
-                            ID = 6,
-                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-                            Image = "https://picsum.photos/seed/picsum/201/300",
-                            Name = "Others"
-                        });
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -642,8 +597,8 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<string>("NationalId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("NationalId")
+                        .HasColumnType("int");
 
                     b.Property<string>("NationalIdBackImage")
                         .HasColumnType("nvarchar(max)");
@@ -662,7 +617,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PaypalEmail")
+                    b.Property<string>("PaymantEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -686,9 +641,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Street")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("StripeEmail")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TimeZone")
                         .HasMaxLength(50)
@@ -743,25 +695,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "418baf7a-6a0b-4644-94f9-a73df0103440",
+                            Id = "3eba764c-914e-468a-9fda-1e22d4313f49",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6990afe6-8eaa-4642-b03d-347790195775",
+                            Id = "4a0d0c8c-aee7-40d5-8fb8-ffd7d7e4c101",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2b2ac735-ed10-4373-a814-5792b291c50d",
+                            Id = "c439a3a6-6069-418a-a820-f6bb17f49ecc",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "3b7f6258-d8d2-4fac-9a33-c7ec13b42384",
+                            Id = "cb54b2fc-329c-46a3-89d9-568170112d46",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
