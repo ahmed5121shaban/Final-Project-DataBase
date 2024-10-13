@@ -104,25 +104,60 @@ namespace FinalApi.Controllers
         {
             try
             {
-                // Fetch the auction by ID using the auction manager
                 var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id);
 
-
-                // Check if the auction was found
                 if (auction == null)
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
                 }
 
-                // Return the auction details
                 return Ok(auction);
             }
             catch (Exception ex)
             {
-                // Handle any errors
                 return StatusCode(500, new { Message = "An error occurred while fetching the auction.", Error = ex.Message });
             }
         }
 
+        [HttpGet("SimilarActiveAuctions/{id}")]
+        public async Task<IActionResult> GetSimilarActiveAuctions(int id)
+        {
+            try
+            {
+                var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id);
+
+                if (auction == null)
+                {
+                    return NotFound(new { Message = $"Auction with ID {id} not found." });
+                }
+
+                var similarActiveAuctions = auctionManager.GetAll()
+                    .Where(a => a.Item.CategoryID == auction.Item.CategoryID
+                                && a.StartDate <= DateTime.Now
+                                && a.EndDate >= DateTime.Now
+                                && a.ID != auction.ID) // Exclude the auction itself
+                    .ToList();
+
+                if (similarActiveAuctions == null || !similarActiveAuctions.Any())
+                {
+                    return NotFound(new { Message = "No similar active auctions found." });
+                }
+
+                return Ok(similarActiveAuctions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching similar auctions.", Error = ex.Message });
+            }
+        }
+
+
+        [HttpGet("SellerLive")]
+        public async Task<IActionResult> SellerLiveAuction()
+        {
+            var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now).ToList();
+            return Ok(LiveAuctions);
+        }
     }
 }

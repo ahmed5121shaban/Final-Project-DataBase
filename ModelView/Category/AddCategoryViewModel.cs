@@ -10,7 +10,7 @@ namespace ModelView
 {
     public class AddCategoryViewModel
     {
-        public int? Id { get; set; }
+        //public int? Id { get; set; }
         [Required]
         [MaxLength(15)]
         public string Name { get; set; }
