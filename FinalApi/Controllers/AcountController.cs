@@ -1,12 +1,10 @@
-﻿using Final.ViewModels;
+﻿using Final;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using ModelView;
 using ModelView.Account;
+using ModelView;
 using System.Security.Claims;
 using static Final.Enums;
 
@@ -35,26 +33,12 @@ namespace FinalApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel _registerView)
         {
-            if (!ModelState.IsValid) return BadRequest(new {Message= "This Data Is Not Completed" });
+            if (!ModelState.IsValid) return BadRequest(new { Message = "This Data Is Not Completed" });
             var res = await acountManager.Register(_registerView);
             if (!res.Succeeded) return BadRequest(new { Message = "Error In Register Operation" });
             return Ok(new { status = 200 });
         }
-    }
-}
-            try
-            {
 
-                if (!ModelState.IsValid) return BadRequest(new { Message = "This Data Is Not Completed" });
-                var res = await acountManager.Register(_registerView);
-                if (!res.Succeeded) return BadRequest(new { Message = "Error In Register Operation" });
-                return Ok(new { status = 200 });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = "Error In Register Operation" });
-            }
-        }
         [Authorize]
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
@@ -82,6 +66,7 @@ namespace FinalApi.Controllers
                 Street = user.Street,
                 PostalCode = user.PostalCode,
                 TimeZone = user.TimeZone,
+                Currency = user.Currency,
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
                 Age = user.Age.HasValue ? user.Age.Value : 0,
                 NationalId = user.NationalId.HasValue ? user.NationalId.Value : 0,
@@ -96,8 +81,7 @@ namespace FinalApi.Controllers
         [Authorize]
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile(
-            [FromForm] UpdateProfileViewModel model,
-            [FromForm] IFormFile profileImage)
+            [FromForm] UpdateProfileViewModel model)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -112,7 +96,8 @@ namespace FinalApi.Controllers
                 return NotFound("User not found.");
             }
 
-            if (profileImage != null && profileImage.Length > 0)
+
+            if (model.ProfileImage != null)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                 if (!Directory.Exists(uploadsFolder))
@@ -120,67 +105,119 @@ namespace FinalApi.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var filePath = Path.Combine(uploadsFolder, profileImage.FileName);
+                var filePath = Path.Combine(uploadsFolder, model.ProfileImage.FileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await profileImage.CopyToAsync(stream);
+                    await model.ProfileImage.CopyToAsync(stream);
                 }
 
                 user.Image = filePath;
+            }
+
+            var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);
+            if (existingUser != null && existingUser.Id != user.Id)
+            {
+                return BadRequest("This email is already taken.");
             }
 
             var result = await acountManager.UpdateUserProfileAsync(user, model);
 
             if (result.Succeeded)
             {
-                return Ok("Profile updated successfully.");
+                // بعد التحديث، يتم تعيين البريد الإلكتروني كاسم المستخدم
+                user.UserName = user.Email;
+
+                var updateResult = await acountManager.UserManager.UpdateAsync(user); // تحديث اسم المستخدم
+
+                if (updateResult.Succeeded)
+                {
+                    return Ok("Profile updated successfully.");
+                }
+                else
+                {
+                    return BadRequest(new { Message = "Error updating username", Errors = updateResult.Errors.Select(e => e.Description) });
+                }
             }
             else
             {
                 return BadRequest(new { Message = "Error updating profile", Errors = result.Errors.Select(e => e.Description) });
             }
         }
-        [Authorize]
-        [HttpPost]
-        [Route("VerifyIdentity")]
-        public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewModel model)
+            [Authorize]
+[HttpPost("VerifyIdentity")]
+public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
+
+    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
+    var frontExtension = Path.GetExtension(model.NationalIdFrontImage.FileName).ToLower();
+    var backExtension = Path.GetExtension(model.NationalIdBackImage.FileName).ToLower();
+
+    if (!allowedExtensions.Contains(frontExtension) || !allowedExtensions.Contains(backExtension))
+    {
+        return BadRequest("Only .jpg, .jpeg, and .png files are allowed.");
+    }
+
+    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+    if (!Directory.Exists(uploadsFolder))
+    {
+        Directory.CreateDirectory(uploadsFolder);
+    }
+
+    var uniqueFrontFileName = Guid.NewGuid().ToString() + frontExtension;
+    var uniqueBackFileName = Guid.NewGuid().ToString() + backExtension;
+
+    var nationalIdFrontPath = Path.Combine(uploadsFolder, uniqueFrontFileName);
+    var nationalIdBackPath = Path.Combine(uploadsFolder, uniqueBackFileName);
+
+    try
+    {
+        using (var stream = new FileStream(nationalIdFrontPath, FileMode.Create))
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // التأكد من أن الملف موجود وأنه ليس فارغًا
-            if (model.IdDocument != null && model.IdDocument.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                // التأكد من وجود مجلد الرفع، إذا لم يكن موجودًا يتم إنشاؤه
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                // إنشاء مسار الملف وحفظه
-                var filePath = Path.Combine(uploadsFolder, model.IdDocument.FileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.IdDocument.CopyToAsync(stream);
-                }
-
-                // إذا كنت بحاجة إلى حفظ مسار الملف المحفوظ في مكان آخر، يمكنك تخزينه في قاعدة البيانات
-            }
-            else
-            {
-                return BadRequest("ID document is required.");
-            }
-
-            // متابعة العملية بعد رفع الملف، مثل حفظ باقي البيانات في قاعدة البيانات
-
-            return Ok(new { message = "Identity verification is successful", data = model });
+            await model.NationalIdFrontImage.CopyToAsync(stream);
         }
 
+        using (var stream = new FileStream(nationalIdBackPath, FileMode.Create))
+        {
+            await model.NationalIdBackImage.CopyToAsync(stream);
+        }
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"File upload failed: {ex.Message}");
+    }
+
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var user = await acountManager.UserManager.FindByIdAsync(userId);
+    if (user == null)
+    {
+        System.IO.File.Delete(nationalIdFrontPath);
+        System.IO.File.Delete(nationalIdBackPath);
+        return NotFound("User not found.");
+    }
+
+    // هنا يتم التحديث مباشرة بدون UpdateProfileViewModel
+    user.NationalId = int.Parse(model.IdNumber);
+    user.NationalIdFrontImage = nationalIdFrontPath; // افترض أن الحقل موجود في كلاس المستخدم
+    user.NationalIdBackImage = nationalIdBackPath;
+    user.BarthDate = model.BarthDate; // تأكد من أن هذا الحقل موجود في المستخدم
+
+    var result = await acountManager.UserManager.UpdateAsync(user);
+
+    if (!result.Succeeded)
+    {
+        System.IO.File.Delete(nationalIdFrontPath);
+        System.IO.File.Delete(nationalIdBackPath);
+        return BadRequest(new { Message = "Error updating user information", Errors = result.Errors.Select(e => e.Description) });
+    }
+
+    return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
+}
 
         private const long MaxImageSizeInBytes = 5 * 1024 * 1024; // 5MB as an example
 
@@ -233,7 +270,4 @@ namespace FinalApi.Controllers
             return Convert.TryFromBase64String(base64String, buffer, out _);
         }
     }
-
 }
-
-    

@@ -102,11 +102,10 @@ namespace Managers
         public async Task<IdentityResult> UpdateUserProfileAsync(User user, UpdateProfileViewModel model)
         {
             // Check if each field is provided and update it accordingly
-            if (!string.IsNullOrWhiteSpace(model.FirstName))
-                user.Name = model.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(model.LastName))
-                user.Name = model.LastName;
+            if (!string.IsNullOrWhiteSpace(model.FirstName) && !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+            }
 
             if (!string.IsNullOrWhiteSpace(model.City))
                 user.City = model.City;
@@ -131,10 +130,16 @@ namespace Managers
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))
                 user.TimeZone = model.TimeZone;
-
+            if (!string.IsNullOrWhiteSpace(model.Currency))
+                user.Currency = model.Currency;
             if (model.Gender != null)
                 user.Gender = model.Gender;
 
+            if (!string.IsNullOrWhiteSpace(model.Email))
+            {
+                user.Email = model.Email;
+                user.UserName = model.Email;
+            }
             // Update phone numbers if provided
             if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
             {

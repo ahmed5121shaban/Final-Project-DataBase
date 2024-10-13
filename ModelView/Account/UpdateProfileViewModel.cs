@@ -16,7 +16,7 @@ namespace ModelView.Account
 
         [StringLength(15, MinimumLength = 3)]
         public string LastName { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public IFormFile ProfileImage { get; set; }
         [EmailAddress]
         public string Email {  get; set; }
@@ -25,14 +25,17 @@ namespace ModelView.Account
         public string Street { get; set; }
         public string PostalCode { get; set; }
         public string TimeZone { get; set; }
-        public List<string> PhoneNumbers { get; set; }
+        public string Currency { get; set; }
 
+        public List<string> PhoneNumbers { get; set; }
+      
 
         public int Age { get; set; }
         public int NationalId { get; set; }
         public string Description { get; set; }
       
         public Gender Gender { get; set; }
+
      
     }
 }

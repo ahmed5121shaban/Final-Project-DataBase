@@ -1,5 +1,4 @@
 ﻿using Final;
-using Final.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -33,6 +32,7 @@ namespace ModelView.Account
                 Street = model.Street,
                 PostalCode = model.PostalCode,
                 TimeZone = model.TimeZone,
+                Currency = model.Currency,
                 Age = model.Age,
                 NationalId = model.NationalId,
                 Description = model.Description,
