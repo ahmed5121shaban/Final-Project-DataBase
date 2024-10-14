@@ -19,6 +19,12 @@ namespace Managers
             dbset = dbcontext.Set<Auction>();
         }
 
+        public async Task<Auction> Add(Auction auction)
+        {
+            dbset.Add(auction);
+            await dbcontext.SaveChangesAsync();
+            return auction;
+        }
         //public Pagination<List<Auction>> Get(string searchtxt, string calumnName = "Id",
         //    bool isAscending = false, int pageSize = 2, int PageNumber = 1)
         //{

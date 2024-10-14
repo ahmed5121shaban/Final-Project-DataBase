@@ -87,6 +87,7 @@ namespace Managers
 
         public string AddPayPalPayment(CreatePaymentViewModel _createPayment)
         {
+
             try
             {
                 var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
@@ -103,7 +104,7 @@ namespace Managers
                     amount = new Amount
                     {
                         total = _createPayment.Amount.ToString("F2"),
-                        currency = _createPayment.Currency,
+                        currency = "USD",
                     },
                     description = "Auction deposit"
                 }
