@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace ModelView
 {
-    public class AddBidViewModel
+    public class AddPaymentViewModel
     {
-        public int? ID { get; set; }
+        public int? Id { get; set; }
         [Required]
-        public decimal Amount { get; set; }
-        public DateTime? Time { get; set; }
-        public string? BuyerID { get; set; }
-        [Required]
+        public Enums.PaymentMetod Method { get; set; }
+        
+        public string? BuyerId { get; set; }
+        
         public int? AuctionID { get; set; }
     }
 }

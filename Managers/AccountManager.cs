@@ -56,14 +56,25 @@ namespace Managers
 
         public async Task<string> Login(LoginViewModel viewModel)
         {
-            var user = await userManager.FindByEmailAsync(viewModel.Email);
-            if (user == null)
+            try
+            {
+                var user = await userManager.FindByEmailAsync(viewModel.Email);
+                if (user == null)
+                {
+                    return string.Empty;
+                }
+                await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+                await buyerManager.Add(new Buyer
+                {
+                    UserID = user.Id,
+                    Rate=0
+                });
+                return await tokenManager.GenerateToken(user);
+            }catch (Exception ex)
             {
                 return string.Empty;
-
             }
-            await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
-            return await tokenManager.GenerateToken(user);
+           
         }
         public async void Logout()
         {

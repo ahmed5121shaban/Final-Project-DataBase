@@ -16,8 +16,7 @@ namespace ModelView
                 Amount=model.Amount,
                 Time=(DateTime)model.Time,
                 BuyerID =model.BuyerID,
-                AuctionID=model.AuctionID,
-                PaymentEmail="saramohamedsci884@gmail.com"
+                AuctionID=(int)model.AuctionID
             };
         }
 

@@ -14,7 +14,7 @@ namespace ModelView.Account
         {
             return new User
             {
-                UserName = $"{model.FirstName}{model.LastName}",
+                UserName = model.Email,
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
             };

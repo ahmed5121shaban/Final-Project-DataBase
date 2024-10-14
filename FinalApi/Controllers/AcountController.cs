@@ -26,6 +26,8 @@ namespace FinalApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(new { Message = "This Data Is Not Completed" });
             var res = await acountManager.Login(_loginView);
+            if (res == string.Empty) return BadRequest(new { Message = "Error In Login Operation" }); 
+            return Ok(new {token=res,exepire=DateTime.Now.AddDays(30),status=200});
             if (res == null) return BadRequest(new { Message = "Error In Login Operation" });
             return Ok(new { token = res, exepire = DateTime.Now.AddDays(30), status = 200 });
         }

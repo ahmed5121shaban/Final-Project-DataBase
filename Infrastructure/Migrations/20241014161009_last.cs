@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updated : Migration
+    public partial class last : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,7 +40,7 @@ namespace Infrastructure.Migrations
                     Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NationalId = table.Column<int>(type: "int", nullable: true),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalIdFrontImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalIdBackImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -49,7 +49,8 @@ namespace Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymantEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaypalEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StripeEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -305,72 +306,26 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminEvent",
+                name: "FavCategories",
                 columns: table => new
                 {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventsID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdminEvent", x => new { x.AdminsID, x.EventsID });
+                    table.PrimaryKey("PK_FavCategories", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_AdminEvent_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AdminEvent_Events_EventsID",
-                        column: x => x.EventsID,
-                        principalTable: "Events",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AdminUser",
-                columns: table => new
-                {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminUser", x => new { x.AdminsID, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_AdminUser_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AdminUser_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BuyerCategory",
-                columns: table => new
-                {
-                    BuyersUserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SavedCategoriesID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BuyerCategory", x => new { x.BuyersUserID, x.SavedCategoriesID });
-                    table.ForeignKey(
-                        name: "FK_BuyerCategory_Buyer_BuyersUserID",
-                        column: x => x.BuyersUserID,
+                        name: "FK_FavCategories_Buyer_BuyerID",
+                        column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BuyerCategory_Categories_SavedCategoriesID",
-                        column: x => x.SavedCategoriesID,
+                        name: "FK_FavCategories_Categories_CategoryID",
+                        column: x => x.CategoryID,
                         principalTable: "Categories",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -385,7 +340,7 @@ namespace Infrastructure.Migrations
                     Method = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDone = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AuctionID = table.Column<int>(type: "int", nullable: false)
+                    AuctionID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -427,6 +382,33 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Complains",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Complains", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Complains_Buyer_BuyerID",
+                        column: x => x.BuyerID,
+                        principalTable: "Buyer",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Complains_Seller_SellerID",
+                        column: x => x.SellerID,
+                        principalTable: "Seller",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -445,16 +427,11 @@ namespace Infrastructure.Migrations
                     AuctionID = table.Column<int>(type: "int", nullable: true),
                     SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EventID = table.Column<int>(type: "int", nullable: true),
-                    BuyerUserID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Deleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Items", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Items_Buyer_BuyerUserID",
-                        column: x => x.BuyerUserID,
-                        principalTable: "Buyer",
-                        principalColumn: "UserID");
                     table.ForeignKey(
                         name: "FK_Items_Categories_CategoryID",
                         column: x => x.CategoryID,
@@ -524,30 +501,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminItem",
-                columns: table => new
-                {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ItemsID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminItem", x => new { x.AdminsID, x.ItemsID });
-                    table.ForeignKey(
-                        name: "FK_AdminItem_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_AdminItem_Items_ItemsID",
-                        column: x => x.ItemsID,
-                        principalTable: "Items",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Auctions",
                 columns: table => new
                 {
@@ -556,9 +509,11 @@ namespace Infrastructure.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ItemID = table.Column<int>(type: "int", nullable: false),
-                    PaymentID = table.Column<int>(type: "int", nullable: false),
-                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Completed = table.Column<bool>(type: "bit", nullable: false)
+                    PaymentID = table.Column<int>(type: "int", nullable: true),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    Ended = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ShippingStatus = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -567,20 +522,18 @@ namespace Infrastructure.Migrations
                         name: "FK_Auctions_Buyer_BuyerID",
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "UserID");
                     table.ForeignKey(
                         name: "FK_Auctions_Items_ItemID",
                         column: x => x.ItemID,
                         principalTable: "Items",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Auctions_Payment_PaymentID",
                         column: x => x.PaymentID,
                         principalTable: "Payment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -631,15 +584,54 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.NoAction);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "FavAuctions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuctionID = table.Column<int>(type: "int", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavAuctions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_FavAuctions_Auctions_AuctionID",
+                        column: x => x.AuctionID,
+                        principalTable: "Auctions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_FavAuctions_Buyer_BuyerID",
+                        column: x => x.BuyerID,
+                        principalTable: "Buyer",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "005a6ca6-3d61-46d8-8592-74fb9c7adfd1", null, "Admin", "ADMIN" },
-                    { "4aaf8baa-5e9b-42a7-a13e-0ec0a0cab8ee", null, "Buyer", "BUYER" },
-                    { "5a55878d-612b-4250-962b-9b9b9d659583", null, "Seller", "SELLER" },
-                    { "5a61e5ca-b524-4b0a-8b49-5c2de0a37347", null, "User", "USER" }
+                    { "7d856aed-60db-425e-a7a0-5166aed91ed7", null, "Admin", "ADMIN" },
+                    { "a78af199-75dc-4e52-b79a-2ab99bc8aa6e", null, "Seller", "SELLER" },
+                    { "c2b378ff-1426-4b63-872e-7d9ac1943ed7", null, "Buyer", "BUYER" },
+                    { "cd515ce8-980f-4e2b-abce-05771be0caf0", null, "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "ID", "Description", "Image", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/214/300", "Cars" },
+                    { 2, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/213/300", "Food" },
+                    { 3, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/212/300", "Electronic" },
+                    { 4, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/211/300", "Cloths" },
+                    { 5, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/210/300", "Toy" },
+                    { 6, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/201/300", "Others" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -647,21 +639,6 @@ namespace Infrastructure.Migrations
                 table: "Admin",
                 column: "UserID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminEvent_EventsID",
-                table: "AdminEvent",
-                column: "EventsID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminItem_ItemsID",
-                table: "AdminItem",
-                column: "ItemsID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminUser_UsersId",
-                table: "AdminUser",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -717,7 +694,8 @@ namespace Infrastructure.Migrations
                 name: "IX_Auctions_PaymentID",
                 table: "Auctions",
                 column: "PaymentID",
-                unique: true);
+                unique: true,
+                filter: "[PaymentID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bids_AuctionID",
@@ -730,11 +708,6 @@ namespace Infrastructure.Migrations
                 column: "BuyerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BuyerCategory_SavedCategoriesID",
-                table: "BuyerCategory",
-                column: "SavedCategoriesID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Chats_BuyerID",
                 table: "Chats",
                 column: "BuyerID");
@@ -745,14 +718,39 @@ namespace Infrastructure.Migrations
                 column: "SellerID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Complains_BuyerID",
+                table: "Complains",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Complains_SellerID",
+                table: "Complains",
+                column: "SellerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavAuctions_AuctionID",
+                table: "FavAuctions",
+                column: "AuctionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavAuctions_BuyerID",
+                table: "FavAuctions",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavCategories_BuyerID",
+                table: "FavCategories",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavCategories_CategoryID",
+                table: "FavCategories",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Images_ItemID",
                 table: "Images",
                 column: "ItemID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_BuyerUserID",
-                table: "Items",
-                column: "BuyerUserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryID",
@@ -804,13 +802,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdminEvent");
-
-            migrationBuilder.DropTable(
-                name: "AdminItem");
-
-            migrationBuilder.DropTable(
-                name: "AdminUser");
+                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -831,7 +823,13 @@ namespace Infrastructure.Migrations
                 name: "Bids");
 
             migrationBuilder.DropTable(
-                name: "BuyerCategory");
+                name: "Complains");
+
+            migrationBuilder.DropTable(
+                name: "FavAuctions");
+
+            migrationBuilder.DropTable(
+                name: "FavCategories");
 
             migrationBuilder.DropTable(
                 name: "Images");
@@ -847,9 +845,6 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Review");
-
-            migrationBuilder.DropTable(
-                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
