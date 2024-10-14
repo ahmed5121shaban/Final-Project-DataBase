@@ -15,7 +15,7 @@ builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<Fina
     .AddDefaultTokenProviders();
 builder.Services.AddDbContext<FinalDbContext>(
     c => { c.UseSqlServer(builder.Configuration.GetConnectionString("LocalConn"))
-        .UseLazyLoadingProxies(); }
+        .UseLazyLoadingProxies(); },ServiceLifetime.Scoped
 );
 builder.Services.AddControllers();
 
@@ -35,10 +35,12 @@ builder.Services.AddScoped<ItemManager>();
 builder.Services.AddScoped<AuctionManager>();
 builder.Services.AddScoped<PaymentManager>();
 builder.Services.AddScoped<BidManager>();
+builder.Services.AddScoped<BuyerManager>();
 builder.Services.AddScoped<CategoryManager>();
 builder.Services.AddScoped<BuyerManager>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -65,7 +67,8 @@ builder.Services.AddSwaggerGen(c => {
             new string[] {}
         }
     });
-}); builder.Services.AddAuthentication(options =>
+});
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,7 +87,6 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddCors(i => i.AddDefaultPolicy(
     i => i.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
-builder.Services.AddScoped<PaymentManager>();
 
 var app = builder.Build();
 

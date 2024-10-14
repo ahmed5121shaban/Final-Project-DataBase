@@ -160,10 +160,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PaymentEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
@@ -491,7 +487,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuctionID")
+                    b.Property<int?>("AuctionID")
                         .HasColumnType("int");
 
                     b.Property<string>("BuyerId")
@@ -743,25 +739,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "418baf7a-6a0b-4644-94f9-a73df0103440",
+                            Id = "1993bf80-df53-4730-83ae-9b7cf048d72f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6990afe6-8eaa-4642-b03d-347790195775",
+                            Id = "5efa2547-3ecc-4f97-b1da-4f64f37efac4",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2b2ac735-ed10-4373-a814-5792b291c50d",
+                            Id = "46868fea-1ed3-42b3-ba65-4374e53e09d0",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "3b7f6258-d8d2-4fac-9a33-c7ec13b42384",
+                            Id = "126f8294-f1fd-4a8e-9d7c-6e23bd2f633e",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

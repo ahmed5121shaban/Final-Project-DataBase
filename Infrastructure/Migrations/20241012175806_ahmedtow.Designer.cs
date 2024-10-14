@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241009103609_addingpayment")]
-    partial class addingpayment
+    [Migration("20241012175806_ahmedtow")]
+    partial class ahmedtow
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,6 +221,50 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/214/300",
+                            Name = "Cars"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/213/300",
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/212/300",
+                            Name = "Electronic"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/211/300",
+                            Name = "Cloths"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/210/300",
+                            Name = "Toy"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                            Image = "https://picsum.photos/seed/picsum/201/300",
+                            Name = "Others"
+                        });
                 });
 
             modelBuilder.Entity("Final.Chat", b =>
@@ -450,7 +494,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuctionID")
+                    b.Property<int?>("AuctionID")
                         .HasColumnType("int");
 
                     b.Property<string>("BuyerId")
@@ -702,25 +746,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4785f413-c2b0-4cb6-a9c3-2997fb87ca85",
+                            Id = "a1c29856-4c8a-441b-b731-48f260c4a47c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e2a45779-2e5f-4257-beca-44458dacbff9",
+                            Id = "6a1689b3-7c20-4aa4-bff6-391c95408405",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d8ba2570-8b4c-4f7b-8ead-d5a17ed7d6d8",
+                            Id = "9007bd55-50da-4398-aafa-44c727519ca0",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "8327cc2f-b61c-4a49-9f0d-526feee23e75",
+                            Id = "f30d73bf-5675-4ebf-889b-132080ca6956",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
