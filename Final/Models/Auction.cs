@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Models.Models;
 
 namespace Final
 {
@@ -18,11 +19,12 @@ namespace Final
         public int? PaymentID { get; set; }
         public virtual Payment Payment { get; set; }
         public string? BuyerID { get; set; }
-        public virtual Buyer Buyer { get; set; }
+        public virtual Buyer Buyer  { get; set; }
+        public virtual ICollection<FavAuctions> FavAuctions { get; set; }
+
         public virtual ICollection<Bid> Bids { get; set; }
         public bool Completed { get; set; }
-
-
+        public bool Ended { get; set; } 
     }
 
     public class AuctionConfiguration : IEntityTypeConfiguration<Auction>
@@ -32,11 +34,13 @@ namespace Final
             builder.HasKey(a => a.ID);
             builder.Property(a => a.StartDate).IsRequired();
             builder.Property(a => a.EndDate).IsRequired();
+            builder.Property(a => a.Ended).HasDefaultValue(false);
             builder.HasOne(p => p.Payment).WithOne(u => u.Auction).HasForeignKey<Auction>(p => p.PaymentID);
             //buyer won Auctoins
-            builder.HasOne(a => a.Buyer).WithMany(u => u.Auctions).HasForeignKey(a => a.BuyerID);
+            builder.HasOne(a => a.Buyer).WithMany(u => u.Auctions).HasForeignKey(a => a.BuyerID).IsRequired(false);
 
             builder.HasOne(i => i.Item).WithOne(a => a.Auction).HasForeignKey<Auction>(i => i.ItemID);
+            
         }
     }
 }
