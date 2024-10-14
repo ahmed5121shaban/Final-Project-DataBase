@@ -20,7 +20,7 @@ namespace ModelView
             var ImagePath = (Path.Combine("Images", "Categories", fileName));
             return new Category
             {
-                ID = model.Id == null ? 0 : model.Id.Value,
+                //ID = model.Id == null ? 0 : model.Id.Value,
                 Name = model.Name,
                 Description = model.Description,
                 Image = ImagePath
