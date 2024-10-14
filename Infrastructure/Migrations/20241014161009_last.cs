@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ahmed : Migration
+    public partial class last : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -306,72 +306,26 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminEvent",
+                name: "FavCategories",
                 columns: table => new
                 {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventsID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdminEvent", x => new { x.AdminsID, x.EventsID });
+                    table.PrimaryKey("PK_FavCategories", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_AdminEvent_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AdminEvent_Events_EventsID",
-                        column: x => x.EventsID,
-                        principalTable: "Events",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AdminUser",
-                columns: table => new
-                {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminUser", x => new { x.AdminsID, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_AdminUser_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AdminUser_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BuyerCategory",
-                columns: table => new
-                {
-                    BuyersUserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SavedCategoriesID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BuyerCategory", x => new { x.BuyersUserID, x.SavedCategoriesID });
-                    table.ForeignKey(
-                        name: "FK_BuyerCategory_Buyer_BuyersUserID",
-                        column: x => x.BuyersUserID,
+                        name: "FK_FavCategories_Buyer_BuyerID",
+                        column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BuyerCategory_Categories_SavedCategoriesID",
-                        column: x => x.SavedCategoriesID,
+                        name: "FK_FavCategories_Categories_CategoryID",
+                        column: x => x.CategoryID,
                         principalTable: "Categories",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -386,7 +340,7 @@ namespace Infrastructure.Migrations
                     Method = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDone = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AuctionID = table.Column<int>(type: "int", nullable: false)
+                    AuctionID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -418,9 +372,36 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Chats_Seller_SellerID",
+                        column: x => x.SellerID,
+                        principalTable: "Seller",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Complains",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Complains", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Complains_Buyer_BuyerID",
+                        column: x => x.BuyerID,
+                        principalTable: "Buyer",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Complains_Seller_SellerID",
                         column: x => x.SellerID,
                         principalTable: "Seller",
                         principalColumn: "UserID",
@@ -446,16 +427,11 @@ namespace Infrastructure.Migrations
                     AuctionID = table.Column<int>(type: "int", nullable: true),
                     SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EventID = table.Column<int>(type: "int", nullable: true),
-                    BuyerUserID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Deleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Items", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Items_Buyer_BuyerUserID",
-                        column: x => x.BuyerUserID,
-                        principalTable: "Buyer",
-                        principalColumn: "UserID");
                     table.ForeignKey(
                         name: "FK_Items_Categories_CategoryID",
                         column: x => x.CategoryID,
@@ -494,7 +470,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Review_Seller_SellerID",
                         column: x => x.SellerID,
@@ -525,30 +501,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminItem",
-                columns: table => new
-                {
-                    AdminsID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ItemsID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminItem", x => new { x.AdminsID, x.ItemsID });
-                    table.ForeignKey(
-                        name: "FK_AdminItem_Admin_AdminsID",
-                        column: x => x.AdminsID,
-                        principalTable: "Admin",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AdminItem_Items_ItemsID",
-                        column: x => x.ItemsID,
-                        principalTable: "Items",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Auctions",
                 columns: table => new
                 {
@@ -559,7 +511,9 @@ namespace Infrastructure.Migrations
                     ItemID = table.Column<int>(type: "int", nullable: false),
                     PaymentID = table.Column<int>(type: "int", nullable: true),
                     BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Completed = table.Column<bool>(type: "bit", nullable: false)
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    Ended = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ShippingStatus = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -610,7 +564,6 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AuctionID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -622,9 +575,35 @@ namespace Infrastructure.Migrations
                         column: x => x.AuctionID,
                         principalTable: "Auctions",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Bids_Buyer_BuyerID",
+                        column: x => x.BuyerID,
+                        principalTable: "Buyer",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FavAuctions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuctionID = table.Column<int>(type: "int", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavAuctions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_FavAuctions_Auctions_AuctionID",
+                        column: x => x.AuctionID,
+                        principalTable: "Auctions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_FavAuctions_Buyer_BuyerID",
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
@@ -636,10 +615,10 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "01fdb9df-c901-4cc8-8066-c595f937de4c", null, "User", "USER" },
-                    { "4b7668b4-67c4-4b07-a008-d5a403005061", null, "Admin", "ADMIN" },
-                    { "9d7287e5-4980-455d-85c0-07aa3af02a3d", null, "Seller", "SELLER" },
-                    { "b80f1f72-c75c-4322-bf99-49c481cff883", null, "Buyer", "BUYER" }
+                    { "7d856aed-60db-425e-a7a0-5166aed91ed7", null, "Admin", "ADMIN" },
+                    { "a78af199-75dc-4e52-b79a-2ab99bc8aa6e", null, "Seller", "SELLER" },
+                    { "c2b378ff-1426-4b63-872e-7d9ac1943ed7", null, "Buyer", "BUYER" },
+                    { "cd515ce8-980f-4e2b-abce-05771be0caf0", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -660,21 +639,6 @@ namespace Infrastructure.Migrations
                 table: "Admin",
                 column: "UserID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminEvent_EventsID",
-                table: "AdminEvent",
-                column: "EventsID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminItem_ItemsID",
-                table: "AdminItem",
-                column: "ItemsID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminUser_UsersId",
-                table: "AdminUser",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -744,11 +708,6 @@ namespace Infrastructure.Migrations
                 column: "BuyerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BuyerCategory_SavedCategoriesID",
-                table: "BuyerCategory",
-                column: "SavedCategoriesID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Chats_BuyerID",
                 table: "Chats",
                 column: "BuyerID");
@@ -759,14 +718,39 @@ namespace Infrastructure.Migrations
                 column: "SellerID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Complains_BuyerID",
+                table: "Complains",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Complains_SellerID",
+                table: "Complains",
+                column: "SellerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavAuctions_AuctionID",
+                table: "FavAuctions",
+                column: "AuctionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavAuctions_BuyerID",
+                table: "FavAuctions",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavCategories_BuyerID",
+                table: "FavCategories",
+                column: "BuyerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FavCategories_CategoryID",
+                table: "FavCategories",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Images_ItemID",
                 table: "Images",
                 column: "ItemID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_BuyerUserID",
-                table: "Items",
-                column: "BuyerUserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryID",
@@ -818,13 +802,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdminEvent");
-
-            migrationBuilder.DropTable(
-                name: "AdminItem");
-
-            migrationBuilder.DropTable(
-                name: "AdminUser");
+                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -845,7 +823,13 @@ namespace Infrastructure.Migrations
                 name: "Bids");
 
             migrationBuilder.DropTable(
-                name: "BuyerCategory");
+                name: "Complains");
+
+            migrationBuilder.DropTable(
+                name: "FavAuctions");
+
+            migrationBuilder.DropTable(
+                name: "FavCategories");
 
             migrationBuilder.DropTable(
                 name: "Images");
@@ -861,9 +845,6 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Review");
-
-            migrationBuilder.DropTable(
-                name: "Admin");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

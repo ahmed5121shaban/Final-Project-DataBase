@@ -29,9 +29,7 @@ namespace Final
         public virtual Seller Seller { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
-
         public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Admin> Admins { get; set; }
         public bool Deleted { get; set; }
         
 

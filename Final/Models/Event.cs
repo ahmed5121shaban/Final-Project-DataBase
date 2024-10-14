@@ -16,7 +16,6 @@ namespace Final
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public virtual ICollection<Admin> Admins { get; set; }
         public virtual ICollection<Item> Items { get;set; }
 
     }

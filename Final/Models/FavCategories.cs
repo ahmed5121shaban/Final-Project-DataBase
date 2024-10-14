@@ -16,7 +16,7 @@ namespace Models.Models
             public int CategoryID { get; set; }
             public virtual Category Category { get; set; }
 
-            public int BuyerID { get; set; }
+            public string BuyerID { get; set; }
             public virtual Buyer Buyer { get; set; }
 
         }
@@ -31,6 +31,6 @@ namespace Models.Models
                 builder.HasOne(i => i.Category).WithMany(a => a.FavCategories).HasForeignKey(i => i.CategoryID);
 
             }
-        }
+        
     }
 }

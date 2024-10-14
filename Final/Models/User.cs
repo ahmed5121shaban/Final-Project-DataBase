@@ -40,7 +40,6 @@ namespace Final
         public virtual Admin? Admin { get; set; }
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public virtual ICollection<Notification> Notifacations { get; set; }
-        public virtual ICollection<Admin> Admins { get; set; }
 
     }
 

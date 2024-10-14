@@ -14,6 +14,8 @@ namespace Final
         public int Rate { get; set; }
         public virtual ICollection<FavAuctions> FavAuctions { get; set; }
         public virtual ICollection<FavCategories> FavCategories { get; set; }
+        public virtual ICollection<Complain> ComplainesFromSeller { get; set; }
+
         public string UserID { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }

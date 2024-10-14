@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace Final
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new SellerConfiguration());
             modelBuilder.ApplyConfiguration(new BuyerConfiguration());
+            modelBuilder.ApplyConfiguration(new FavCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new FavAuctionConfiguration());
+            modelBuilder.ApplyConfiguration(new ComplainConfiguration());
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<IdentityRole>().HasData(
@@ -105,6 +110,9 @@ namespace Final
         public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Seller> Seller { get; set; }
         public virtual DbSet<Buyer> Buyer { get; set; }
+        public virtual DbSet<FavAuctions> FavAuctions { get; set; }
+        public virtual DbSet<FavCategories> FavCategories { get; set; }
+        public virtual DbSet<Complain> Complains { get; set; }
 
     }
 }

@@ -15,7 +15,7 @@ namespace Models.Models
         public int AuctionID { get; set; }
         public virtual Auction Auction { get; set; }
 
-        public int BuyerID { get; set; }
+        public string BuyerID { get; set; }
         public virtual Buyer Buyer { get; set; }
 
     }
