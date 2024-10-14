@@ -37,7 +37,7 @@ builder.Services.AddScoped<PaymentManager>();
 builder.Services.AddScoped<BidManager>();
 builder.Services.AddScoped<BuyerManager>();
 builder.Services.AddScoped<CategoryManager>();
-
+builder.Services.AddScoped<BuyerManager>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 

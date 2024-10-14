@@ -10,10 +10,10 @@ namespace ModelView
     public static class ItemExtesions
     {
         public static Item toItemModel(this AddItemViewModel model)
-        {
-            List<Image> images = new List<Image>();
-            foreach (IFormFile file in model.Images)
-            {
+{
+    List<Image> images = new List<Image>();
+    foreach (IFormFile file in model.Images)
+    {
 
                 string filename = DateTime.Now.ToFileTime().ToString() + file.FileName;
                 string path = Path.Combine(

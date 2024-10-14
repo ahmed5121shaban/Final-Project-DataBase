@@ -17,21 +17,20 @@ namespace Managers
         private SignInManager<User> signInManager;
         private readonly TokenManager tokenManager;
         private SellerManager sellerManager;
-        private readonly BuyerManager buyerManager;
-
+        private BuyerManager buyerManager;
         public AccountManager(FinalDbContext _finalDbContext,
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
             TokenManager _tokenManager,
             SellerManager _sellerManager,
-            BuyerManager _buyerManager
+            BuyerManager _buyerMamanger
             ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             tokenManager = _tokenManager;
             sellerManager= _sellerManager;
-            buyerManager = _buyerManager;
+            buyerManager = _buyerMamanger;
         }
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
@@ -41,6 +40,11 @@ namespace Managers
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
                 result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
+                var res = buyerManager.Add(new Buyer
+                {
+                    User=user,
+                    UserID=user.Id
+                });
                 return result;
             }
             catch (Exception ex)
