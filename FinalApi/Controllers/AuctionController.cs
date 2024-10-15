@@ -80,19 +80,78 @@ namespace FinalApi.Controllers
             return new JsonResult(new ApiResultModel<string> { result="auction added successfully"});
         }
 
+        //[HttpGet("GetActiveAuctions")]
+        //public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
+        //{
+        //    try
+        //    {
+        //        // Get all auctions
+        //        var allAuctions = auctionManager.Get(searchtxt, columnName, isAscending, int.MaxValue, 1, categoryName);
+
+        //        // Filter for active auctions
+        //        var activeAuctions = allAuctions.List.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).ToList();
+
+        //        // Paginate the filtered active auctions
+        //        var paginatedActiveAuctions = activeAuctions.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+        //        // If no active auctions found
+        //        if (!paginatedActiveAuctions.Any())
+        //        {
+        //            return NotFound(new { Message = "No active auctions found." });
+        //        }
+
+        //        // Return the paginated active auction data
+        //        var result = new
+        //        {
+        //            List = paginatedActiveAuctions,
+        //            TotalCount = activeAuctions.Count // Return the total count of active auctions for pagination
+        //        };
+
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle any errors
+        //        return StatusCode(500, new { Message = "An error occurred while fetching active auctions.", Error = ex.Message });
+        //    }
+        //}
+
         [HttpGet("GetActiveAuctions")]
-        public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "")
+        public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "", string filterOption ="")
         {
             try
             {
-                // Get all auctions
-                var allAuctions = auctionManager.Get(searchtxt, columnName, isAscending, int.MaxValue, 1, categoryName);
+                // Validate page size and page number
+                if (pageSize <= 0)
+                {
+                    return BadRequest(new { Message = "Page size must be greater than zero." });
+                }
+                if (pageNumber <= 0)
+                {
+                    return BadRequest(new { Message = "Page number must be greater than zero." });
+                }
+
+                // Get active auctions directly
+                var allAuctions = auctionManager.Get(
+                    searchtxt,
+                    columnName,
+                    isAscending,
+                    int.MaxValue,
+                    1,
+                    categoryName,
+                    filterOption
+                    );
 
                 // Filter for active auctions
-                var activeAuctions = allAuctions.List.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).ToList();
+                var activeAuctions = allAuctions.List
+                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now)
+                    .ToList();
 
                 // Paginate the filtered active auctions
-                var paginatedActiveAuctions = activeAuctions.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                var paginatedActiveAuctions = activeAuctions
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
 
                 // If no active auctions found
                 if (!paginatedActiveAuctions.Any())
