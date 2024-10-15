@@ -188,7 +188,7 @@ namespace FinalApi.Controllers
         {
             try
             {
-                var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id);
+                var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id).SeeDetails();
 
                 if (auction == null)
                 {

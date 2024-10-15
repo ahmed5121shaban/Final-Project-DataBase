@@ -40,11 +40,12 @@ namespace Controllers
         // الحصول على الشكاوى - يجب أن يكون المستخدم مخولًا كـ Admin
         [HttpGet("list")]
         [Authorize(Roles = "Admin")] // يتطلب أن يكون المستخدم Admin
-        public async Task<IActionResult> GetComplains()
+        public async Task<IActionResult> GetComplains(int pageNumber = 1, int pageSize = 10, string searchText = "")
         {
-            var complains = await _complainManager.GetComplains();
+            var complains = await _complainManager.GetComplains(pageNumber, pageSize, searchText);
             return Ok(complains);
         }
+
         [HttpGet("sellers")]
         [Authorize(Roles = "Buyer")] // يتطلب أن يكون المستخدم Buyer
         public async Task<IActionResult> GetSellers()

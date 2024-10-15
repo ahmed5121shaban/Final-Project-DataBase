@@ -1,5 +1,6 @@
 ﻿using Final;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using Models.Models;
 using ModelView.Complain;
 
@@ -40,11 +41,24 @@ namespace Managers
         }
 
         // الحصول على الشكاوى
-        public async Task<List<ComplainDisplayViewModel>> GetComplains()
+        public async Task<Pagination<List<ComplainDisplayViewModel>>> GetComplains(int pageNumber, int pageSize, string searchText = "")
         {
-            return await _dbContext.Complains
+            var query = _dbContext.Complains.AsQueryable();
+
+            // إضافة الفلترة حسب النص
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                query = query.Where(c => c.Reason.Contains(searchText));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            // تأكد من أن النتيجة هي قائمة (List)
+            var complainsList = await query
                 .Include(c => c.Seller)
                 .Include(c => c.Buyer)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Select(c => new ComplainDisplayViewModel
                 {
                     Id = c.ID,
@@ -52,8 +66,18 @@ namespace Managers
                     SellerName = c.Seller.User.Name,
                     BuyerName = c.Buyer.User.Name
                 })
-                .ToListAsync();
+                .ToListAsync();  // تحويل النتيجة إلى قائمة
+
+            // إرجاع القائمة داخل الكائن Pagination
+            return new Pagination<List<ComplainDisplayViewModel>>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                List = complainsList  // هنا استخدام complainsList
+            };
         }
+
         public async Task<List<SellerViewModel>> GetSellersByBuyerId(int buyerId)
         {
             var sellers = await _dbContext.Payment

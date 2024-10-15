@@ -44,13 +44,8 @@
     <Folder Include="wwwroot\Images\Categories\" />
     <Folder Include="wwwroot\Contracts\" />
     <Folder Include="wwwroot\Contracts\" />
-<<<<<<< HEAD
     <Folder Include="wwwroot\Images\Categories\" />
     <Folder Include="wwwroot\Images\Items\" />
-=======
-    <Folder Include="wwwroot\Images\Items\" />
-    <Folder Include="wwwroot\Images\Categories\" />
->>>>>>> 3c30db4013a0d293634cc75ef6f7c5b5479c6199
   </ItemGroup>
 
 </Project>
