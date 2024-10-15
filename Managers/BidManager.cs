@@ -34,7 +34,7 @@ namespace Managers
                string Email = string.Empty;
                 if (_paymentView.Method == Enums.PaymentMetod.paypal)
                 {
-                    string result = paymentManager.AddPayPalPayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency });
+                    string result = paymentManager.AddPayPalPayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency,auctionID = _paymentView.AuctionID });
                     if (string.IsNullOrEmpty(result))
                     return string.Empty;
                 
@@ -51,7 +51,7 @@ namespace Managers
             }
                 else
                 {
-                    string result = paymentManager.AddStripePayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency });
+                    string result = paymentManager.AddStripePayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency, auctionID = _paymentView.AuctionID });
                     if (string.IsNullOrEmpty(result))
                     return string.Empty;
                     Email = _paymentView.StripeEmail;
