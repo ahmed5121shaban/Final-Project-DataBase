@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Managers
 {
-    public class AuctionManager:MainManager<Auction>
+    public class AuctionManager : MainManager<Auction>
     {
         private readonly FinalDbContext dbcontext;
         private DbSet<Auction> dbset;
-        public AuctionManager(FinalDbContext _dbContext) :base(_dbContext)
+        public AuctionManager(FinalDbContext _dbContext) : base(_dbContext)
         {
             dbcontext = _dbContext;
             dbset = dbcontext.Set<Auction>();
@@ -25,80 +25,18 @@ namespace Managers
             await dbcontext.SaveChangesAsync();
             return auction;
         }
-        //public Pagination<List<Auction>> Get(string searchtxt, string calumnName = "Id",
-        //    bool isAscending = false, int pageSize = 2, int PageNumber = 1)
-        //{
-        //    var builder = PredicateBuilder.New<Auction>();
-        //    var old = builder;
-        //    if (!string.IsNullOrEmpty(searchtxt))
-        //    {
-        //        builder = builder.Or(p => p.Item.Name.Contains(searchtxt));
-        //    }
-        //    if (old == builder)
-        //    {
-        //        builder = null;
-        //    }
 
-        //    int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
-        //    var query = base.Filter(builder, calumnName, isAscending,
-        //        pageSize, PageNumber);
-        //    return new Pagination<List<Auction>>()
-        //    {
-        //        PageNumber = PageNumber,
-        //        PageSize = pageSize,
-        //        TotalCount = total,
-        //        List = query.ToList()
-        //    };
 
-        //}
 
-        //    public Pagination<List<Auction>> Get(string searchtxt, string columnName = "Id",
-        //bool isAscending = false, int pageSize = 2, int PageNumber = 1, string? categoryName = null, string? mostBids = null)
-        //    {
-        //        var builder = PredicateBuilder.New<Auction>();
-        //        var old = builder;
-
-        //        // Filter by search text (if provided)
-        //        if (!string.IsNullOrEmpty(searchtxt))
-        //        {
-        //            builder = builder.Or(p => p.Item.Name.Contains(searchtxt));
-        //        }
-
-        //        // Filter by category (if provided)
-        //        if (!string.IsNullOrEmpty(categoryName))
-        //        {
-        //            builder = builder.And(p => p.Item.Category.Name == categoryName);
-        //        }
-
-        //        if (old == builder)
-        //        {
-        //            builder = null;  // No filters applied
-        //        }
-
-        //        // Count total filtered items
-        //        int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
-
-        //        // Apply filter, sorting, and pagination
-        //        var query = base.Filter(builder, columnName, isAscending, pageSize, PageNumber);
-
-        //        // Return paginated result
-        //        return new Pagination<List<Auction>>()
-        //        {
-        //            PageNumber = PageNumber,
-        //            PageSize = pageSize,
-        //            TotalCount = total,
-        //            List = query.ToList()
-        //        };
-        //    }
         public Pagination<List<Auction>> Get(
-            string searchtxt,
-            string columnName = "Id",
-            bool isAscending = false,
-            int pageSize = 2,
-            int pageNumber = 1,
-            string? categoryName = null,
-            string? filterOption = null
-        )
+    string searchtxt,
+    string columnName = "Id",
+    bool isAscending = false,
+    int pageSize = 2,
+    int pageNumber = 1,
+    string? categoryName = null,
+    string? filterOption = null
+)
         {
             var builder = PredicateBuilder.New<Auction>();
             var old = builder;
@@ -115,29 +53,30 @@ namespace Managers
                 builder = builder.And(p => p.Item.Category.Name == categoryName);
             }
 
+            // Handle filter options
             if (filterOption == "EndDate")
             {
                 columnName = "EndDate";
                 isAscending = true;
             }
-            // Filter by most bids (if specified)
-            if (filterOption == "mostBids")
+            else if (filterOption == "mostBids")
             {
-                builder = builder.And(p => p.Bids.Count() > 0); // Ensure there's at least one bid
+                builder = builder.And(p => p.Bids.Count() > 0);
+                isAscending = false; // Sort in descending order to get the most bids
+            }
+            else if (filterOption == "highestBid")
+            {
+                builder = builder.And(p => p.Bids.Any());
+                isAscending = false;
+            }
+            else if (filterOption == "lowestBid")
+            {
+                // Ensure we only include auctions that have bids
+                builder = builder.And(p => p.Bids.Any());
+                isAscending = true; // We want the lowest bid
             }
 
-            // Filter by highest bid (if specified)
-            if (filterOption == "highestBid")
-            {
-                builder = builder.And(p => p.Bids.Any() && p.Bids.Max(b => b.Amount) > 0); // Ensure there's at least one bid
-            }
-
-            // Filter by lowest bid (if specified)
-            if (filterOption == "lowestBid")
-            {
-                builder = builder.And(p => p.Bids.Any() && p.Bids.Min(b => b.Amount) > 0); // Ensure there's at least one bid
-            }
-
+            // If no filters were applied
             if (old == builder)
             {
                 builder = null;  // No filters applied
@@ -146,8 +85,22 @@ namespace Managers
             // Count total filtered items
             int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
 
-            // Apply filter, sorting, and pagination
+            // Apply filter and pagination
             var query = base.Filter(builder, columnName, isAscending, pageSize, pageNumber);
+
+            // Apply sorting based on filter options
+            if (filterOption == "mostBids")
+            {
+                query = query.OrderByDescending(a => a.Bids.Count());
+            }
+            else if (filterOption == "highestBid")
+            {
+                query = query.OrderByDescending(a => a.Bids.Max(b => b.Amount));
+            }
+            else if (filterOption == "lowestBid")
+            {
+                query = query.OrderBy(a => a.Bids.Min(b => b.Amount));
+            }
 
             // Return paginated result
             return new Pagination<List<Auction>>()
@@ -159,12 +112,5 @@ namespace Managers
             };
         }
 
-        public async Task<Auction> Add(Auction auction)
-        {
-            dbset.Add(auction);
-            await dbcontext.SaveChangesAsync();
-
-            return auction;
-        }
     }
 }

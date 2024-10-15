@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class last : Migration
+    public partial class newmig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -372,7 +372,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chats_Seller_SellerID",
                         column: x => x.SellerID,
@@ -399,7 +399,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Complains_Seller_SellerID",
                         column: x => x.SellerID,
@@ -470,7 +470,7 @@ namespace Infrastructure.Migrations
                         column: x => x.BuyerID,
                         principalTable: "Buyer",
                         principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Review_Seller_SellerID",
                         column: x => x.SellerID,
@@ -575,7 +575,7 @@ namespace Infrastructure.Migrations
                         column: x => x.AuctionID,
                         principalTable: "Auctions",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bids_Buyer_BuyerID",
                         column: x => x.BuyerID,
@@ -601,7 +601,7 @@ namespace Infrastructure.Migrations
                         column: x => x.AuctionID,
                         principalTable: "Auctions",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_FavAuctions_Buyer_BuyerID",
                         column: x => x.BuyerID,
@@ -615,10 +615,10 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "7d856aed-60db-425e-a7a0-5166aed91ed7", null, "Admin", "ADMIN" },
-                    { "a78af199-75dc-4e52-b79a-2ab99bc8aa6e", null, "Seller", "SELLER" },
-                    { "c2b378ff-1426-4b63-872e-7d9ac1943ed7", null, "Buyer", "BUYER" },
-                    { "cd515ce8-980f-4e2b-abce-05771be0caf0", null, "User", "USER" }
+                    { "4505db62-8a52-4767-90a8-99d873b92f91", null, "User", "USER" },
+                    { "499895db-33a6-4df0-9a6c-5f3a895211cc", null, "Buyer", "BUYER" },
+                    { "8f1cefb4-a487-40a5-ae83-12c9662a30f1", null, "Admin", "ADMIN" },
+                    { "c40208a3-2ba7-47df-a1bd-d004e1bc1ef7", null, "Seller", "SELLER" }
                 });
 
             migrationBuilder.InsertData(
