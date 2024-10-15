@@ -110,7 +110,7 @@ namespace FinalApi.Controllers
 
                 // Filter for active auctions
                 var activeAuctions = allAuctions.List
-                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now)
+                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended)
                     .ToList();
 
                 // Paginate the filtered active auctions
