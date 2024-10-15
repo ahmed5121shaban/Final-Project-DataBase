@@ -174,6 +174,7 @@ namespace FinalApi.Controllers
             var res = itemManager.GetAll().Where(i => i.Status == Enums.ItemStatus.rejected && i.SellerID == userId).ToList();
             return Ok(res);
         }
+
         [HttpGet("Accept/{id}")]
         [Authorize]
         public async Task<IActionResult> AcceptItem(int id)
@@ -190,7 +191,8 @@ namespace FinalApi.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut("Reject/{id}")]
+
+        [HttpPost("Reject/{id}")]
         [Authorize]
         public async Task<IActionResult> RejectItem(int id,[FromBody] string RejectReason)
         {
