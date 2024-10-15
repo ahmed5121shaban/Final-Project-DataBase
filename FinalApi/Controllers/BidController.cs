@@ -93,7 +93,7 @@ namespace FinalApi.Controllers
             else if (payments.Count > 1)
                 return new JsonResult(new { message = "the user have more than one Payment Method", count = 2 });
             else 
-                return new JsonResult(new { message = "the user have one Payment Method", count = 3 });
+                return new JsonResult(new { message = "the user have one Payment Method", count = 3, method = payments.Select(p => p.Method) });
 
         }
 
