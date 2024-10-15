@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Managers
 {
-    public class AuctionManager:MainManager<Auction>
+    public class AuctionManager : MainManager<Auction>
     {
         private readonly FinalDbContext dbcontext;
         private DbSet<Auction> dbset;
-        public AuctionManager(FinalDbContext _dbContext) :base(_dbContext)
+        public AuctionManager(FinalDbContext _dbContext) : base(_dbContext)
         {
             dbcontext = _dbContext;
             dbset = dbcontext.Set<Auction>();
@@ -25,35 +25,18 @@ namespace Managers
             await dbcontext.SaveChangesAsync();
             return auction;
         }
-        //public Pagination<List<Auction>> Get(string searchtxt, string calumnName = "Id",
-        //    bool isAscending = false, int pageSize = 2, int PageNumber = 1)
-        //{
-        //    var builder = PredicateBuilder.New<Auction>();
-        //    var old = builder;
-        //    if (!string.IsNullOrEmpty(searchtxt))
-        //    {
-        //        builder = builder.Or(p => p.Item.Name.Contains(searchtxt));
-        //    }
-        //    if (old == builder)
-        //    {
-        //        builder = null;
-        //    }
 
-        //    int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
-        //    var query = base.Filter(builder, calumnName, isAscending,
-        //        pageSize, PageNumber);
-        //    return new Pagination<List<Auction>>()
-        //    {
-        //        PageNumber = PageNumber,
-        //        PageSize = pageSize,
-        //        TotalCount = total,
-        //        List = query.ToList()
-        //    };
 
-        //}
 
-        public Pagination<List<Auction>> Get(string searchtxt, string columnName = "Id",
-    bool isAscending = false, int pageSize = 2, int PageNumber = 1, string? categoryName = null)
+        public Pagination<List<Auction>> Get(
+    string searchtxt,
+    string columnName = "Id",
+    bool isAscending = false,
+    int pageSize = 2,
+    int pageNumber = 1,
+    string? categoryName = null,
+    string? filterOption = null
+)
         {
             var builder = PredicateBuilder.New<Auction>();
             var old = builder;
@@ -70,6 +53,30 @@ namespace Managers
                 builder = builder.And(p => p.Item.Category.Name == categoryName);
             }
 
+            // Handle filter options
+            if (filterOption == "EndDate")
+            {
+                columnName = "EndDate";
+                isAscending = true;
+            }
+            else if (filterOption == "mostBids")
+            {
+                builder = builder.And(p => p.Bids.Count() > 0);
+                isAscending = false; // Sort in descending order to get the most bids
+            }
+            else if (filterOption == "highestBid")
+            {
+                builder = builder.And(p => p.Bids.Any());
+                isAscending = false;
+            }
+            else if (filterOption == "lowestBid")
+            {
+                // Ensure we only include auctions that have bids
+                builder = builder.And(p => p.Bids.Any());
+                isAscending = true; // We want the lowest bid
+            }
+
+            // If no filters were applied
             if (old == builder)
             {
                 builder = null;  // No filters applied
@@ -78,13 +85,27 @@ namespace Managers
             // Count total filtered items
             int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
 
-            // Apply filter, sorting, and pagination
-            var query = base.Filter(builder, columnName, isAscending, pageSize, PageNumber);
+            // Apply filter and pagination
+            var query = base.Filter(builder, columnName, isAscending, pageSize, pageNumber);
+
+            // Apply sorting based on filter options
+            if (filterOption == "mostBids")
+            {
+                query = query.OrderByDescending(a => a.Bids.Count());
+            }
+            else if (filterOption == "highestBid")
+            {
+                query = query.OrderByDescending(a => a.Bids.Max(b => b.Amount));
+            }
+            else if (filterOption == "lowestBid")
+            {
+                query = query.OrderBy(a => a.Bids.Min(b => b.Amount));
+            }
 
             // Return paginated result
             return new Pagination<List<Auction>>()
             {
-                PageNumber = PageNumber,
+                PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = total,
                 List = query.ToList()

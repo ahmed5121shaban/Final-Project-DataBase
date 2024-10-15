@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241014161009_last")]
-    partial class last
+    [Migration("20241015062001_newmig")]
+    partial class newmig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -692,25 +692,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7d856aed-60db-425e-a7a0-5166aed91ed7",
+                            Id = "8f1cefb4-a487-40a5-ae83-12c9662a30f1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cd515ce8-980f-4e2b-abce-05771be0caf0",
+                            Id = "4505db62-8a52-4767-90a8-99d873b92f91",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a78af199-75dc-4e52-b79a-2ab99bc8aa6e",
+                            Id = "c40208a3-2ba7-47df-a1bd-d004e1bc1ef7",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "c2b378ff-1426-4b63-872e-7d9ac1943ed7",
+                            Id = "499895db-33a6-4df0-9a6c-5f3a895211cc",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

@@ -32,6 +32,7 @@ namespace Managers
             sellerManager= _sellerManager;
             buyerManager = _buyerMamanger;
         }
+        public UserManager<User> UserManager => userManager;
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
             try
@@ -121,11 +122,10 @@ namespace Managers
         public async Task<IdentityResult> UpdateUserProfileAsync(User user, UpdateProfileViewModel model)
         {
             // Check if each field is provided and update it accordingly
-            if (!string.IsNullOrWhiteSpace(model.FirstName))
-                user.Name = model.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(model.LastName))
-                user.Name = model.LastName;
+            if (!string.IsNullOrWhiteSpace(model.FirstName) && !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+            }
 
             if (!string.IsNullOrWhiteSpace(model.City))
                 user.City = model.City;
@@ -150,10 +150,16 @@ namespace Managers
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))
                 user.TimeZone = model.TimeZone;
-
+            if (!string.IsNullOrWhiteSpace(model.Currency))
+                user.Currency = model.Currency;
             if (model.Gender != null)
                 user.Gender = model.Gender;
 
+            if (!string.IsNullOrWhiteSpace(model.Email))
+            {
+                user.Email = model.Email;
+                user.UserName = model.Email;
+            }
             // Update phone numbers if provided
             if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
             {
@@ -174,6 +180,7 @@ namespace Managers
             }
 
             return result;
+        
         }
 
         public async Task CheckIfSeller(User user)
@@ -197,6 +204,37 @@ namespace Managers
             }
         }
 
+
+        public async Task<IdentityResult> VerifyIdentity(string userId, string token)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return IdentityResult.Failed(new IdentityError()
+                    {
+                        Description = "User not found"
+                    });
+                }
+
+                // Verifying the token provided by the user
+                var result = await userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    // Optionally, mark the user as verified in other ways or update specific claims
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError()
+                {
+                    Description = $"An error occurred: {ex.Message}"
+                });
+            }
+        }
 
     }
 }

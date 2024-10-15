@@ -10,19 +10,20 @@ namespace ModelView
     public static class ItemExtesions
     {
         public static Item toItemModel(this AddItemViewModel model)
-{
-    List<Image> images = new List<Image>();
-    foreach (IFormFile file in model.Images)
-    {
+        {
 
-                string filename = DateTime.Now.ToFileTime().ToString() + file.FileName;
-                string path = Path.Combine(
-                     Directory.GetCurrentDirectory(),
-                "wwwroot",
-                "Images",
-                "Items",
-                filename
-                );
+                List<Image> images = new List<Image>();
+                foreach (IFormFile file in model.Images)
+                {
+
+                        string filename = DateTime.Now.ToFileTime().ToString() + file.FileName;
+                         string path = Path.Combine(
+                         Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "Images",
+                        "Items",
+                        filename
+                 );
                 FileStream filestream = new FileStream(path, FileMode.Create);
                 file.CopyTo(filestream);
                 filestream.Close();
@@ -58,6 +59,7 @@ namespace ModelView
                 ContractFile = contractfile??"N/A",
                 SellerID=model.sellerId
             };
+
         }
 
         public static ItemViewModel toItemViewModel(this Item model)
