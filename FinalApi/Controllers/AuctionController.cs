@@ -21,6 +21,18 @@ namespace FinalApi.Controllers
         }
 
         [Authorize]
+        [HttpGet("buyerAuctions")]
+        public async Task<IActionResult> GetBuyerAuctions()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
+            //auctions  that still active as its buyer id is null,and i shared on it by bids as the auction bid list contains atleast one bid of min
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == null && a.Bids.Any(b => userBids.Contains(b))).ToList();
+            return new JsonResult(auctions);
+        }
+
+
+        [Authorize]
         [HttpGet("won")]
         public async Task<IActionResult> GetWon()
         {
@@ -36,7 +48,7 @@ namespace FinalApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
             //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
-            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.Bids.Any(b => userBids.Contains(b))).ToList();
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).ToList();
             return new JsonResult(auctions);
         }
 
