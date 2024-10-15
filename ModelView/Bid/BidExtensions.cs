@@ -16,7 +16,7 @@ namespace ModelView
                 Amount=model.Amount,
                 Time=(DateTime)model.Time,
                 BuyerID =model.BuyerID,
-                AuctionID=model.AuctionID
+                AuctionID=(int)model.AuctionID
             };
         }
 

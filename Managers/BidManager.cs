@@ -33,14 +33,45 @@ namespace Managers
 
             return highestBid;
         }
-
-        public bool MinceAuctionStartrice(PaymentViewModel _paymentView)
+ 
+        public async Task<string> MinceAuctionStartPrice(PaymentStartPriceViewModel _paymentView)
         {
+            var res = base.GetAll().FirstOrDefault(u => u.BuyerID == _paymentView.BuyerID&&u.AuctionID==_paymentView.AuctionID);
+            if (res != null)
+                return string.Empty;
+               string Email = string.Empty;
+                if (_paymentView.Method == Enums.PaymentMetod.paypal)
+                {
+                    string result = paymentManager.AddPayPalPayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency });
+                    if (string.IsNullOrEmpty(result))
+                    return string.Empty;
+                
+                    Email = _paymentView.PayPalEmail;
+                    var payment = paymentManager.GetAll().FirstOrDefault(p => p.Method == Enums.PaymentMetod.paypal && p.BuyerId == _paymentView.BuyerID);
+                    if (payment != null)
+                    {
+                        payment.AuctionID = _paymentView.AuctionID;
+                        await paymentManager.Update(payment);
+                    }
+                return result;
 
-            if (_paymentView.Method == Enums.PaymentMetod.paypal)
-                return paymentManager.AddPayPalPayment(_paymentView); 
-            
-            return paymentManager.AddPayPalPayment(_paymentView);
+
+            }
+                else
+                {
+                    string result = paymentManager.AddStripePayment(new CreatePaymentViewModel { Amount = _paymentView.Amount, Currency = _paymentView.Currency });
+                    if (string.IsNullOrEmpty(result))
+                    return string.Empty;
+                    Email = _paymentView.StripeEmail;
+                    var payment = paymentManager.GetAll().FirstOrDefault(p => p.Method == Enums.PaymentMetod.stripe && p.BuyerId == _paymentView.BuyerID);
+                    if (payment != null)
+                    {
+                        payment.AuctionID = _paymentView.AuctionID;
+                        await paymentManager.Update(payment);
+                    }
+                return result;
+            }
+
 
         }
     }

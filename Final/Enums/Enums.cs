@@ -36,7 +36,14 @@ namespace Final
             accepted,
             rejected
         }
-
+        public enum AuctionShippingStatus
+        {
+            NotStarted, //payment not completed
+            Pending, //after payment but admin not confirm it
+            OnTheWay, //shipping started
+            Delivered, //shipping ended
+            Returned //if their an issue
+        }
 
     }
 }

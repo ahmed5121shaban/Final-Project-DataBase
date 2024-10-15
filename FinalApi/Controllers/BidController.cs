@@ -1,5 +1,6 @@
 ﻿using Final;
 using Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
@@ -16,17 +17,19 @@ namespace FinalApi.Controllers
         private BidManager manager;
         private readonly UserManager<User> userManager;
         private readonly PaymentManager paymentManager;
+        private readonly BidManager bidManager;
 
-        public BidController(BidManager _manager,UserManager<User> _userManager,PaymentManager _paymentManager)
+        public BidController(BidManager _manager,UserManager<User> _userManager,PaymentManager _paymentManager,BidManager _bidManager)
         {
             manager= _manager;
             userManager = _userManager;
             paymentManager = _paymentManager;
+            bidManager = _bidManager;
         }
 
 
-        [HttpGet("auction-payment-method{_auctionID:int}/{_paymentID:int}/{_metod}")]
-        public IActionResult AuctionPaymentMethod(int _auctionID,int _paymentID, Enums.PaymentMetod  _metod)
+        [HttpPost("auction-payment-method")]
+        public IActionResult AuctionPaymentMethod([FromBody]AddPaymentViewModel _addPaymentView)
         {
             var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = userManager.Users.FirstOrDefault( u => u.Id == Id );
@@ -35,26 +38,40 @@ namespace FinalApi.Controllers
                 return NotFound();
             }
             
-            paymentManager.Add(new PaymentViewModel { AuctionID = _auctionID, BuyerId = Id,  Method = _metod });
+            paymentManager.Add(_addPaymentView);
 
             return Ok();
         }
 
         [HttpPost("first-auction-payment")]
-        public IActionResult MinceFirstAuctionPayment(PaymentViewModel _paymentView)
+        public async Task<IActionResult> MinceFirstAuctionPayment([FromBody]PaymentStartPriceViewModel _paymentView)
         {
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(new { message = "this data is not completed"});
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "this data is not completed" , ModelState });
+
+            var userID =User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userID == null)
+                return BadRequest(new { message = "the user not found" });
+
+            var user = userManager.Users.FirstOrDefault(u=>u.Id==userID);
+                
+            var userPayment = paymentManager.GetAll().Where(p=>p.BuyerId == userID&&p.Method==_paymentView.Method).FirstOrDefault();
+            if (userPayment == null)
+                return NotFound();
+            userPayment.AuctionID=_paymentView.AuctionID;
+            if (!await paymentManager.Update(userPayment))
+                return BadRequest(new { message = "adding auction id in not completed" });
+            _paymentView.Currency = user?.Currency ?? "USD";
+            string result= string.Empty;
             if (_paymentView.Method == Enums.PaymentMetod.paypal)
             {
-                if (paymentManager.AddPayPalPayment(_paymentView)) return Ok();
-                return BadRequest(new { message = "the paypal payment is not completed" });
-
+                result = await bidManager.MinceAuctionStartPrice(_paymentView);
+                if (!string.IsNullOrEmpty(result)) return Ok(new { status = 200, result });
+                return BadRequest(new { message = "the PayPal payment is not completed" });
             }
-            if (paymentManager.AddStripePayment(_paymentView)) return Ok();
-            return BadRequest(new { message = "the stripe payment is not completed" });
+            result = await bidManager.MinceAuctionStartPrice(_paymentView);
+            if (!string.IsNullOrEmpty(result)) return Ok(new { status = 200, result });
+            return BadRequest(new { message = "the Stripe payment is not completed" });
 
         }
 
@@ -64,17 +81,31 @@ namespace FinalApi.Controllers
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userID == null)
-                return BadRequest(new {message="the user not found"});
-            var user = userManager.Users.FirstOrDefault(u => u.Id == userID);
-            if (string.IsNullOrEmpty(user.PaypalEmail) && string.IsNullOrEmpty(user.StripeEmail))
-                return Ok(new {count = 0});
-            else if (string.IsNullOrEmpty(user.PaypalEmail) && !string.IsNullOrEmpty(user.StripeEmail))
-                return Ok(new { count = 1, payment = "stripe" });
-            else if (!string.IsNullOrEmpty(user.PaypalEmail) && string.IsNullOrEmpty(user.StripeEmail))
-                return Ok(new { count = 1, payment = "paypal" });
-            return Ok(new { count = 2 });
+                return new JsonResult(new {message="the user not found", count = 4 });
+
+            if(User.IsInRole("Seller"))
+                return new JsonResult( new { message = "not allowed" ,count=0} );
+
+            var payments = paymentManager.GetAll().Where(p=>p.BuyerId == userID).ToList();
+
+            if (payments.Count==0)
+               return new JsonResult(new { message = "the user don't have any Payment Method", count = 1 });
+            else if (payments.Count > 1)
+                return new JsonResult(new { message = "the user have more than one Payment Method", count = 2 });
+            else 
+                return new JsonResult(new { message = "the user have one Payment Method", count = 3, method = payments.Select(p => p.Method) });
+
         }
 
+
+        [HttpGet("all-bids-auction{auctionID:int}")]
+        public IActionResult GetBids(int auctionID)
+        {
+            var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionID).ToList();
+            if (bids == null)
+                return BadRequest(new {message="no bids in this auction"});
+            return Ok(bids);
+        }
 
         [HttpPost]
         [Route("Add")]
@@ -85,6 +116,7 @@ namespace FinalApi.Controllers
             {
                 model.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 model.Time = DateTime.Now;
+
                 var res =await manager.Add(model.ToModel());
                 if (res)
                 {
@@ -129,8 +161,8 @@ namespace FinalApi.Controllers
             }
         }
         [HttpGet]
-        [Route("GethighestBid/{AuctionId}")]
-        public IActionResult GethighestBid(int AuctionId)
+        [Route("get-highest-bid/{AuctionId}")]
+        public IActionResult GetHighestBid(int AuctionId)
         {
             var res = manager.GetHighest(AuctionId);
             if (res != null)

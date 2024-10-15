@@ -25,66 +25,6 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AdminEvent", b =>
-                {
-                    b.Property<string>("AdminsID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("EventsID")
-                        .HasColumnType("int");
-
-                    b.HasKey("AdminsID", "EventsID");
-
-                    b.HasIndex("EventsID");
-
-                    b.ToTable("AdminEvent");
-                });
-
-            modelBuilder.Entity("AdminItem", b =>
-                {
-                    b.Property<string>("AdminsID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ItemsID")
-                        .HasColumnType("int");
-
-                    b.HasKey("AdminsID", "ItemsID");
-
-                    b.HasIndex("ItemsID");
-
-                    b.ToTable("AdminItem");
-                });
-
-            modelBuilder.Entity("AdminUser", b =>
-                {
-                    b.Property<string>("AdminsID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AdminsID", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("AdminUser");
-                });
-
-            modelBuilder.Entity("BuyerCategory", b =>
-                {
-                    b.Property<string>("BuyersUserID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SavedCategoriesID")
-                        .HasColumnType("int");
-
-                    b.HasKey("BuyersUserID", "SavedCategoriesID");
-
-                    b.HasIndex("SavedCategoriesID");
-
-                    b.ToTable("BuyerCategory");
-                });
-
             modelBuilder.Entity("Final.Admin", b =>
                 {
                     b.Property<string>("ID")
@@ -119,11 +59,21 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("Ended")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("ItemID")
                         .HasColumnType("int");
 
                     b.Property<int?>("PaymentID")
                         .HasColumnType("int");
+
+                    b.Property<int>("ShippingStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -159,10 +109,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("BuyerID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PaymentEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -368,15 +314,17 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("AuctionID")
                         .HasColumnType("int");
 
-                    b.Property<string>("BuyerUserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("ContractFile")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -411,8 +359,6 @@ namespace Infrastructure.Migrations
                         .HasDefaultValue(0);
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BuyerUserID");
 
                     b.HasIndex("CategoryID");
 
@@ -491,7 +437,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuctionID")
+                    b.Property<int?>("AuctionID")
                         .HasColumnType("int");
 
                     b.Property<string>("BuyerId")
@@ -743,25 +689,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "418baf7a-6a0b-4644-94f9-a73df0103440",
+                            Id = "8f1cefb4-a487-40a5-ae83-12c9662a30f1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6990afe6-8eaa-4642-b03d-347790195775",
+                            Id = "4505db62-8a52-4767-90a8-99d873b92f91",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2b2ac735-ed10-4373-a814-5792b291c50d",
+                            Id = "c40208a3-2ba7-47df-a1bd-d004e1bc1ef7",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "3b7f6258-d8d2-4fac-9a33-c7ec13b42384",
+                            Id = "499895db-33a6-4df0-9a6c-5f3a895211cc",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -873,64 +819,81 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AdminEvent", b =>
+            modelBuilder.Entity("Models.Models.Complain", b =>
                 {
-                    b.HasOne("Final.Admin", null)
-                        .WithMany()
-                        .HasForeignKey("AdminsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Final.Event", null)
-                        .WithMany()
-                        .HasForeignKey("EventsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("BuyerID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SellerID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BuyerID");
+
+                    b.HasIndex("SellerID");
+
+                    b.ToTable("Complains");
                 });
 
-            modelBuilder.Entity("AdminItem", b =>
+            modelBuilder.Entity("Models.Models.FavAuctions", b =>
                 {
-                    b.HasOne("Final.Admin", null)
-                        .WithMany()
-                        .HasForeignKey("AdminsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Final.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("AuctionID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BuyerID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AuctionID");
+
+                    b.HasIndex("BuyerID");
+
+                    b.ToTable("FavAuctions");
                 });
 
-            modelBuilder.Entity("AdminUser", b =>
+            modelBuilder.Entity("Models.Models.FavCategories", b =>
                 {
-                    b.HasOne("Final.Admin", null)
-                        .WithMany()
-                        .HasForeignKey("AdminsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Final.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-            modelBuilder.Entity("BuyerCategory", b =>
-                {
-                    b.HasOne("Final.Buyer", null)
-                        .WithMany()
-                        .HasForeignKey("BuyersUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("BuyerID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasOne("Final.Category", null)
-                        .WithMany()
-                        .HasForeignKey("SavedCategoriesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BuyerID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("FavCategories");
                 });
 
             modelBuilder.Entity("Final.Admin", b =>
@@ -1029,10 +992,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Final.Item", b =>
                 {
-                    b.HasOne("Final.Buyer", null)
-                        .WithMany("SavedItems")
-                        .HasForeignKey("BuyerUserID");
-
                     b.HasOne("Final.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryID")
@@ -1181,9 +1140,68 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Models.Models.Complain", b =>
+                {
+                    b.HasOne("Final.Buyer", "Buyer")
+                        .WithMany("ComplainesFromSeller")
+                        .HasForeignKey("BuyerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final.Seller", "Seller")
+                        .WithMany("MyComplainesonBuyer")
+                        .HasForeignKey("SellerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Models.Models.FavAuctions", b =>
+                {
+                    b.HasOne("Final.Auction", "Auction")
+                        .WithMany("FavAuctions")
+                        .HasForeignKey("AuctionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final.Buyer", "Buyer")
+                        .WithMany("FavAuctions")
+                        .HasForeignKey("BuyerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Auction");
+
+                    b.Navigation("Buyer");
+                });
+
+            modelBuilder.Entity("Models.Models.FavCategories", b =>
+                {
+                    b.HasOne("Final.Buyer", "Buyer")
+                        .WithMany("FavCategories")
+                        .HasForeignKey("BuyerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final.Category", "Category")
+                        .WithMany("FavCategories")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Final.Auction", b =>
                 {
                     b.Navigation("Bids");
+
+                    b.Navigation("FavAuctions");
                 });
 
             modelBuilder.Entity("Final.Buyer", b =>
@@ -1194,15 +1212,21 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Chats");
 
+                    b.Navigation("ComplainesFromSeller");
+
+                    b.Navigation("FavAuctions");
+
+                    b.Navigation("FavCategories");
+
                     b.Navigation("Payments");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("SavedItems");
                 });
 
             modelBuilder.Entity("Final.Category", b =>
                 {
+                    b.Navigation("FavCategories");
+
                     b.Navigation("Items");
                 });
 
@@ -1235,6 +1259,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Chats");
 
                     b.Navigation("Items");
+
+                    b.Navigation("MyComplainesonBuyer");
 
                     b.Navigation("Reviews");
                 });

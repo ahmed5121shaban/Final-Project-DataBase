@@ -19,5 +19,26 @@ namespace ModelView
                 IsDone = false,
             };
         }
+        
+        public static Payment ToModel(this AddPaymentViewModel _paymentView)
+        {
+            return new Payment()
+            {
+                BuyerId = _paymentView.BuyerId,
+                Method = _paymentView.Method,
+                IsDone = false,
+            };
+        }
+        public static Payment ToModel(this PaymentStartPriceViewModel _paymentView)
+        {
+            return new Payment()
+            {
+                BuyerId = _paymentView.BuyerID,
+                AuctionID = _paymentView.AuctionID,
+                Method = _paymentView.Method,
+                IsDone = false,
+            };
+        }
+
     }
 }

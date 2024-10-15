@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Models.Models;
 
 namespace Final
 {
@@ -15,6 +16,7 @@ namespace Final
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Chat> Chats { get; set; }
+        public virtual ICollection<Complain> MyComplainesonBuyer { get; set; }
 
     }
     public class SellerConfiguration : IEntityTypeConfiguration<Seller>

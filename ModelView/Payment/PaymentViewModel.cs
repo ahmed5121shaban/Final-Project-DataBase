@@ -14,12 +14,11 @@ namespace ModelView {
         public Enums.PaymentMetod Method { get; set; }
         public string? BuyerId { get; set; }
         public int? AuctionID { get; set; }
-        [Required,DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress)]
         public string? PaypalEmail { get; set; }
+        [DataType(DataType.EmailAddress)]
         public string? StripeEmail { get; set; }
         public decimal? Amount { get; set; }
-        public string? ReturnUrl { get; set; }
-        public string? CancelUrl { get; set; }
         public string? Currency { get;set; }
         public string? Token { get; set; }
     }

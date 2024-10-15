@@ -17,18 +17,22 @@ namespace Managers
         private SignInManager<User> signInManager;
         private readonly TokenManager tokenManager;
         private SellerManager sellerManager;
+        private BuyerManager buyerManager;
         public AccountManager(FinalDbContext _finalDbContext,
             UserManager<User> _userManager,
             SignInManager<User> _signInManager,
             TokenManager _tokenManager,
-            SellerManager _sellerManager
+            SellerManager _sellerManager,
+            BuyerManager _buyerMamanger
             ) : base(_finalDbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             tokenManager = _tokenManager;
             sellerManager= _sellerManager;
+            buyerManager = _buyerMamanger;
         }
+        public UserManager<User> UserManager => userManager;
         public async Task<IdentityResult> Register(RegisterViewModel viewModel)
         {
             try
@@ -37,6 +41,11 @@ namespace Managers
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
                 result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
+                var res = buyerManager.Add(new Buyer
+                {
+                    User=user,
+                    UserID=user.Id
+                });
                 return result;
             }
             catch (Exception ex)
@@ -47,14 +56,25 @@ namespace Managers
 
         public async Task<string> Login(LoginViewModel viewModel)
         {
-            var user = await userManager.FindByEmailAsync(viewModel.Email);
-            if (user == null)
+            try
+            {
+                var user = await userManager.FindByEmailAsync(viewModel.Email);
+                if (user == null)
+                {
+                    return string.Empty;
+                }
+                await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+                await buyerManager.Add(new Buyer
+                {
+                    UserID = user.Id,
+                    Rate=0
+                });
+                return await tokenManager.GenerateToken(user);
+            }catch (Exception ex)
             {
                 return string.Empty;
-
             }
-            await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
-            return await tokenManager.GenerateToken(user);
+           
         }
         public async void Logout()
         {
@@ -102,11 +122,10 @@ namespace Managers
         public async Task<IdentityResult> UpdateUserProfileAsync(User user, UpdateProfileViewModel model)
         {
             // Check if each field is provided and update it accordingly
-            if (!string.IsNullOrWhiteSpace(model.FirstName))
-                user.Name = model.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(model.LastName))
-                user.Name = model.LastName;
+            if (!string.IsNullOrWhiteSpace(model.FirstName) && !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+            }
 
             if (!string.IsNullOrWhiteSpace(model.City))
                 user.City = model.City;
@@ -131,10 +150,16 @@ namespace Managers
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))
                 user.TimeZone = model.TimeZone;
-
+            if (!string.IsNullOrWhiteSpace(model.Currency))
+                user.Currency = model.Currency;
             if (model.Gender != null)
                 user.Gender = model.Gender;
 
+            if (!string.IsNullOrWhiteSpace(model.Email))
+            {
+                user.Email = model.Email;
+                user.UserName = model.Email;
+            }
             // Update phone numbers if provided
             if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
             {
@@ -155,6 +180,7 @@ namespace Managers
             }
 
             return result;
+        
         }
 
         public async Task CheckIfSeller(User user)
@@ -178,6 +204,37 @@ namespace Managers
             }
         }
 
+
+        public async Task<IdentityResult> VerifyIdentity(string userId, string token)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return IdentityResult.Failed(new IdentityError()
+                    {
+                        Description = "User not found"
+                    });
+                }
+
+                // Verifying the token provided by the user
+                var result = await userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    // Optionally, mark the user as verified in other ways or update specific claims
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError()
+                {
+                    Description = $"An error occurred: {ex.Message}"
+                });
+            }
+        }
 
     }
 }
