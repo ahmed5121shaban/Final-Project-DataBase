@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace Final
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new SellerConfiguration());
             modelBuilder.ApplyConfiguration(new BuyerConfiguration());
+            modelBuilder.ApplyConfiguration(new FavCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new FavAuctionConfiguration());
+            modelBuilder.ApplyConfiguration(new ComplainConfiguration());
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<IdentityRole>().HasData(
@@ -45,47 +50,47 @@ namespace Final
             );
             modelBuilder.Entity<Category>().HasData(
                 new Category
- {
-     ID =1,
-     Name = "Cars",
-     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-     Image = "https://picsum.photos/seed/picsum/214/300"
- },
- new Category
- {
-     ID = 2,
-     Name = "Food",
-     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-     Image = "https://picsum.photos/seed/picsum/213/300"
- },
-  new Category
-  {
-      ID = 3,
-      Name = "Electronic",
-      Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-      Image = "https://picsum.photos/seed/picsum/212/300"
-  },
-   new Category
-   {
-       ID = 4,
-       Name = "Cloths",
-       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-       Image = "https://picsum.photos/seed/picsum/211/300"
-   },
-    new Category
-    {
-        ID = 5,
-        Name = "Toy",
-        Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-        Image = "https://picsum.photos/seed/picsum/210/300"
-    },
-    new Category
-    {
-        ID = 6,
-        Name = "Others",
-        Description = "Description scripe scripe scripe scripe scripe scripe scripe",
-        Image = "https://picsum.photos/seed/picsum/201/300"
-    }
+                {
+                    ID =1,
+                    Name = "Cars",
+                    Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                    Image = "https://picsum.photos/seed/picsum/214/300"
+                },
+                new Category
+                {
+                    ID = 2,
+                    Name = "Food",
+                    Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                    Image = "https://picsum.photos/seed/picsum/213/300"
+                },
+                 new Category
+                 {
+                     ID = 3,
+                     Name = "Electronic",
+                     Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                     Image = "https://picsum.photos/seed/picsum/212/300"
+                 },
+                  new Category
+                  {
+                      ID = 4,
+                      Name = "Cloths",
+                      Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                      Image = "https://picsum.photos/seed/picsum/211/300"
+                  },
+                   new Category
+                   {
+                       ID = 5,
+                       Name = "Toy",
+                       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                       Image = "https://picsum.photos/seed/picsum/210/300"
+                   },
+                   new Category
+                   {
+                       ID = 6,
+                       Name = "Others",
+                       Description = "Description scripe scripe scripe scripe scripe scripe scripe",
+                       Image = "https://picsum.photos/seed/picsum/201/300"
+                   }
            );
 
         }
@@ -105,6 +110,9 @@ namespace Final
         public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Seller> Seller { get; set; }
         public virtual DbSet<Buyer> Buyer { get; set; }
+        public virtual DbSet<FavAuctions> FavAuctions { get; set; }
+        public virtual DbSet<FavCategories> FavCategories { get; set; }
+        public virtual DbSet<Complain> Complains { get; set; }
 
     }
 }

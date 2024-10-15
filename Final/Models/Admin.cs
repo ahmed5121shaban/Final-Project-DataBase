@@ -13,11 +13,6 @@ namespace Final
         public string ID { get; set; }
         public string UserID { get; set; }
         public virtual User User { get; set; }
-
-
-        public virtual ICollection<Event> Events { get; set; }
-        public virtual ICollection<Item> Items { get; set; }
-        public virtual ICollection<User> Users { get; set; }
     }
 
     public class AdminConfiguration : IEntityTypeConfiguration<Admin>

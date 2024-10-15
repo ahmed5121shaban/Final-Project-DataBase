@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Models.Models;
 
 namespace Final
 {
@@ -18,7 +19,8 @@ namespace Final
         public string Description { get; set; }
 
         public virtual ICollection<Item> Items { get; set; }
-        public virtual ICollection<Buyer> Buyers { get; set; }
+        public virtual ICollection<FavCategories> FavCategories { get; set; }
+
     }
 
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>

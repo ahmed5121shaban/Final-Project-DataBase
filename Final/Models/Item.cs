@@ -29,9 +29,9 @@ namespace Final
         public virtual Seller Seller { get; set; }
         public int? EventID { get; set; }
         public virtual Event Event { get; set; }
-
         public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Admin> Admins { get; set; }
+        public bool Deleted { get; set; }
+        
 
     }
 
@@ -52,6 +52,7 @@ namespace Final
             builder.HasOne(i => i.Event).WithMany(e => e.Items).HasForeignKey(i => i.EventID);
             builder.HasOne(i => i.Category).WithMany(c => c.Items).HasForeignKey(i => i.CategoryID);
             builder.HasOne(i => i.Auction).WithOne(a=>a.Item).HasForeignKey<Item>(i=>i.AuctionID);
+            builder.Property(i => i.Deleted).HasDefaultValue(false);
         }
     }
 }

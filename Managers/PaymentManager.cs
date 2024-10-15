@@ -13,25 +13,32 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Stripe;
+using PayPal;
 
 namespace Managers
 {
     public class PaymentManager:MainManager<Final.Payment>
     {
         private readonly IConfiguration configuration;
+        private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
+        {
+            { "mode", "sandbox" } 
+        };
 
         public PaymentManager(IConfiguration _configuration,FinalDbContext contextOptions):base(contextOptions)
         {
             configuration = _configuration;
         }
 
-        public IQueryable<Final.Payment> GetAll() => GetAll().AsQueryable();
+        public IQueryable<Final.Payment> GetAll() => base.GetAll().AsQueryable();
         public Final.Payment GetByID(int id) => GetAll().FirstOrDefault(p=>p.Id==id);
 
-        public bool Add(PaymentViewModel _paymentView)
+        public bool Add(AddPaymentViewModel _paymentView)
         {
             try
             {
+                var res = GetAll().Where(p=>p.BuyerId==_paymentView.BuyerId&&p.Method==_paymentView.Method).FirstOrDefault();
+                if (res != null) return false;
                 Add(_paymentView.ToModel());
                 return true;
             }
@@ -77,84 +84,141 @@ namespace Managers
         }
 
 
-        public bool AddPayPalPayment(PaymentViewModel paymentView)
+
+        public string AddPayPalPayment(CreatePaymentViewModel _createPayment)
         {
-            var payment = CreatePayment((decimal)paymentView.Amount);
-
-            var approvalUrl = payment.links.FirstOrDefault(link => link.rel.Equals("approval_url", StringComparison.OrdinalIgnoreCase))?.href;
-
-            if (string.IsNullOrEmpty(approvalUrl))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool AddStripePayment(PaymentViewModel paymentView)
-        {
-            var chargeOptions = new ChargeCreateOptions
-            {
-                Amount = (long)(paymentView.Amount * 100),
-                ReceiptEmail = paymentView.StripeEmail,
-                Currency = "EGY",
-                Description = "Auction bid payment",
-                Source = paymentView.Token,
-
-            };
-
-            var chargeService = new ChargeService();
 
             try
             {
-                Charge charge = chargeService.Create(chargeOptions);
-                if (charge.Status == "succeeded")
-                {
-                    //Ok(new { message = "Payment successful", chargeId = charge.Id })
-                    return true;
-                }
-                else
-                {
-                    //BadRequest(new { message = "Payment failed", status = charge.Status })
-                    return false;
-                }
-            }
-            catch (StripeException ex)
-            {
-                //BadRequest(new { message = ex.Message })
-                return false;
-            }
-        }
+                var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
+                    configuration["PayPalSetting:Secret"], Config).GetAccessToken());
 
-        public PayPal.Api.Payment CreatePayment(decimal _amount)
-        {
-            var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPal:ClientId"],
-                configuration["PayPal:ClientSecret"]).GetAccessToken());
-
-            var payment = new PayPal.Api.Payment
-            {
-                /*intent = "sale",*/
-                payer = new Payer { payment_method = "paypal" },
-                transactions = new List<Transaction>
+                var payment = new PayPal.Api.Payment
+                {
+                    intent = "sale",
+                    payer = new Payer { payment_method = "paypal" },
+                    transactions = new List<Transaction>
             {
                 new Transaction
                 {
-                    amount = new Amount { currency = "EGY", total = _amount.ToString() }
+                    amount = new Amount
+                    {
+                        total = _createPayment.Amount.ToString("F2"),
+                        currency = "USD",
+                    },
+                    description = "Auction deposit"
                 }
             },
+                    redirect_urls = new RedirectUrls
+                    {
+                        return_url = "http://localhost:5204/api/Payment/auction/success",
+                        cancel_url = "http://localhost:5204/api/Payment/auction/cancel"
+                    }
+                };
 
-            };
-            return payment.Create(apiContext);
+                var createdPayment = payment.Create(apiContext);
+                return createdPayment.GetApprovalUrl();
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
         }
 
-        public PayPal.Api.Payment ExecutePayment(string paymentId, string payerId)
+        public string AddStripePayment(CreatePaymentViewModel _createPayment)
         {
-            var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPal:ClientId"],
-                configuration["PayPal:ClientSecret"]).GetAccessToken());
-            var paymentExecution = new PaymentExecution { payer_id = payerId };
-            var payment = new PayPal.Api.Payment { id = paymentId };
-            return payment.Execute(apiContext, paymentExecution);
+            try
+            {
+                // Set the API key from the configuration
+                StripeConfiguration.ApiKey = configuration["StripeSetting:SecretKey"];
+
+                // Create session options for Stripe Checkout
+                var options = new Stripe.Checkout.SessionCreateOptions
+                {
+                    PaymentMethodTypes = new List<string> { "card" }, // Specify accepted payment methods
+                    LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            {
+                new Stripe.Checkout.SessionLineItemOptions
+                {
+                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)_createPayment.Amount * 100, // Convert amount to cents
+                        Currency = "usd", // Use USD for the payment
+                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "ProductName", // Get the product name from the model
+                        },
+                    },
+                    Quantity = 1,
+                }
+            },
+                    Mode = "payment", // Payment session mode
+                    SuccessUrl = "https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}", // Redirect on success
+                    CancelUrl = "https://yourdomain.com/cancel", // Redirect on cancel
+                };
+
+                // Create the session service and generate a new session
+                var service = new Stripe.Checkout.SessionService();
+                Stripe.Checkout.Session session = service.Create(options);
+
+                // Return the session URL for redirecting the user to the Stripe Checkout page
+                return session.Url;
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur and return an empty string if unsuccessful
+                return string.Empty;
+            }
+
         }
+
+
+        public dynamic RefundCustomer(APIContext apiContext, string customerEmail, decimal refundAmount)
+        {
+            try
+            {
+                // Create another payout item for the refund
+                var refundItem = new PayoutItem
+                {
+                    recipient_type = PayoutRecipientType.EMAIL,
+                    amount = new Currency
+                    {
+                        value = refundAmount.ToString("F2"),
+                        currency = "USD"
+                    },
+                    receiver = customerEmail,
+                    note = "Refund of deducted fee",
+                    sender_item_id = "refund_item_" + Guid.NewGuid().ToString()
+                };
+
+                // Create payout batch for the refund
+                var refundPayout = new PayPal.Api.Payout
+                {
+                    sender_batch_header = new PayoutSenderBatchHeader
+                    {
+                        sender_batch_id = Guid.NewGuid().ToString(),
+                        email_subject = "Refund of your deducted amount"
+                    },
+                    items = new List<PayoutItem> { refundItem }
+                };
+
+                // Send the refund payout to the customer
+                var createdRefundPayout = refundPayout.Create(apiContext);
+
+                // Return the refund result
+                return new
+                {
+                    status = createdRefundPayout.batch_header.batch_status,
+                    amount = refundAmount
+                };
+            }
+            catch (PayPalException ex)
+            {
+                // Log and handle any refund-related exceptions
+                return new { status = "FAILED", message = ex.Message };
+            }
+        }
+
     }
 }
 
