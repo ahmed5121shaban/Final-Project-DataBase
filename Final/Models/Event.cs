@@ -16,6 +16,9 @@ namespace Final
         public string Type { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string Image { get; set; }
+/*        public string AdminID { get; set; }
+        public virtual Admin Admin { get; set; }*/
         public virtual ICollection<Item> Items { get;set; }
 
     }
@@ -29,6 +32,7 @@ namespace Final
             builder.Property(e => e.Type).HasMaxLength(50);
             builder.Property(e => e.StartDate).IsRequired();
             builder.Property(e => e.EndDate).IsRequired();
-        }
+/*            builder.HasOne(e => e.Admin).WithMany(a=>a.Events).HasForeignKey(e=>e.AdminID);
+*/        }
     }
 }
