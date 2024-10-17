@@ -12,5 +12,7 @@ namespace ModelView
         public string Currency {  get; set; }
         [Required]
         public decimal Amount { get; set; }
+
+        public int? auctionID { get; set; }
     }
 }
