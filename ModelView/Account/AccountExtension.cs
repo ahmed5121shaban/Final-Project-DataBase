@@ -34,7 +34,6 @@ namespace ModelView.Account
                 TimeZone = model.TimeZone,
                 Currency = model.Currency,
                 Age = model.Age,
-                NationalId = model.NationalId,
                 Description = model.Description,
                 Gender = model.Gender,
                 // تحويل أرقام الهاتف إذا كانت موجودة

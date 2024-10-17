@@ -145,8 +145,6 @@ namespace Managers
             if (model.Age > 0)
                 user.Age = model.Age;
 
-            if (!model.NationalId.IsNullOrEmpty())
-                user.NationalId = model.NationalId;
 
             if (!string.IsNullOrWhiteSpace(model.TimeZone))
                 user.TimeZone = model.TimeZone;
