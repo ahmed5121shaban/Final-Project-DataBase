@@ -43,14 +43,14 @@ namespace FinalApi.Controllers
         public IActionResult PaymentForBuyer()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userID))
+                return BadRequest(new { message = "user not found" });
             var payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID&&p.AuctionID!=null);
-           
-            if (payment == null) { 
-                payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID);
-                if (payment == null)
-                    return BadRequest(new { message = "user not found" });
-                 return Ok(payment);
-            }
+          
+            if (payment == null)
+                return BadRequest(new { message = "user not hve payment email" });
+   
+            
             return Ok(payment);
         }
 

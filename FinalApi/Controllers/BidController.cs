@@ -14,17 +14,17 @@ namespace FinalApi.Controllers
     public class BidController : ControllerBase
     {
         
-        private BidManager manager;
         private readonly UserManager<User> userManager;
         private readonly PaymentManager paymentManager;
         private readonly BidManager bidManager;
+        private readonly ItemManager itemManager;
 
-        public BidController(BidManager _manager,UserManager<User> _userManager,PaymentManager _paymentManager,BidManager _bidManager)
+        public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,BidManager _bidManager,ItemManager _itemManager)
         {
-            manager= _manager;
             userManager = _userManager;
             paymentManager = _paymentManager;
             bidManager = _bidManager;
+            itemManager = _itemManager;
         }
 
 
@@ -76,14 +76,14 @@ namespace FinalApi.Controllers
         }
 
 
-        [HttpGet("user-have-payment")]
-        public IActionResult GetPaymentMethodsCount() 
+        [HttpGet("user-have-payment/{itemID:int}")]
+        public IActionResult GetPaymentMethodsCount(int itemID) 
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userID == null)
                 return new JsonResult(new {message="the user not found", count = 4 });
-
-            if(User.IsInRole("Seller"))
+            var item = itemManager.GetAll().FirstOrDefault(i=>i.ID == itemID&&i.SellerID== userID);
+            if (User.IsInRole("Seller")&&item!=null)
                 return new JsonResult( new { message = "not allowed" ,count=0} );
 
             var payments = paymentManager.GetAll().Where(p=>p.BuyerId == userID).ToList();
@@ -117,7 +117,7 @@ namespace FinalApi.Controllers
                 model.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 model.Time = DateTime.Now;
 
-                var res =await manager.Add(model.ToModel());
+                var res =await bidManager.Add(model.ToModel());
                 if (res)
                 {
                     return new JsonResult(new ApiResultModel<bool>()
@@ -164,7 +164,7 @@ namespace FinalApi.Controllers
         [Route("get-highest-bid/{AuctionId}")]
         public IActionResult GetHighestBid(int AuctionId)
         {
-            var res = manager.GetHighest(AuctionId);
+            var res = bidManager.GetHighest(AuctionId);
             if (res != null)
             {
                 return new JsonResult(new ApiResultModel<Bid>()
