@@ -71,7 +71,6 @@ namespace FinalApi.Controllers
                 Currency = user.Currency,
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
                 Age = user.Age.HasValue ? user.Age.Value : 0,
-                NationalId = user.NationalId,
                 Description = user.Description,
                 Gender = user.Gender.HasValue ? user.Gender.Value : Final.Enums.Gender.male,
                 Image = user.Image

@@ -8,6 +8,7 @@ using Stripe;
 using System.Security.Claims;
 using PayPal.Api;
 using PayPal;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FinalApi.Controllers
 {
@@ -42,14 +43,14 @@ namespace FinalApi.Controllers
         public IActionResult PaymentForBuyer()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userID))
+                return BadRequest(new { message = "user not found" });
             var payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID&&p.AuctionID!=null);
-           
-            if (payment == null) { 
-                payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID);
-                if (payment == null)
-                    return BadRequest(new { message = "user not found" });
-                 return Ok(payment);
-            }
+          
+            if (payment == null)
+                return BadRequest(new { message = "user not hve payment email" });
+   
+            
             return Ok(payment);
         }
 
@@ -202,10 +203,10 @@ namespace FinalApi.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            string approvalUrl = paymentManager.AddPayPalPayment(_createPayment);
-            if (string.IsNullOrEmpty(approvalUrl))
+            string result = paymentManager.AddPayPalPayment(_createPayment);
+            if (string.IsNullOrEmpty(result))
                 return BadRequest(new { message = "adding payment is not completed" });
-            return Ok(new { urlCheckOut = approvalUrl, status=200 });
+            return Ok(new { result, status=200 });
         }
 
         [HttpGet("auction/success")]
@@ -266,10 +267,10 @@ namespace FinalApi.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(new {message = "this data is not completed"});
-            string clientSecret = paymentManager.AddStripePayment(_createPayment);
-            if (string.IsNullOrEmpty(clientSecret))
+            string result = paymentManager.AddStripePayment(_createPayment);
+            if (string.IsNullOrEmpty(result))
                 return BadRequest(new { message = "the client Secret is not Created" });
-            return Ok(new { clientSecret });
+            return Ok(new { result, status = 200 });
         }
     }
 
