@@ -26,7 +26,10 @@ namespace FinalApi.Controllers
             FavCategoryManager _favCategoryManager)
         {
             acountManager = _acountManager;
-            this.auctionManager = auctionManager;
+           auctionManager = _auctionManager;
+            reviewManager = _reviewManager;
+            favCategoryManager = _favCategoryManager;
+
         }
 
         [HttpPost("login")]
