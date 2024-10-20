@@ -43,7 +43,7 @@ builder.Services.AddScoped<CloudinaryManager>();
 builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<ComplainManager>();  // √÷› Â–« «·”ÿ—
 builder.Services.AddScoped<FavAuctionManager>();
-
+builder.Services.AddScoped<ReviewManager>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
