@@ -7,6 +7,7 @@ using ModelView.Account;
 using ModelView;
 using System.Security.Claims;
 using static Final.Enums;
+using Microsoft.AspNet.Identity;
 
 namespace FinalApi.Controllers
 {
@@ -15,10 +16,17 @@ namespace FinalApi.Controllers
     public class AcountController : ControllerBase
     {
         private readonly AccountManager acountManager;
+        private readonly ReviewManager reviewManager;
+        private readonly AuctionManager auctionManager;
+        private readonly FavCategoryManager favCategoryManager;
 
-        public AcountController(AccountManager _acountManager)
+        public AcountController(AccountManager _acountManager,
+            ReviewManager _reviewManager,
+            AuctionManager _auctionManager,
+            FavCategoryManager _favCategoryManager)
         {
             acountManager = _acountManager;
+            this.auctionManager = auctionManager;
         }
 
         [HttpPost("login")]
@@ -145,81 +153,82 @@ namespace FinalApi.Controllers
                 return BadRequest(new { Message = "Error updating profile", Errors = result.Errors.Select(e => e.Description) });
             }
         }
-            [Authorize]
-[HttpPost("VerifyIdentity")]
-public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewModel model)
-{
-    if (!ModelState.IsValid)
-    {
-        return BadRequest(ModelState);
-    }
 
-    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-
-    var frontExtension = Path.GetExtension(model.NationalIdFrontImage.FileName).ToLower();
-    var backExtension = Path.GetExtension(model.NationalIdBackImage.FileName).ToLower();
-
-    if (!allowedExtensions.Contains(frontExtension) || !allowedExtensions.Contains(backExtension))
-    {
-        return BadRequest("Only .jpg, .jpeg, and .png files are allowed.");
-    }
-
-    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-    if (!Directory.Exists(uploadsFolder))
-    {
-        Directory.CreateDirectory(uploadsFolder);
-    }
-
-    var uniqueFrontFileName = Guid.NewGuid().ToString() + frontExtension;
-    var uniqueBackFileName = Guid.NewGuid().ToString() + backExtension;
-
-    var nationalIdFrontPath = Path.Combine(uploadsFolder, uniqueFrontFileName);
-    var nationalIdBackPath = Path.Combine(uploadsFolder, uniqueBackFileName);
-
-    try
-    {
-        using (var stream = new FileStream(nationalIdFrontPath, FileMode.Create))
+        [Authorize]
+        [HttpPost("VerifyIdentity")]
+        public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewModel model)
         {
-            await model.NationalIdFrontImage.CopyToAsync(stream);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
+            var frontExtension = Path.GetExtension(model.NationalIdFrontImage.FileName).ToLower();
+            var backExtension = Path.GetExtension(model.NationalIdBackImage.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(frontExtension) || !allowedExtensions.Contains(backExtension))
+            {
+                return BadRequest("Only .jpg, .jpeg, and .png files are allowed.");
+            }
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFrontFileName = Guid.NewGuid().ToString() + frontExtension;
+            var uniqueBackFileName = Guid.NewGuid().ToString() + backExtension;
+
+            var nationalIdFrontPath = Path.Combine(uploadsFolder, uniqueFrontFileName);
+            var nationalIdBackPath = Path.Combine(uploadsFolder, uniqueBackFileName);
+
+            try
+            {
+                using (var stream = new FileStream(nationalIdFrontPath, FileMode.Create))
+                {
+                    await model.NationalIdFrontImage.CopyToAsync(stream);
+                }
+
+                using (var stream = new FileStream(nationalIdBackPath, FileMode.Create))
+                {
+                    await model.NationalIdBackImage.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"File upload failed: {ex.Message}");
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await acountManager.UserManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                System.IO.File.Delete(nationalIdFrontPath);
+                System.IO.File.Delete(nationalIdBackPath);
+                return NotFound("User not found.");
+            }
+
+            // هنا يتم التحديث مباشرة بدون UpdateProfileViewModel
+            user.NationalId = (model.IdNumber);
+            user.NationalIdFrontImage = nationalIdFrontPath; // افترض أن الحقل موجود في كلاس المستخدم
+            user.NationalIdBackImage = nationalIdBackPath;
+            user.BarthDate = model.BarthDate; // تأكد من أن هذا الحقل موجود في المستخدم
+
+            var result = await acountManager.UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                System.IO.File.Delete(nationalIdFrontPath);
+                System.IO.File.Delete(nationalIdBackPath);
+                return BadRequest(new { Message = "Error updating user information", Errors = result.Errors.Select(e => e.Description) });
+            }
+
+            return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
         }
-
-        using (var stream = new FileStream(nationalIdBackPath, FileMode.Create))
-        {
-            await model.NationalIdBackImage.CopyToAsync(stream);
-        }
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, $"File upload failed: {ex.Message}");
-    }
-
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var user = await acountManager.UserManager.FindByIdAsync(userId);
-    if (user == null)
-    {
-        System.IO.File.Delete(nationalIdFrontPath);
-        System.IO.File.Delete(nationalIdBackPath);
-        return NotFound("User not found.");
-    }
-
-    // هنا يتم التحديث مباشرة بدون UpdateProfileViewModel
-    user.NationalId = (model.IdNumber);
-    user.NationalIdFrontImage = nationalIdFrontPath; // افترض أن الحقل موجود في كلاس المستخدم
-    user.NationalIdBackImage = nationalIdBackPath;
-    user.BarthDate = model.BarthDate; // تأكد من أن هذا الحقل موجود في المستخدم
-
-    var result = await acountManager.UserManager.UpdateAsync(user);
-
-    if (!result.Succeeded)
-    {
-        System.IO.File.Delete(nationalIdFrontPath);
-        System.IO.File.Delete(nationalIdBackPath);
-        return BadRequest(new { Message = "Error updating user information", Errors = result.Errors.Select(e => e.Description) });
-    }
-
-    return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
-}
 
         private const long MaxImageSizeInBytes = 5 * 1024 * 1024; // 5MB as an example
 
@@ -270,6 +279,39 @@ public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewMod
         {
             Span<byte> buffer = new Span<byte>(new byte[base64String.Length]);
             return Convert.TryFromBase64String(base64String, buffer, out _);
+        }
+
+        [HttpGet("UserProfile/{UserId}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserProfile(string UserId)
+        {
+            var user = await acountManager.UserManager.FindByIdAsync(UserId);
+            var role = await acountManager.UserManager.GetRolesAsync(user);
+            bool isseller = (role.Contains("Seller")) ? true : false ;
+            var sellerRates = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(r => r.Range).ToList();
+            int range = 0;
+            foreach (var sellerRate in sellerRates)
+            {
+                range += sellerRate;
+            }
+            decimal finalRate = range / sellerRates.Count;
+
+            return Ok( new ProfileViewModel()
+            {
+                FullName = user.Name,
+                IsSeller = isseller,
+                Rate = finalRate,
+                AuctionsNumber = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).Count(),
+                Address = $"{user.City} ,{user.Country}",
+                ReviewsNumber = reviewManager.GetAll().Where(r => r.SellerID == UserId).Count(),
+                FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category).ToList(),
+                LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).ToList(),
+                WonAuctions = auctionManager.GetAll().Where(a=>a.BuyerID == UserId).ToList(),
+                reviews = reviewManager.GetAll().Where(r=>r.SellerID ==UserId).ToList()
+
+            });
+
+            
         }
     }
 }
