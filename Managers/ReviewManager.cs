@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Final;
 
 namespace Managers
 {
-    public class ReviewManager :MainManager<Review>
+    public class ReviewManager:MainManager<Review>
     {
-        public ReviewManager(FinalDbContext context):base(context)
-        { 
+        public ReviewManager(FinalDbContext _context) : base(_context)
+        {
+
         }
     }
 }

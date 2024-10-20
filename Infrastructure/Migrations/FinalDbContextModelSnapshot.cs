@@ -259,6 +259,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -689,25 +693,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8f1cefb4-a487-40a5-ae83-12c9662a30f1",
+                            Id = "fd6e974a-c5b8-43f6-99f5-8ee05ee13c15",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4505db62-8a52-4767-90a8-99d873b92f91",
+                            Id = "0fdfc9e6-1a63-47a0-8dfc-4163d1a04f3b",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c40208a3-2ba7-47df-a1bd-d004e1bc1ef7",
+                            Id = "a2c09704-7ce8-4142-a4e2-4c708032fb02",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "499895db-33a6-4df0-9a6c-5f3a895211cc",
+                            Id = "d36d99ef-8c53-4a65-a511-5b9edf61926b",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });

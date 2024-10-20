@@ -111,7 +111,7 @@ namespace Managers
             },
                     redirect_urls = new RedirectUrls
                     {
-                        return_url = "http://localhost:5204/api/Payment/auction/success",
+                        return_url = $"http://localhost:4200/action/auction-details/{_createPayment.auctionID}",
                         cancel_url = "http://localhost:5204/api/Payment/auction/cancel"
                     }
                 };
@@ -129,44 +129,41 @@ namespace Managers
         {
             try
             {
-                // Set the API key from the configuration
                 StripeConfiguration.ApiKey = configuration["StripeSetting:SecretKey"];
 
-                // Create session options for Stripe Checkout
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    PaymentMethodTypes = new List<string> { "card" }, // Specify accepted payment methods
+                    PaymentMethodTypes = new List<string> { "card" },
                     LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
             {
                 new Stripe.Checkout.SessionLineItemOptions
                 {
                     PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)_createPayment.Amount * 100, // Convert amount to cents
-                        Currency = "usd", // Use USD for the payment
+                        UnitAmount = (long)_createPayment.Amount * 100, 
+                        Currency = "usd",
                         ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = "ProductName", // Get the product name from the model
+                            Name = "ProductName",
                         },
                     },
                     Quantity = 1,
                 }
             },
-                    Mode = "payment", // Payment session mode
-                    SuccessUrl = "https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}", // Redirect on success
-                    CancelUrl = "https://yourdomain.com/cancel", // Redirect on cancel
+                    Mode = "payment",
+                    SuccessUrl = $"http://localhost:4200/action/auction-details/{_createPayment.auctionID}",
+                    CancelUrl = "http://localhost:4200/user",
                 };
 
-                // Create the session service and generate a new session
+                
                 var service = new Stripe.Checkout.SessionService();
                 Stripe.Checkout.Session session = service.Create(options);
 
-                // Return the session URL for redirecting the user to the Stripe Checkout page
+               
                 return session.Url;
             }
             catch (Exception ex)
             {
-                // Handle any errors that occur and return an empty string if unsuccessful
                 return string.Empty;
             }
 
