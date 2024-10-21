@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Managers
 {
@@ -76,6 +77,18 @@ namespace Managers
                 isAscending = true; // We want the lowest bid
             }
 
+            else if (filterOption == "newArrivals")
+            {
+                builder = builder.And(p => p.StartDate >= DateTime.Now.AddDays(-5));
+                isAscending = false; // We want the lowest bid
+            }
+
+            else if (filterOption == "noBids")
+            {
+                builder = builder.And(p => p.Bids.Count()==0);
+                isAscending = false; // We want the lowest bid
+            }
+
             // If no filters were applied
             if (old == builder)
             {
@@ -100,6 +113,10 @@ namespace Managers
             else if (filterOption == "lowestBid")
             {
                 query = query.OrderBy(a => a.Bids.Min(b => b.Amount));
+            }
+            else if (filterOption == "newArrivals")
+            {
+                query = query.OrderByDescending(a => a.StartDate);
             }
 
             // Return paginated result
