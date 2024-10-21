@@ -33,13 +33,13 @@ namespace Managers
         public IQueryable<Final.Payment> GetAll() => base.GetAll().AsQueryable();
         public Final.Payment GetByID(int id) => GetAll().FirstOrDefault(p=>p.Id==id);
 
-        public bool Add(AddPaymentViewModel _paymentView)
+        public async Task<bool> Add(AddPaymentViewModel _paymentView)
         {
             try
             {
                 var res = GetAll().Where(p=>p.BuyerId==_paymentView.BuyerId&&p.Method==_paymentView.Method).FirstOrDefault();
-                if (res != null) return false;
-                Add(_paymentView.ToModel());
+                if (res != null) return true;
+                await base.Add(_paymentView.ToModel());
                 return true;
             }
             catch (Exception ex) 
@@ -140,6 +140,7 @@ namespace Managers
                 {
                     PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
                     {
+                        
                         UnitAmount = (long)_createPayment.Amount * 100, 
                         Currency = "usd",
                         ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
@@ -188,7 +189,6 @@ namespace Managers
                     sender_item_id = "refund_item_" + Guid.NewGuid().ToString()
                 };
 
-                // Create payout batch for the refund
                 var refundPayout = new PayPal.Api.Payout
                 {
                     sender_batch_header = new PayoutSenderBatchHeader

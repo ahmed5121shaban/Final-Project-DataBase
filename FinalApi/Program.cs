@@ -1,6 +1,7 @@
 using E_commerce;
 using Final;
 using FinalApi;
+using Hangfire;
 using Managers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -25,8 +26,17 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
+builder.Services.AddHangfire(configuration => configuration
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(builder.Configuration.GetConnectionString("LocalConn")));
+
+builder.Services.AddHangfireServer();
 
 //register your manager hereeee
+builder.Services.AddSignalR();
+builder.Services.AddScoped<HangfireManager>();
 builder.Services.AddScoped<ChatManager>();
 builder.Services.AddScoped<AccountManager>();
 builder.Services.AddScoped<MessageManager>();
@@ -103,6 +113,8 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseAuthorization();
 app.UseCors();
+app.UseHangfireDashboard("/hangfire");
+app.MapHub<BidsHub>("/BidsHub");
 app.MapControllers();
 
 app.Run();

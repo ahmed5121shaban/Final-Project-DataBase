@@ -3,6 +3,7 @@ using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
 using System.Text;
@@ -18,13 +19,16 @@ namespace FinalApi.Controllers
         private readonly PaymentManager paymentManager;
         private readonly BidManager bidManager;
         private readonly ItemManager itemManager;
+        private readonly IHubContext<BidsHub> hubContext;
 
-        public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,BidManager _bidManager,ItemManager _itemManager)
+        public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,
+            BidManager _bidManager,ItemManager _itemManager,IHubContext<BidsHub> _hubContext)
         {
             userManager = _userManager;
             paymentManager = _paymentManager;
             bidManager = _bidManager;
             itemManager = _itemManager;
+            hubContext = _hubContext;
         }
 
 
@@ -53,14 +57,11 @@ namespace FinalApi.Controllers
             if (userID == null)
                 return BadRequest(new { message = "the user not found" });
 
+            _paymentView.BuyerID = userID;
+
             var user = userManager.Users.FirstOrDefault(u=>u.Id==userID);
                 
-            var userPayment = paymentManager.GetAll().Where(p=>p.BuyerId == userID&&p.Method==_paymentView.Method).FirstOrDefault();
-            if (userPayment == null)
-                return NotFound();
-            userPayment.AuctionID=_paymentView.AuctionID;
-            if (!await paymentManager.Update(userPayment))
-                return BadRequest(new { message = "adding auction id in not completed" });
+           
             _paymentView.Currency = user?.Currency ?? "USD";
             string result= string.Empty;
             if (_paymentView.Method == Enums.PaymentMetod.paypal)
@@ -109,17 +110,24 @@ namespace FinalApi.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add(AddBidViewModel model)
+        public async Task<IActionResult> Add(AddBidViewModel _addBidView)
         {
           
             if (ModelState.IsValid)
             {
-                model.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                model.Time = DateTime.Now;
+                _addBidView.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                _addBidView.Time = DateTime.Now;
 
-                var res =await bidManager.Add(model.ToModel());
+                var res =await bidManager.Add(_addBidView.ToModel());
                 if (res)
                 {
+                    var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID).ToList();
+                    List<BidViewModel> bidViewModels = new List<BidViewModel>();
+                    foreach (var bid in bids)
+                        bidViewModels.Add(bid.ToBidViewModel());
+                    var str = _addBidView.AuctionID;
+                    await hubContext.Clients.Groups(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
+                    await hubContext.Clients.Groups(_addBidView.AuctionID.ToString()).SendAsync("LastBid", bidViewModels.LastOrDefault());
                     return new JsonResult(new ApiResultModel<bool>()
                     {
                         result = res,
@@ -128,6 +136,7 @@ namespace FinalApi.Controllers
                         Message = "done successfully"
 
                     });
+                    
                 }
                 else
                 {
@@ -160,6 +169,7 @@ namespace FinalApi.Controllers
                 }); 
             }
         }
+
         [HttpGet]
         [Route("get-highest-bid/{AuctionId}")]
         public IActionResult GetHighestBid(int AuctionId)
