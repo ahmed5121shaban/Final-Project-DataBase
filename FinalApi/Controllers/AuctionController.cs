@@ -4,6 +4,7 @@ using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
 namespace FinalApi.Controllers
@@ -17,15 +18,23 @@ namespace FinalApi.Controllers
         ItemManager itemManager;
         private readonly PaymentManager paymentManager;
         private readonly HangfireManager hangfireManager;
+        private readonly FavCategoryManager favCategoryManager;
+        private readonly NotificationManager notificationManager;
+        private readonly IHubContext<NotificationsHub> hubContext;
 
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
-            ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager)
+            ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
+            FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
+            IHubContext<NotificationsHub> _hubContext)
         {
             this.auctionManager = _auctionManager;
             this.bidManager = _bidManager;
             this.itemManager = _itemManager;
             paymentManager = _paymentManager;
             hangfireManager = _hangfireManager;
+            favCategoryManager = _favCategoryManager;
+            notificationManager = _notificationManager;
+            hubContext = _hubContext;
         }
 
         [Authorize]
@@ -94,6 +103,31 @@ namespace FinalApi.Controllers
             await itemManager.Update(item);
             
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
+
+            //check favCategory if have user send them that auction add in these category
+            List<string> usersIDs = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID).Select(f=>f.BuyerID).ToList();
+            if (usersIDs.Any())
+            {
+                foreach (var id in usersIDs)
+                {
+                    if (await notificationManager.Add(new Notification
+                    {
+                        Title = Enums.NotificationType.auction,
+                        UserId = id,
+                        Date = DateTime.Now,
+                        Description = "New Auction Added",
+                        IsReaded = false,
+                    }))
+                    {
+                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
+                        foreach (var notify in notificationManager.GetAll().ToList())
+                        {
+                            notificationViewModels.Add(notify.ToViewModel());
+                        }
+                        await hubContext.Clients.Groups(id).SendAsync("notification", notificationViewModels);
+                    }
+                }
+            }
 
             return new JsonResult(new ApiResultModel<string> { result = "auction added successfully" });
         }

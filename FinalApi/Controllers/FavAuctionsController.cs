@@ -31,7 +31,7 @@ namespace FinalApi.Controllers
             var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var buyer = await buyerManager.GetOne(Id);
             var auction=await auctionManager.GetOne(auctionId);
-          var favAuction=  favAuctionManager.GetAll().Where(f => f.AuctionID == auction.ID && f.BuyerID == Id).FirstOrDefault();
+            var favAuction=  favAuctionManager.GetAll().Where(f => f.AuctionID == auction.ID && f.BuyerID == Id).FirstOrDefault();
 
             if (favAuction != null)
             {
