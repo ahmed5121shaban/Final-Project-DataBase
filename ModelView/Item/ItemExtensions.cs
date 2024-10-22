@@ -66,15 +66,16 @@ namespace ModelView
         {
             return new ItemViewModel
             {
-                ID = model.ID,
-                Title = model.Name,
-                Description = model.Description,
+                id = model.ID,
+                name = model.Name,
                 startPrice = model.StartPrice,
                 sellPrice = model.EndPrice,
-                Images = model.Images.ToArray(),
-                Contract = model.ContractFile,
-                Category = model.Category.Name,
-                status=model.Status
+                status = model.Status,
+                category = model.Category.Name,
+                categoryId = model.CategoryID,
+                description = model.Description,
+                contract=model.ContractFile,
+                images = model.Images.Select(img=>img.toImageViewModel()).ToArray(),
 
             };
         }
