@@ -19,7 +19,7 @@ namespace Models.Models
             public string BuyerID { get; set; }
             public virtual Buyer Buyer { get; set; }
 
-        }
+    }
         public class FavCategoryConfiguration : IEntityTypeConfiguration<FavCategories>
         {
             public void Configure(EntityTypeBuilder<FavCategories> builder)
@@ -32,5 +32,5 @@ namespace Models.Models
 
             }
         
-    }
+        }
 }

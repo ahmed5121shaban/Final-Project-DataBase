@@ -20,5 +20,15 @@ namespace ModelView
             };
         }
 
+        public static BidViewModel ToBidViewModel(this Bid _bid)
+        {
+            return new BidViewModel
+            {
+                BidAmount = _bid.Amount,
+                BidTime = _bid.Time,
+                BuyerName = _bid.Buyer.User.Name,
+            };
+        }
+
     }
 }
