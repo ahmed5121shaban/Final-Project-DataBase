@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FinalApi.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
@@ -20,6 +20,7 @@ namespace FinalApi.Controllers
         {
             manager = _manager;
         }
+        [Authorize]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add([FromForm] AddCategoryViewModel model)
@@ -72,7 +73,7 @@ namespace FinalApi.Controllers
                 });
             }
         }
-
+        [Authorize]
         [HttpGet]
         [Route("GetAll")]
         public IActionResult GetAll()
@@ -103,6 +104,7 @@ namespace FinalApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("Delete/{Id}")]
         public async Task<IActionResult> Delete(int id)
@@ -134,6 +136,8 @@ namespace FinalApi.Controllers
             }
 
         }
+
+        [Authorize]
         [HttpGet]
         [Route("Filter")]
         public IActionResult Pagination([FromQuery] string searchText, string calumnName, bool isAscending, int pageSize, int PageNumber)
