@@ -4,6 +4,7 @@ using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
 namespace FinalApi.Controllers
@@ -17,15 +18,23 @@ namespace FinalApi.Controllers
         ItemManager itemManager;
         private readonly PaymentManager paymentManager;
         private readonly HangfireManager hangfireManager;
+        private readonly FavCategoryManager favCategoryManager;
+        private readonly NotificationManager notificationManager;
+        private readonly IHubContext<NotificationsHub> hubContext;
 
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
-            ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager)
+            ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
+            FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
+            IHubContext<NotificationsHub> _hubContext)
         {
             this.auctionManager = _auctionManager;
             this.bidManager = _bidManager;
             this.itemManager = _itemManager;
             paymentManager = _paymentManager;
             hangfireManager = _hangfireManager;
+            favCategoryManager = _favCategoryManager;
+            notificationManager = _notificationManager;
+            hubContext = _hubContext;
         }
 
         [Authorize]
@@ -40,22 +49,25 @@ namespace FinalApi.Controllers
         }
 
 
-        //[Authorize]
-        //[HttpGet("won")]
-        //public async Task<IActionResult> GetWon()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId).ToList();
-        //    return new JsonResult(auctions);
-        //}
+        [Authorize]
+        [HttpGet("won")]
+        public async Task<IActionResult> GetWon()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId).ToList();
+            return new JsonResult(auctions);
+        }
 
-        /*[HttpGet("lost")]
+        [HttpGet("lost")]
         public async Task<IActionResult> GetLost()
         {
-            string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userID))
-                return BadRequest(new { message = "the user not found" });
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
+            //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).Select(a=>a.SeeDetails()).ToList();
+            return new JsonResult(auctions);
+        }
+        /*
             var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
             if (auction == null)
                 return BadRequest(new { message = "no lost auctions found" });
@@ -94,6 +106,31 @@ namespace FinalApi.Controllers
             await itemManager.Update(item);
             
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
+
+            //check favCategory if have user send them that auction add in these category
+            List<string> usersIDs = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID).Select(f=>f.BuyerID).ToList();
+            if (usersIDs.Any())
+            {
+                foreach (var id in usersIDs)
+                {
+                    if (await notificationManager.Add(new Notification
+                    {
+                        Title = Enums.NotificationType.auction,
+                        UserId = id,
+                        Date = DateTime.Now,
+                        Description = "New Auction Added",
+                        IsReaded = false,
+                    }))
+                    {
+                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
+                        foreach (var notify in notificationManager.GetAll().ToList())
+                        {
+                            notificationViewModels.Add(notify.ToViewModel());
+                        }
+                        await hubContext.Clients.Groups(id).SendAsync("notification", notificationViewModels);
+                    }
+                }
+            }
 
             return new JsonResult(new ApiResultModel<string> { result = "auction added successfully" });
         }
@@ -142,7 +179,7 @@ namespace FinalApi.Controllers
                 // Return the paginated active auction data
                 var result = new
                 {
-                    List = paginatedActiveAuctions,
+                    List = paginatedActiveAuctions.Select(a=>a.SeeDetails()),
                     TotalCount = activeAuctions.Count 
                 };
 
@@ -299,7 +336,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetAllActive()
         {
             var auctions = auctionManager.GetAll();
-            var ActiveAuctions = auctions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Ended==false).ToList();
+            var ActiveAuctions = auctions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Ended==false).Select(a => a.SeeDetails()).ToList();
             return Ok(ActiveAuctions);
         }
 
@@ -307,7 +344,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetAllEnded()
         {
             var auctions = auctionManager.GetAll();
-            var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).ToList();
+            var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).Select(a => a.SeeDetails()).ToList();
             return Ok(EndedAuctions);
         }
 
@@ -323,7 +360,7 @@ namespace FinalApi.Controllers
         [HttpGet("popularAuctions")]
         public async Task<IActionResult> PopularAuctions()
         {
-            var popularAuctions = auctionManager.GetAll().OrderByDescending(a => a.Bids.Count).Where(a => a.Ended == false&&a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Bids.Count() > 0).ToList();
+            var popularAuctions = auctionManager.GetAll().OrderByDescending(a => a.Bids.Count).Where(a => a.Ended == false&&a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Bids.Count() > 0).Select(a => a.SeeDetails()).ToList();
             return new JsonResult(popularAuctions);
         }
 
@@ -332,7 +369,7 @@ namespace FinalApi.Controllers
         [HttpGet("newArrivalsAuctions")]
         public async Task<IActionResult> NewArrivalsAuctions()
         {
-            var newArrivals = auctionManager.GetAll().Where(a => !a.Ended  && a.StartDate >= DateTime.Now.AddDays(-5) && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).OrderByDescending(a => a.StartDate).ToList();
+            var newArrivals = auctionManager.GetAll().Where(a => !a.Ended  && a.StartDate >= DateTime.Now.AddDays(-5) && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).OrderByDescending(a => a.StartDate).Select(a => a.SeeDetails()).ToList();
             return new JsonResult(newArrivals);
         }
 
@@ -340,14 +377,14 @@ namespace FinalApi.Controllers
         [HttpGet("endingSoon")]
         public async Task<IActionResult> EndingSoonAuctions()
         {
-            var endingSoonAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.EndDate<=DateTime.Now.AddDays(2)).OrderByDescending(a => a.StartDate).ToList();
+            var endingSoonAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.EndDate<=DateTime.Now.AddDays(2)).OrderByDescending(a => a.StartDate).Select(a => a.SeeDetails()).ToList();
             return new JsonResult(endingSoonAuctions);
         }
 
         [HttpGet("noBids")]
         public async Task<IActionResult> NoBidsAuctions()
         {
-            var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now &&a.Bids.Count()==0).ToList();
+            var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now &&a.Bids.Count()==0).Select(a => a.SeeDetails()).ToList();
             return new JsonResult(noBidsAuctions);
         }
 
