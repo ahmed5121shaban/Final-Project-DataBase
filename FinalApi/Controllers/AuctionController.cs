@@ -40,14 +40,14 @@ namespace FinalApi.Controllers
         }
 
 
-        //[Authorize]
-        //[HttpGet("won")]
-        //public async Task<IActionResult> GetWon()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId).ToList();
-        //    return new JsonResult(auctions);
-        //}
+        [Authorize]
+        [HttpGet("won")]
+        public async Task<IActionResult> GetWon()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId).ToList();
+            return new JsonResult(auctions);
+        }
 
         /*[HttpGet("lost")]
         public async Task<IActionResult> GetLost()

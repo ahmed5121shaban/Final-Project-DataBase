@@ -1,6 +1,7 @@
 ﻿using Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ModelView;
 
 namespace FinalApi.Controllers
 {
@@ -8,9 +9,9 @@ namespace FinalApi.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private ReviewManager reviewMnager;
+        private ReviewManager reviewManager;
        public ReviewController(ReviewManager _reviewManager) {
-        this.reviewMnager=_reviewManager;
+        this.reviewManager = _reviewManager;
         
         }
 
@@ -19,9 +20,27 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetReviews()
         {
 
-            var reviews = reviewMnager.GetAll().ToList();
+            var reviews = reviewManager.GetAll().ToList();
             return new JsonResult(reviews);
         }
 
-    }
+
+        [HttpPost("add")]
+        public async Task<IActionResult> AddReview([FromBody] AddReviewViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await reviewManager.Add(model.ToModel()); 
+                if (result)
+                {
+                    return Ok(new { message = "Review added successfully" });
+                }
+                return BadRequest(new { message = "Failed to add review" });
+            }
+
+         
+            return BadRequest(ModelState);
+        }
+    
+}
 }
