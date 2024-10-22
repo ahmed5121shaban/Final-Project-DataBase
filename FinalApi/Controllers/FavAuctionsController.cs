@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Models.Models;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using ModelView;
 namespace FinalApi.Controllers
 {
     [Authorize]
@@ -79,7 +80,7 @@ namespace FinalApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var auctions = auctionManager.GetAll().ToList();
-            var favAuctions = favAuctionManager.GetAll().Where(f => f.BuyerID == userId&&f.Auction.Ended==false && f.Auction.StartDate <= DateTime.Now && f.Auction.EndDate >= DateTime.Now).ToList();
+            var favAuctions = favAuctionManager.GetAll().Where(f => f.BuyerID == userId&&f.Auction.Ended==false && f.Auction.StartDate <= DateTime.Now && f.Auction.EndDate >= DateTime.Now).Select(a => new {auction=a.Auction.SeeDetails()}).ToList();
 
             return new JsonResult(favAuctions);
         }
