@@ -1,16 +1,16 @@
 ﻿using Final;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Final;
 
 namespace Managers
 {
-    public class ReviewManager:MainManager<Review>
+    public class FavCategoryManager:MainManager<FavCategories>
     {
-        public ReviewManager(FinalDbContext _context) : base(_context)
+        public FavCategoryManager(FinalDbContext context):base(context)
         {
 
         }

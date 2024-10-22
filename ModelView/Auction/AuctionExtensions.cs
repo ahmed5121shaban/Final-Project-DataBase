@@ -53,5 +53,74 @@ namespace ModelView
             };
         }
 
+        public static DoneAuctionViewModel ToDoneAuctionVM(this Auction _auction)
+        {
+            return new DoneAuctionViewModel
+            {
+                AuctionTitle = _auction.Item.Name,
+                EndDate = _auction.EndDate,
+                StartDate= _auction.StartDate,
+                ItemID = _auction.Item.ID,
+                SellerName = _auction.Item.Seller.User.Name,
+                ImageUrl = _auction.Item.Images.Select(i=>i.Src).ToList(),
+            };
+        }
+
+        public static CompletedAuctionViewModel ToCompletedAuctionVM(this Auction _auction)
+        {
+            return new CompletedAuctionViewModel
+            {
+                AuctionTitle = _auction.Item.Name,
+                EndDate = _auction.EndDate,
+                StartDate = _auction.StartDate,
+                SellerName = _auction.Item.Seller.User.Name,
+            };
+        }
+
+        public static LostAuctionViewModel ToLostAuctionVM(this Auction _auction)
+        {
+            List<LostBidsViewModel> bidsList = new List< LostBidsViewModel >();
+            foreach (var item in _auction.Bids)
+            {
+                bidsList.Add(new LostBidsViewModel 
+                {
+                    BidAmount = item.Amount,
+                    BuyerName = item.Buyer.User.Name,
+                }
+                );
+            }
+            return new LostAuctionViewModel
+            {
+                AuctionTitle = _auction.Item.Name,
+                EndDate = _auction.EndDate,
+                StartDate = _auction.StartDate,
+                Bids = bidsList,
+            };
+        }
+
+        public static CompleteAuctionPaymentViewModel ToCompleteAuctionPayment(this Item _item,decimal _bidsAmount)
+        {
+            var method = _item.Auction.Payment?.Method;
+            return new CompleteAuctionPaymentViewModel
+            {
+                ID = (int)_item.AuctionID,
+                City = _item.Seller.User?.City ?? "no City",
+                Country = _item.Seller.User?.Country ?? "no Country",
+                Street = _item.Seller.User?.Street ?? "no Street",
+                CreationDate = _item.Auction.StartDate,
+                ItemDescription = _item.Description,
+                ItemName = _item.Name,
+                PhoneNumber = _item.Seller.User?.PhoneNumber?? "no PhoneNumber",
+                StartPrice = _item.StartPrice,
+                SellerName = _item.Seller.User.Name,
+                Status = "UnPaid",
+                Taxes = 5,
+                EndPrice = _item.EndPrice,
+                TotalBids = _bidsAmount,
+                Method = method??0,
+                Currency = "USD",
+
+            };
+        }
     }
 }

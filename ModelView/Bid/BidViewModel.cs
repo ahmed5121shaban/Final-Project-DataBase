@@ -9,5 +9,8 @@ namespace ModelView
 {
     public class BidViewModel
     {
+        public string BuyerName { get; set; }
+        public decimal BidAmount { get; set; }
+        public DateTime BidTime { get; set; }
     }
 }
