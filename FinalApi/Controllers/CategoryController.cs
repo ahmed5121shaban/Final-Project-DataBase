@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FinalApi.Controllers
 {
-    
+  
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
@@ -73,15 +73,21 @@ namespace FinalApi.Controllers
                 });
             }
         }
-        [Authorize]
+
         [HttpGet]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
-            var res = manager.GetAll().ToList();
+            var res = manager.GetAll().Select(c => new
+            {
+                id = c.ID,
+                name = c.Name,
+                image = c.Image,
+                items = c.Items.Select(i => i.toItemViewModel()).ToArray()
+            }).ToList();
             if (res != null)
             {
-                return new JsonResult(new ApiResultModel<List<Category>>()
+                return new JsonResult(new ApiResultModel<object>()
                 {
                     result = res,
                     StatusCode = 200,
@@ -104,7 +110,6 @@ namespace FinalApi.Controllers
             }
         }
 
-        [Authorize]
         [HttpDelete]
         [Route("Delete/{Id}")]
         public async Task<IActionResult> Delete(int id)
@@ -136,8 +141,6 @@ namespace FinalApi.Controllers
             }
 
         }
-
-        [Authorize]
         [HttpGet]
         [Route("Filter")]
         public IActionResult Pagination([FromQuery] string searchText, string calumnName, bool isAscending, int pageSize, int PageNumber)

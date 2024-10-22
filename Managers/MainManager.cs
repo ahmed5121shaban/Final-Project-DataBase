@@ -41,10 +41,9 @@ namespace Managers
                 await dbContext.SaveChangesAsync();
                 return true;
             }
-            catch 
+            catch (Exception ex)
             {
               
-                //throw ex;
                 return false;
             }
 

@@ -19,16 +19,18 @@ namespace FinalApi.Controllers
         private readonly IConfiguration configuration;
         private readonly UserManager<User> userManager;
         private readonly PaymentManager paymentManager;
+        private readonly AuctionManager auctionManager;
         private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
         {
             { "mode", "sandbox" },
         };
 
-        public PaymentController(IConfiguration _configuration, UserManager<User> _userManager, PaymentManager _paymentManager)
+        public PaymentController(IConfiguration _configuration, UserManager<User> _userManager, PaymentManager _paymentManager,AuctionManager _auctionManager)
         {
             configuration = _configuration;
             userManager = _userManager;
             paymentManager = _paymentManager;
+            auctionManager = _auctionManager;
         }
 
 
@@ -43,23 +45,22 @@ namespace FinalApi.Controllers
         public IActionResult PaymentForBuyer()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(string.IsNullOrEmpty(userID))
+            if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "user not found" });
-            var payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID&&p.AuctionID!=null);
-          
+            var payment = paymentManager.GetAll().FirstOrDefault(p => p.BuyerId == userID && p.AuctionID != null);
+
             if (payment == null)
-                return BadRequest(new { message = "user not hve payment email" });
-   
+                return new JsonResult(new { statusCode = 400, result = payment?.AuctionID??-1, message = "the payment not found" });
             
-            return Ok(payment);
+            return new JsonResult(new { statusCode = 200, result = payment.AuctionID, message = "the payment found successfully" });
         }
 
         [HttpPost("add-payment")]
-        public IActionResult AddPayment(AddPaymentViewModel paymentView)
+        public async Task<IActionResult> AddPayment(AddPaymentViewModel paymentView)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { message = "this data is not completed" });
-            var res = paymentManager.Add(paymentView);
+            var res =await paymentManager.Add(paymentView);
             if (!res)
                 return BadRequest(new { message = "this error in add payment manager" });
             return Created();
@@ -88,10 +89,8 @@ namespace FinalApi.Controllers
             
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = userManager.Users.FirstOrDefault(u => u.Id == userid);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
+
+            if (user == null)return NotFound("User not found");
 
             if(paymentView.Method== Enums.PaymentMetod.paypal)
             {
@@ -102,7 +101,7 @@ namespace FinalApi.Controllers
                 user.StripeEmail = paymentView.StripeEmail;
             }
 
-            if(!paymentManager.Add(new AddPaymentViewModel 
+            if(!await paymentManager.Add(new AddPaymentViewModel 
             { 
                  BuyerId = userid, Method = paymentView.Method 
             }
@@ -203,15 +202,52 @@ namespace FinalApi.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            string result = paymentManager.AddPayPalPayment(_createPayment);
-            if (string.IsNullOrEmpty(result))
+
+            try
+            {
+                var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
+                    configuration["PayPalSetting:Secret"], Config).GetAccessToken());
+
+                var payment = new PayPal.Api.Payment
+                {
+                    intent = "sale",
+                    payer = new Payer { payment_method = "paypal" },
+                    transactions = new List<Transaction>
+            {
+                new Transaction
+                {
+                    amount = new Amount
+                    {
+                        total = _createPayment.Amount.ToString("F2"),
+                        currency = "USD",
+                    },
+                    description = "Auction deposit"
+                }
+            },
+                    redirect_urls = new RedirectUrls
+                    {
+                        return_url = $"http://localhost:4200/user/won-auction?auctionId={_createPayment.auctionID}",
+                        cancel_url = "http://localhost:4200/user/won-auction"
+                    }
+                };
+
+                var createdPayment = payment.Create(apiContext).GetApprovalUrl();
+                return Ok(new { result = createdPayment, status = 200 }); 
+                
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { message = "adding payment is not completed" });
-            return Ok(new { result, status=200 });
+            }
+            
         }
 
         [HttpGet("auction/success")]
-        public IActionResult AuctionSuccess(string paymentId, string payerId)
+        public async Task<IActionResult> AuctionSuccess(string paymentId, string payerId,int auctionId)
         {
+            var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(buyerID))
+                return BadRequest(new { message = "the user not found" ,statusCode = 404});
             try
             {
                 var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
@@ -223,10 +259,16 @@ namespace FinalApi.Controllers
 
                 if (executedPayment.state.ToLower() == "approved")
                 {
-                    return Ok(new { status = "Payment successful", statusCode = 200 });
+                    var auction = auctionManager.GetAll().FirstOrDefault(a=>a.BuyerID== buyerID &&a.ID== auctionId);
+                    if (auction == null)
+                        return BadRequest(new { message = "the payment not completed", statusCode = 404 });
+                    auction.Completed=true;
+                    if(!await auctionManager.Update(auction))
+                        return BadRequest(new { message = "the payment not completed", statusCode = 400 });
+                    return Ok(new { message = "Payment successful", statusCode = 200 });
                 }
 
-                return BadRequest("Payment not approved.");
+                return BadRequest(new {message = "Payment not approved.", statusCode = 400 });
             }
             catch (PaymentsException ex)
             {
@@ -263,14 +305,66 @@ namespace FinalApi.Controllers
         }
 
         [HttpPost("create-stripe-payment")]
-        public IActionResult CreateStripePayment([FromBody] CreatePaymentViewModel _createPayment)
+        public async Task<IActionResult> CreateStripePayment([FromBody] CreatePaymentViewModel _createPayment)
         {
             if(!ModelState.IsValid)
                 return BadRequest(new {message = "this data is not completed"});
-            string result = paymentManager.AddStripePayment(_createPayment);
-            if (string.IsNullOrEmpty(result))
+            var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(buyerID))
+                return BadRequest(new { message = "the user not found" });
+            try
+            {
+                StripeConfiguration.ApiKey = configuration["StripeSetting:SecretKey"];
+
+                var options = new Stripe.Checkout.SessionCreateOptions
+                {
+                    PaymentMethodTypes = new List<string> { "card" },
+                    LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            {
+                new Stripe.Checkout.SessionLineItemOptions
+                {
+                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
+                    {
+
+                        UnitAmount = (long)_createPayment.Amount * 100,
+                        Currency = "usd",
+                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "ProductName",
+                        },
+                    },
+                    Quantity = 1,
+                }
+            },
+                    Mode = "payment",
+                    SuccessUrl = $"http://localhost:4200/user/won-auction?auctionId={_createPayment.auctionID}&success=1",
+                    CancelUrl = "http://localhost:4200/user/won-auction?success=0",
+                };
+
+
+                var service = new Stripe.Checkout.SessionService();
+                Stripe.Checkout.Session session = service.Create(options);
+
+
+                var result = session.Url;
+                if (!string.IsNullOrEmpty(result))
+                {
+                    var auction = auctionManager.GetAll().FirstOrDefault(a => a.BuyerID == buyerID && a.ID == _createPayment.auctionID);
+                    if (auction == null)
+                        return BadRequest(new { message = "the payment not completed", statusCode = 404 });
+                    auction.Completed = true;
+                    if (!await auctionManager.Update(auction))
+                        return BadRequest(new { message = "the payment not completed", statusCode = 400 });
+                }
+
+                return Ok(new { result, status = 200 });
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { message = "the client Secret is not Created" });
-            return Ok(new { result, status = 200 });
+            }
+
+            
         }
     }
 
