@@ -49,16 +49,16 @@ namespace FinalApi.Controllers
         //    return new JsonResult(auctions);
         //}
 
-        /*[HttpGet("lost")]
+        [HttpGet("lost")]
         public async Task<IActionResult> GetLost()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
             //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
-            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).ToList();
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).Select(a=>a.SeeDetails()).ToList();
             return new JsonResult(auctions);
         }
-
+        /*
             var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
             if (auction == null)
                 return BadRequest(new { message = "no lost auctions found" });
