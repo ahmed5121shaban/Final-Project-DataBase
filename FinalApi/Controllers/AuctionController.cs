@@ -169,6 +169,15 @@ namespace FinalApi.Controllers
                         filteredAuctions = allAuctions.List
                             .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended);
                         break;
+                    case "paid":
+                        filteredAuctions = allAuctions.List
+                            .Where(a => a.Completed); 
+                        break;
+
+                    case "unpaid":
+                        filteredAuctions = allAuctions.List
+                            .Where(a => !a.Completed);
+                        break;
 
                     default:
                         filteredAuctions = allAuctions.List; // No filter applied
