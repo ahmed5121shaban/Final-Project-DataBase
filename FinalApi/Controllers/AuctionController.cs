@@ -351,7 +351,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> NoBidsAuctions()
         {
             var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now &&a.Bids.Count()==0).Select(a => a.SeeDetails()).ToList();
-            var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && a.Bids.Count() == 0).ToList();
+        
             return new JsonResult(noBidsAuctions);
         }
 
