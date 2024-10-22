@@ -14,7 +14,18 @@ namespace FinalApi
         }
 
 
-      
+        public async Task AllBids(int auctionId)
+        {
+            var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionId).ToList();
+
+            List<BidViewModel> bidViewModels = new List<BidViewModel>();
+            foreach (var bid in bids)
+                bidViewModels.Add(bid.ToBidViewModel());
+            var connId = Context.ConnectionId;
+            await Clients.Group(auctionId.ToString()).SendAsync("AllBids", bidViewModels);
+        }
+
+       
 
         public async Task JoinGroup(int auctionId)
         {

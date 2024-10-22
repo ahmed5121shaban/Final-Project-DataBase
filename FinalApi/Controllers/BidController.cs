@@ -19,16 +19,22 @@ namespace FinalApi.Controllers
         private readonly PaymentManager paymentManager;
         private readonly BidManager bidManager;
         private readonly ItemManager itemManager;
+        private readonly BidsHub bidsHub;
         private readonly IHubContext<BidsHub> hubContext;
+        private readonly FavAuctionManager favAuctionManager;
+        private readonly NotificationManager notificationManager;
 
         public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,
-            BidManager _bidManager,ItemManager _itemManager,IHubContext<BidsHub> _hubContext)
+            BidManager _bidManager,ItemManager _itemManager, IHubContext<BidsHub> _hubContext,
+            FavAuctionManager _favAuctionManager,NotificationManager _notificationManager)
         {
             userManager = _userManager;
             paymentManager = _paymentManager;
             bidManager = _bidManager;
             itemManager = _itemManager;
             hubContext = _hubContext;
+            favAuctionManager = _favAuctionManager;
+            notificationManager = _notificationManager;
         }
 
 
@@ -121,13 +127,39 @@ namespace FinalApi.Controllers
                 var res =await bidManager.Add(_addBidView.ToModel());
                 if (res)
                 {
+                    /*List<string> usersIDs = favAuctionManager.GetAll().Where(f=>f.AuctionID== _addBidView.AuctionID)
+                        .Select(f=>f.BuyerID).ToList();
+                    if (usersIDs.Any())
+                    {
+                        foreach (var id in usersIDs)
+                        {
+                            if (await notificationManager.Add(new Notification
+                            {
+                                Title = Enums.NotificationType.auction,
+                                UserId = id,
+                                Date = DateTime.Now,
+                                Description = "New Auction Added",
+                                IsReaded = false,
+                            }))
+                                await hubContext.Clients.Groups(id).SendAsync("receive", new
+                                {
+                                    Title = Enums.NotificationType.auction,
+                                    Date = DateTime.Now,
+                                    Description = "New Bid Added",
+                                    IsReaded = false,
+                                });
+                        }
+                    }*/
+
+                    //when i call this func it be error
                     var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID).ToList();
+
                     List<BidViewModel> bidViewModels = new List<BidViewModel>();
                     foreach (var bid in bids)
                         bidViewModels.Add(bid.ToBidViewModel());
-                    var str = _addBidView.AuctionID;
-                    await hubContext.Clients.Groups(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
-                    await hubContext.Clients.Groups(_addBidView.AuctionID.ToString()).SendAsync("LastBid", bidViewModels.LastOrDefault());
+                    
+                    await hubContext.Clients.Group(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
+
                     return new JsonResult(new ApiResultModel<bool>()
                     {
                         result = res,
