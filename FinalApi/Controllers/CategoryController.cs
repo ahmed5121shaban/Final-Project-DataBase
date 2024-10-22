@@ -77,10 +77,16 @@ namespace FinalApi.Controllers
         [Route("GetAll")]
         public IActionResult GetAll()
         {
-            var res = manager.GetAll().ToList();
+            var res = manager.GetAll().Select(c => new
+            {
+                id = c.ID,
+                name = c.Name,
+                image = c.Image,
+                items = c.Items.Select(i => i.toItemViewModel()).ToArray()
+            }).ToList();
             if (res != null)
             {
-                return new JsonResult(new ApiResultModel<List<Category>>()
+                return new JsonResult(new ApiResultModel<object>()
                 {
                     result = res,
                     StatusCode = 200,

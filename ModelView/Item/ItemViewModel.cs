@@ -11,15 +11,17 @@ namespace ModelView
 {
     public class ItemViewModel
     {
-        public int  ID { get; set; }
-        public string Title { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
+        public int  id { get; set; }
+        public string name { get; set; }
+        public string category { get; set; }
+        public int categoryId { get; set; }
+
+        public string description { get; set; }
         public ItemStatus status { get; set; }
         public decimal? sellPrice { get; set; }
         public decimal startPrice { get; set; }
 
-        public string? Contract { get; set; }
-        public Image[] Images { get; set; }
+        public string? contract { get; set; }
+        public ImageViewModel[] images { get; set; }
     }
 }
