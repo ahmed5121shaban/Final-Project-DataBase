@@ -27,7 +27,8 @@ namespace Final
             events,
             watchlist,
             chat,
-            auction
+            auction,
+            complain
         }
 
         public enum ItemStatus

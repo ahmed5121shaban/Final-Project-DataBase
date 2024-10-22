@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ModelView;
+using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace Managers
  
         public async Task<string> MinceAuctionStartPrice(PaymentStartPriceViewModel _paymentView)
         {
+            //logic error not solved here
             var Bid = base.GetAll().FirstOrDefault(u => u.BuyerID == _paymentView.BuyerID&&u.AuctionID==_paymentView.AuctionID);
             if (Bid != null)
                 return string.Empty;
@@ -47,12 +49,13 @@ namespace Managers
                         return string.Empty;
                 
                     Email = _paymentView.PayPalEmail;
-                    var payment = paymentManager.GetAll().FirstOrDefault(p => p.Method == Enums.PaymentMetod.paypal && p.BuyerId == _paymentView.BuyerID);
-                    if (payment != null)
-                    {
-                        payment.AuctionID = _paymentView.AuctionID;
-                        await paymentManager.Update(payment);
-                    }
+                var payment = paymentManager.GetAll().FirstOrDefault(p => p.Method == Enums.PaymentMetod.paypal && p.BuyerId == _paymentView.BuyerID);
+                if (payment != null)
+                {
+                    payment.AuctionID = _paymentView.AuctionID;
+                    await paymentManager.Update(payment);
+                }
+                //paymentManager.Add(_paymentView.ToModel());
                 return result;
 
 

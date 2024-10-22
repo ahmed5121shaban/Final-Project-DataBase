@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Managers;
 using System.Threading.Tasks;
 using ModelView.Complain;
+using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using FinalApi;
+using Final;
+using ModelView;
 
 namespace Controllers
 {
@@ -11,10 +16,15 @@ namespace Controllers
     public class ComplainController : ControllerBase
     {
         private readonly ComplainManager _complainManager;
+        private readonly IHubContext<NotificationsHub> hubContext;
+        private readonly NotificationManager notificationManager;
 
-        public ComplainController(ComplainManager complainManager)
+        public ComplainController(ComplainManager complainManager,IHubContext<NotificationsHub> _hubContext,
+            NotificationManager _notificationManager)
         {
             _complainManager = complainManager;
+            hubContext = _hubContext;
+            notificationManager = _notificationManager;
         }
 
         // إضافة شكوى - يجب أن يكون المشتري مخولًا
@@ -32,6 +42,34 @@ namespace Controllers
             if (!result)
             {
                 return BadRequest("لم يتم العثور على دفع مكتمل أو تم إدخال بيانات غير صحيحة.");
+            }
+           
+            var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!string.IsNullOrEmpty(buyerID))
+            {
+                if (await notificationManager.Add(new Notification
+                {
+                    Date = DateTime.Now,
+                    Description = "Sorry, You Hve Complain :( ",
+                    IsReaded = false,
+                    Title = Enums.NotificationType.complain,
+                    UserId = buyerID,
+                }))
+                {
+                    var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.BuyerID).FirstOrDefault();
+                    if (sellerID.Any())
+                    {
+                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
+                        foreach (var notify in notificationManager.GetAll().ToList())
+                        {
+                            notificationViewModels.Add(notify.ToViewModel());
+                        }
+                        await hubContext.Clients.Groups(sellerID).SendAsync("notification", notificationViewModels);
+
+
+                    }
+                }
             }
 
             return Ok("تم إضافة الشكوى بنجاح.");
