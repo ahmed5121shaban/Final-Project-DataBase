@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class newmig : Migration
+    public partial class last : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -96,7 +96,8 @@ namespace Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -615,10 +616,10 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4505db62-8a52-4767-90a8-99d873b92f91", null, "User", "USER" },
-                    { "499895db-33a6-4df0-9a6c-5f3a895211cc", null, "Buyer", "BUYER" },
-                    { "8f1cefb4-a487-40a5-ae83-12c9662a30f1", null, "Admin", "ADMIN" },
-                    { "c40208a3-2ba7-47df-a1bd-d004e1bc1ef7", null, "Seller", "SELLER" }
+                    { "0fdfc9e6-1a63-47a0-8dfc-4163d1a04f3b", null, "User", "USER" },
+                    { "a2c09704-7ce8-4142-a4e2-4c708032fb02", null, "Seller", "SELLER" },
+                    { "d36d99ef-8c53-4a65-a511-5b9edf61926b", null, "Buyer", "BUYER" },
+                    { "fd6e974a-c5b8-43f6-99f5-8ee05ee13c15", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
