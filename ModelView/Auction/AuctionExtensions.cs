@@ -1,5 +1,6 @@
 ﻿using Final;
 using ModelView;
+using ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,5 +124,16 @@ namespace ModelView
 
             };
         }
+
+        public static AuctionSellerInfoViewModel ToSellerInfo(this Auction auction)
+        {
+            return new AuctionSellerInfoViewModel
+            {
+                AuctionTitle = auction.Item.Name,
+                SellerName = auction.Item.Seller.User.Name,
+                SellerImage = auction.Item.Seller.User.Image,
+            };
+        }
+
     }
 }

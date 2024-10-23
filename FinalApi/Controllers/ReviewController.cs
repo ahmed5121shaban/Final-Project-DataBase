@@ -103,6 +103,26 @@ namespace FinalApi.Controllers
             });
         }
 
+        [HttpGet("GetSellerInfo/{id}")]
+        public async Task<IActionResult> GetSellerInfo(int id)
+        {
+
+            try
+            {
+                var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id).ToSellerInfo();
+
+                if (auction == null)
+                {
+                    return NotFound(new { Message = $"Auction with ID {id} not found." });
+                }
+
+                return Ok(auction);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching the auction.", Error = ex.Message });
+            }
+        }
 
     }
 }
