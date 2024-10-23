@@ -22,7 +22,7 @@ namespace Final
         public string? BuyerID { get; set; }
         public virtual Buyer Buyer { get; set; }
         public virtual ICollection<FavAuctions> FavAuctions { get; set; }
-
+        public virtual Review Review { get; set; }
         public virtual ICollection<Bid> Bids { get; set; }
         public bool Completed { get; set; }
         public bool Ended { get; set; }

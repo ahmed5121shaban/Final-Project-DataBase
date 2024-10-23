@@ -60,6 +60,7 @@ namespace ModelView
                 AuctionTitle = _auction.Item.Name,
                 EndDate = _auction.EndDate,
                 StartDate= _auction.StartDate,
+                Completed= _auction.Completed,
                 ItemID = _auction.Item.ID,
                 SellerName = _auction.Item.Seller.User.Name,
                 ImageUrl = _auction.Item.Images.Select(i=>i.Src).ToList(),

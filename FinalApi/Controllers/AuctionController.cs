@@ -395,7 +395,7 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "the user not found" });
 
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true &&a.Completed==false).ToList();
+            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true).ToList();
             if (!auction.Any())
                 return BadRequest(new { message = "no done auctions found" });
 

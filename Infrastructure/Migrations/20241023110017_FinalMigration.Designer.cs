@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    [Migration("20241017111200_last")]
-    partial class last
+    [Migration("20241023110017_FinalMigration")]
+    partial class FinalMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,6 +153,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -499,6 +502,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<int>("AuctionID")
+                        .HasColumnType("int");
+
                     b.Property<string>("BuyerID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -515,6 +521,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("AuctionID")
+                        .IsUnique();
 
                     b.HasIndex("BuyerID");
 
@@ -696,25 +705,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fd6e974a-c5b8-43f6-99f5-8ee05ee13c15",
+                            Id = "bf66aad9-f6f3-494a-b4f0-dc7e52b23978",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0fdfc9e6-1a63-47a0-8dfc-4163d1a04f3b",
+                            Id = "a4388a75-e1a2-401e-9d86-a55a8f179150",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a2c09704-7ce8-4142-a4e2-4c708032fb02",
+                            Id = "6a0f68f3-1a65-4495-a635-d2a55e2770b5",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "d36d99ef-8c53-4a65-a511-5b9edf61926b",
+                            Id = "2b1bb2e7-d4ef-4538-b840-5b838c771bb1",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -1068,6 +1077,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Final.Review", b =>
                 {
+                    b.HasOne("Final.Auction", "Auction")
+                        .WithOne("Review")
+                        .HasForeignKey("Final.Review", "AuctionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Reviews")
                         .HasForeignKey("BuyerID")
@@ -1079,6 +1094,8 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Auction");
 
                     b.Navigation("Buyer");
 
@@ -1209,6 +1226,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("Bids");
 
                     b.Navigation("FavAuctions");
+
+                    b.Navigation("Review")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Final.Buyer", b =>
