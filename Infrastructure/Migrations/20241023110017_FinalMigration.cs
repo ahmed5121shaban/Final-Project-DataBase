@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class last : Migration
+    public partial class FinalMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,7 +79,8 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Image = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -453,34 +454,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Review",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Range = table.Column<byte>(type: "tinyint", nullable: false),
-                    SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Review", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Review_Buyer_BuyerID",
-                        column: x => x.BuyerID,
-                        principalTable: "Buyer",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Review_Seller_SellerID",
-                        column: x => x.SellerID,
-                        principalTable: "Seller",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Message",
                 columns: table => new
                 {
@@ -611,28 +584,63 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.NoAction);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Range = table.Column<byte>(type: "tinyint", nullable: false),
+                    SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AuctionID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Review_Auctions_AuctionID",
+                        column: x => x.AuctionID,
+                        principalTable: "Auctions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Review_Buyer_BuyerID",
+                        column: x => x.BuyerID,
+                        principalTable: "Buyer",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Review_Seller_SellerID",
+                        column: x => x.SellerID,
+                        principalTable: "Seller",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0fdfc9e6-1a63-47a0-8dfc-4163d1a04f3b", null, "User", "USER" },
-                    { "a2c09704-7ce8-4142-a4e2-4c708032fb02", null, "Seller", "SELLER" },
-                    { "d36d99ef-8c53-4a65-a511-5b9edf61926b", null, "Buyer", "BUYER" },
-                    { "fd6e974a-c5b8-43f6-99f5-8ee05ee13c15", null, "Admin", "ADMIN" }
+                    { "2b1bb2e7-d4ef-4538-b840-5b838c771bb1", null, "Buyer", "BUYER" },
+                    { "6a0f68f3-1a65-4495-a635-d2a55e2770b5", null, "Seller", "SELLER" },
+                    { "a4388a75-e1a2-401e-9d86-a55a8f179150", null, "User", "USER" },
+                    { "bf66aad9-f6f3-494a-b4f0-dc7e52b23978", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "ID", "Description", "Image", "Name" },
+                columns: new[] { "ID", "Description", "Icon", "Image", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/214/300", "Cars" },
-                    { 2, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/213/300", "Food" },
-                    { 3, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/212/300", "Electronic" },
-                    { 4, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/211/300", "Cloths" },
-                    { 5, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/210/300", "Toy" },
-                    { 6, "Description scripe scripe scripe scripe scripe scripe scripe", "https://picsum.photos/seed/picsum/201/300", "Others" }
+                    { 1, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/214/300", "Cars" },
+                    { 2, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/213/300", "Food" },
+                    { 3, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/212/300", "Electronic" },
+                    { 4, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/211/300", "Cloths" },
+                    { 5, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/210/300", "Toy" },
+                    { 6, "Description scripe scripe scripe scripe scripe scripe scripe", null, "https://picsum.photos/seed/picsum/201/300", "Others" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -789,6 +797,12 @@ namespace Infrastructure.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Review_AuctionID",
+                table: "Review",
+                column: "AuctionID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Review_BuyerID",
                 table: "Review",
                 column: "BuyerID");
@@ -851,10 +865,10 @@ namespace Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Auctions");
+                name: "Chats");
 
             migrationBuilder.DropTable(
-                name: "Chats");
+                name: "Auctions");
 
             migrationBuilder.DropTable(
                 name: "Items");

@@ -1,5 +1,6 @@
 ﻿using Final;
 using ModelView;
+using ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,7 @@ namespace ModelView
                 AuctionTitle = _auction.Item.Name,
                 EndDate = _auction.EndDate,
                 StartDate= _auction.StartDate,
+                Completed= _auction.Completed,
                 ItemID = _auction.Item.ID,
                 SellerName = _auction.Item.Seller.User.Name,
                 ImageUrl = _auction.Item.Images.Select(i=>i.Src).ToList(),
@@ -122,5 +124,16 @@ namespace ModelView
 
             };
         }
+
+        public static AuctionSellerInfoViewModel ToSellerInfo(this Auction auction)
+        {
+            return new AuctionSellerInfoViewModel
+            {
+                AuctionTitle = auction.Item.Name,
+                SellerName = auction.Item.Seller.User.Name,
+                SellerImage = auction.Item.Seller.User.Image,
+            };
+        }
+
     }
 }

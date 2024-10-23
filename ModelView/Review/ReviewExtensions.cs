@@ -7,25 +7,27 @@ namespace ModelView
 {
     public static class ReviewExtensions
     {
-        public static Review ToModel(this AddReviewViewModel model)
-        {
-
-            return new Review
+            public static Review ToModel(this AddReviewViewModel model, string sellerId, string buyerId)
             {
-                Range = model.SellerRating,
-                Description = model.SellerReview,
-                SellerID = model.SellerID,
-                BuyerID = model.BuyerID,
-            };
-        }
+                return new Review
+                {
+                    Range = model.SellerRating,
+                    Description = model.SellerReview,
+                    SellerID = sellerId, // Set from method parameter
+                    BuyerID = buyerId,   // Set from method parameter
+                    AuctionID = model.AuctionID,
+                };
+            }
 
-        public static AddReviewViewModel ToAddViewModel(this Review model)
-        {
-            return new AddReviewViewModel
+            public static AddReviewViewModel ToAddViewModel(this Review model)
             {
-                SellerRating = model.Range,
-                SellerReview = model.Description,
-            };
+                return new AddReviewViewModel
+                {
+                    SellerRating = model.Range,
+                    SellerReview = model.Description,
+                    AuctionID = model.AuctionID,
+                    
+                };
+            }
         }
     }
-}
