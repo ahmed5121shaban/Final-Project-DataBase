@@ -20,6 +20,7 @@ namespace FinalApi.Controllers
         {
             manager = _manager;
         }
+        [Authorize]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add([FromForm] AddCategoryViewModel model)

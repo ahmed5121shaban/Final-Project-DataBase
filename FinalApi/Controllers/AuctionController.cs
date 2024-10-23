@@ -136,7 +136,7 @@ namespace FinalApi.Controllers
         }
 
         [HttpGet("GetAuctions")]
-        public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "", string filterOption ="")
+        public IActionResult GetActiveAuctions(string searchtxt = "", string columnName = "Id", bool isAscending = false, int pageSize = 2, int pageNumber = 1, string categoryName = "", string filterOption = "")
         {
             try
             {
@@ -314,7 +314,7 @@ namespace FinalApi.Controllers
                                 && a.StartDate <= DateTime.Now
                                 && a.EndDate >= DateTime.Now
                                 && a.ID != auction.ID
-                                &&!a.Ended) // Exclude the auction itself
+                                && !a.Ended) // Exclude the auction itself
                     .OrderByDescending(a => a.ID)
                     .Take(3)
                     .ToList();
@@ -352,7 +352,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> SellerLiveAuction()
         {
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now).ToList();
+            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now && i.Ended==false).ToList();
             return Ok(LiveAuctions);
         }
 
@@ -385,6 +385,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> NoBidsAuctions()
         {
             var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now &&a.Bids.Count()==0).Select(a => a.SeeDetails()).ToList();
+        
             return new JsonResult(noBidsAuctions);
         }
 
@@ -472,5 +473,16 @@ namespace FinalApi.Controllers
                 Message = "fetching data is completed"
             });
         }
+
+        [HttpGet("Close/{id}")]
+        public async Task<IActionResult> CloseAuction(int id)
+        {
+            var auction = await auctionManager.GetOne(id);
+            auction.Ended = true;
+            var res = await auctionManager.Update(auction);
+            return Ok(res);
+        }
+
+
     }
 }
