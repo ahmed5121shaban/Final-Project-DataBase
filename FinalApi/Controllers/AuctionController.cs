@@ -284,6 +284,14 @@ namespace FinalApi.Controllers
             {
                 var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id).SeeDetails();
 
+                decimal currentPrice = auction.Item.StartPrice;
+                
+                foreach(var bid in auction.Bids)
+                {
+                    currentPrice += bid.Amount;
+                    bid.Amount = currentPrice;
+                }
+                
                 if (auction == null)
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
@@ -396,7 +404,7 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "the user not found" });
 
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true &&a.Completed==false).ToList();
+            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true).ToList();
             if (!auction.Any())
                 return BadRequest(new { message = "no done auctions found" });
 
@@ -425,18 +433,17 @@ namespace FinalApi.Controllers
         public IActionResult AllCompletedAuctions()
         {
             string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "the user not found" });
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Completed == true).ToList();
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userID && a.Completed == true).Select(a=>a.ToCompletedAuctionVM()).ToList();
 
-            List<CompletedAuctionViewModel> completedAuctions = new List<CompletedAuctionViewModel>();
-            foreach (var item in auction)
-                completedAuctions.Add(item.ToCompletedAuctionVM());
+           
 
-            if (completedAuctions.Any())
+            if (auctions.Any())
                 return new JsonResult(new ApiResultModel<List<CompletedAuctionViewModel>>
                 {
-                    result = completedAuctions,
+                    result = auctions,
                     success = true,
                     StatusCode = 200,
                     Message = "fetching data is completed"
@@ -461,7 +468,7 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(buyerID)) return BadRequest(new { message = "user not found" });
 
             decimal bidsAmount = 0;
-            var bids = bidManager.GetAll().Where(b => b.BuyerID == buyerID&&b.AuctionID==item.AuctionID);
+            var bids = bidManager.GetAll().Where(b => b.AuctionID==item.AuctionID);
 
             if (bids.Any()) foreach (var bid in bids) bidsAmount += bid.Amount;
             
