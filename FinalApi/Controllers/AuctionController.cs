@@ -284,6 +284,14 @@ namespace FinalApi.Controllers
             {
                 var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id).SeeDetails();
 
+                decimal currentPrice = auction.Item.StartPrice;
+                
+                foreach(var bid in auction.Bids)
+                {
+                    currentPrice += bid.Amount;
+                    bid.Amount = currentPrice;
+                }
+                
                 if (auction == null)
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
