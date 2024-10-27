@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Final.Enums;
+using static FinalApi.Enums;
 
-namespace Final
+namespace FinalApi
 {
     public class Item
     {

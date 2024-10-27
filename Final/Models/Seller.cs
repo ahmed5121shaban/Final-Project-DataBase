@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.Models;
 
-namespace Final
+namespace FinalApi
 {
     public class Seller
     {

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models.Models;
-using static Final.Enums;
+using static FinalApi.Enums;
 
-namespace Final
+namespace FinalApi
 {
     public class Auction
     {

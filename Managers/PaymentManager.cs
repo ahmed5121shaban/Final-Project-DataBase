@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +17,7 @@ using PayPal;
 
 namespace Managers
 {
-    public class PaymentManager:MainManager<Final.Payment>
+    public class PaymentManager:MainManager<FinalApi.Payment>
     {
         private readonly IConfiguration configuration;
         private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
@@ -30,8 +30,8 @@ namespace Managers
             configuration = _configuration;
         }
 
-        public IQueryable<Final.Payment> GetAll() => base.GetAll().AsQueryable();
-        public Final.Payment GetByID(int id) => GetAll().FirstOrDefault(p=>p.Id==id);
+        public IQueryable<FinalApi.Payment> GetAll() => base.GetAll().AsQueryable();
+        public FinalApi.Payment GetByID(int id) => GetAll().FirstOrDefault(p=>p.Id==id);
 
         public async Task<bool> Add(AddPaymentViewModel _paymentView)
         {

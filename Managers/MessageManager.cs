@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Mvc;
 using ModelView;
 using System;
@@ -29,13 +29,13 @@ namespace Managers
             var message = await base.GetOne(_ID);
             return message;
         }
-        public Task AddMessage(MessageViewModel messageView)
+       /* public Task AddMessage(MessageViewModel messageView)
         {
             return base.Add(messageView.MapToMessage());
         }
         public Task DeleteMessage(MessageViewModel messageView)
         {
             return base.Delete(messageView.MapToMessage());
-        }
+        }*/
     }
 }

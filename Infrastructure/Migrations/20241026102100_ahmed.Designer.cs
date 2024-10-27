@@ -4,6 +4,7 @@ using FinalApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    partial class FinalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241026102100_ahmed")]
+    partial class ahmed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,9 +153,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -505,9 +505,6 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("AuctionID")
-                        .HasColumnType("int");
-
                     b.Property<string>("BuyerID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -525,9 +522,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("AuctionID")
-                        .IsUnique();
-
                     b.HasIndex("BuyerID");
 
                     b.HasIndex("SellerID");
@@ -539,9 +533,6 @@ namespace Infrastructure.Migrations
                 {
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("WithdrawnAmount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("UserID");
 
@@ -711,25 +702,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0bc154c0-8a12-4e7b-b1b8-16e6339ea905",
+                            Id = "4dcc8456-db83-4031-9757-c4f506fbd39a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4bd2a72b-295d-4953-9853-d39cf2e1fc52",
+                            Id = "524cd8e0-199f-4b2d-99a7-08c1334f6997",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5290368c-0539-4ecf-9b91-757652cb6b09",
+                            Id = "e587cadc-0c95-42c3-abb5-6d6d0e9b7577",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "a970be32-0b8a-4163-9755-f9f11930298d",
+                            Id = "c444ed47-8867-4fc1-b1f9-9692df004f6f",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -1091,13 +1082,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("FinalApi.Review", b =>
                 {
-                    b.HasOne("Final.Auction", "Auction")
-                        .WithOne("Review")
-                        .HasForeignKey("Final.Review", "AuctionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Final.Buyer", "Buyer")
+                    b.HasOne("FinalApi.Buyer", "Buyer")
                         .WithMany("Reviews")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1108,8 +1093,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Auction");
 
                     b.Navigation("Buyer");
 
@@ -1240,9 +1223,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Bids");
 
                     b.Navigation("FavAuctions");
-
-                    b.Navigation("Review")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("FinalApi.Buyer", b =>

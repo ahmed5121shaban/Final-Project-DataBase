@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ModelView.Account;
 using ModelView;
 using System.Security.Claims;
-using static Final.Enums;
+using static FinalApi.Enums;
 using Microsoft.AspNet.Identity;
 
 namespace FinalApi.Controllers
@@ -83,7 +83,7 @@ namespace FinalApi.Controllers
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
                 Age = user.Age.HasValue ? user.Age.Value : 0,
                 Description = user.Description,
-                Gender = user.Gender.HasValue ? user.Gender.Value : Final.Enums.Gender.male,
+                Gender = user.Gender.HasValue ? user.Gender.Value : FinalApi.Enums.Gender.male,
                 Image = user.Image
             };
 
