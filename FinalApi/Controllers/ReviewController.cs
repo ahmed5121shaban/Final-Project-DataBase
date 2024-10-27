@@ -124,5 +124,48 @@ namespace FinalApi.Controllers
             }
         }
 
+        [HttpGet("GetSellerReviews")]
+        public async Task<IActionResult> GetSellerReviews()
+        {
+            var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var sellerReviews = reviewManager.GetAll()
+                                              .Where(r => r.SellerID == sellerID)
+                                              .ToList();
+
+            var reviewPageViewModel = new ReviewPageViewModel
+            {
+                TotalReviews = sellerReviews.Count,
+                RatingPercentages = new Dictionary<int, double> { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 } }
+            };
+
+            if (sellerReviews.Any())
+            {
+                // Calculate average rating
+                reviewPageViewModel.AverageRating = sellerReviews.Average(r => r.Range);
+
+                // Calculate percentage breakdown for each rating
+                for (int i = 1; i <= 5; i++)
+                {
+                    var count = sellerReviews.Count(r => r.Range == i);
+                    reviewPageViewModel.RatingPercentages[i] = Math.Round((double)count / sellerReviews.Count * 100, 2);
+                }
+
+
+                // Map each review to ReviewDetailViewModel
+                reviewPageViewModel.Reviews = sellerReviews.Select(r => new ReviewDetailViewModel
+                {
+                    ReviewerID = r.BuyerID,
+                    ReviewerName = r.Buyer?.User?.Name ?? "Anonymous",
+                    ProfileImageUrl = r.Buyer?.User?.Image ,
+                    Rating = r.Range,
+                    ReviewText = r.Description,
+                    //ReviewDate = r.Date 
+                }).ToList();
+            }
+
+            return new JsonResult(reviewPageViewModel);
+        }
+
     }
 }

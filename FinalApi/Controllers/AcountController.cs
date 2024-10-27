@@ -92,8 +92,7 @@ namespace FinalApi.Controllers
 
         [Authorize]
         [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfile(
-            [FromForm] UpdateProfileViewModel model)
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileViewModel model)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -108,7 +107,7 @@ namespace FinalApi.Controllers
                 return NotFound("User not found.");
             }
 
-
+            // Only update the profile image if provided
             if (model.ProfileImage != null)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -123,23 +122,82 @@ namespace FinalApi.Controllers
                     await model.ProfileImage.CopyToAsync(stream);
                 }
 
-                user.Image = filePath;
+                // Store the relative path instead of the full path
+                user.Image = Path.Combine("uploads", model.ProfileImage.FileName);
             }
 
-            var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);
-            if (existingUser != null && existingUser.Id != user.Id)
+            if (!string.IsNullOrWhiteSpace(model.Email))
             {
-                return BadRequest("This email is already taken.");
+                var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);
+                if (existingUser != null && existingUser.Id != user.Id)
+                {
+                    return BadRequest("This email is already taken.");
+                }
+                user.Email = model.Email;
             }
+
+            if (!string.IsNullOrWhiteSpace(model.FirstName) || !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+            }
+            if (!string.IsNullOrWhiteSpace(model.City))
+            {
+                user.City = model.City;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Country))
+            {
+                user.Country = model.Country;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Street))
+            {
+                user.Street = model.Street;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PostalCode))
+            {
+                user.PostalCode = model.PostalCode;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.TimeZone))
+            {
+                user.TimeZone = model.TimeZone;
+            }
+
+            if (model.Age > 0)
+            {
+                user.Age = model.Age;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Description))
+            {
+                user.Description = model.Description;
+            }
+
+            if (model.Gender != null)
+            {
+                user.Gender = model.Gender;
+            }
+
+            // Handle phone numbers
+            if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
+            {
+                // If there are phone numbers provided, create a new list
+                user.PhoneNumbers = model.PhoneNumbers
+                    .Where(phone => !string.IsNullOrWhiteSpace(phone))
+                    .Select(phone => new PhoneNumber { Phone = phone })
+                    .ToList();
+            }
+          
 
             var result = await acountManager.UpdateUserProfileAsync(user, model);
 
             if (result.Succeeded)
             {
-                // بعد التحديث، يتم تعيين البريد الإلكتروني كاسم المستخدم
                 user.UserName = user.Email;
 
-                var updateResult = await acountManager.UserManager.UpdateAsync(user); // تحديث اسم المستخدم
+                var updateResult = await acountManager.UserManager.UpdateAsync(user);
 
                 if (updateResult.Succeeded)
                 {
@@ -155,6 +213,7 @@ namespace FinalApi.Controllers
                 return BadRequest(new { Message = "Error updating profile", Errors = result.Errors.Select(e => e.Description) });
             }
         }
+
 
         [Authorize]
         [HttpPost("VerifyIdentity")]
