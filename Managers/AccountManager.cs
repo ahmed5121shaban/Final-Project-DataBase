@@ -1,5 +1,4 @@
-﻿using FinalApi;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ModelView;
 using ModelView.Account;
@@ -14,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ModelView.Profile;
+using FinalApi;
 namespace Managers
 {
     public class AccountManager : MainManager<User>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
+using FinalApi;
 namespace FinalApi.Controllers
 {
     [ApiController]

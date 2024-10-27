@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ModelView.Account;
 using Microsoft.IdentityModel.Tokens;
-using static FinalApi.Enums;
 using FinalApi;
+using static FinalApi.Enums;
 
 namespace Managers
 {
