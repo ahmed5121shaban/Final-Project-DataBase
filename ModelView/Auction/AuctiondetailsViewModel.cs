@@ -1,11 +1,11 @@
-﻿using Final;
+﻿using FinalApi;
 using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Final.Enums;
+using static FinalApi.Enums;
 
 namespace ModelView
 {

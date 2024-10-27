@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -101,12 +101,12 @@ namespace FinalApi.Controllers
                 user.StripeEmail = paymentView.StripeEmail;
             }
 
-            if(!await paymentManager.Add(new AddPaymentViewModel 
+            /*if(!await paymentManager.Add(new AddPaymentViewModel 
             { 
                  BuyerId = userid, Method = paymentView.Method 
             }
             ))
-                return BadRequest(new { message = "Not Added in Payment Table." });
+                return BadRequest(new { message = "Not Added in Payment Table." });*/
 
             var res = await userManager.UpdateAsync(user);
             if(!res.Succeeded)

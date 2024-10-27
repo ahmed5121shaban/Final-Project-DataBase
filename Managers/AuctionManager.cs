@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -22,9 +22,16 @@ namespace Managers
 
         public async Task<Auction> Add(Auction auction)
         {
-            dbset.Add(auction);
-            await dbcontext.SaveChangesAsync();
-            return auction;
+            try
+            {
+                dbset.Add(auction);
+                await dbcontext.SaveChangesAsync();
+                return auction;
+            }catch(Exception ex)
+            {
+                return null;
+            }
+           
         }
 
 

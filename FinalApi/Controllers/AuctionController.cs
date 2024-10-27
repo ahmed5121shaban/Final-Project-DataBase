@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Hangfire;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
@@ -66,33 +66,34 @@ namespace FinalApi.Controllers
             //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
             var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).Select(a=>a.SeeDetails()).ToList();
             return new JsonResult(auctions);
-        }
-        /*
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
-            if (auction == null)
-                return BadRequest(new { message = "no lost auctions found" });
+            /*
+           var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
+           if (auction == null)
+               return BadRequest(new { message = "no lost auctions found" });
 
-            List<LostAuctionViewModel> lostAuctions = new List<LostAuctionViewModel>();
-            foreach (var item in auction)
-                lostAuctions.Add(item.ToLostAuctionVM());
+           List<LostAuctionViewModel> lostAuctions = new List<LostAuctionViewModel>();
+           foreach (var item in auction)
+               lostAuctions.Add(item.ToLostAuctionVM());
 
-            if (auction != null)
-                return new JsonResult(new ApiResultModel<List<LostAuctionViewModel>>
-                {
-                    result = lostAuctions,
-                    success = true,
-                    StatusCode = 200,
-                    Message = "fetching data is completed"
-                });
-            return new JsonResult(new ApiResultModel<string>
-            {
-                result = "not lost auctions Here",
-                success = false,
-                StatusCode = 404,
-                Message = "fetching data is not completed"
-            });
-        }
+           if (auction != null)
+               return new JsonResult(new ApiResultModel<List<LostAuctionViewModel>>
+               {
+                   result = lostAuctions,
+                   success = true,
+                   StatusCode = 200,
+                   Message = "fetching data is completed"
+               });
+           return new JsonResult(new ApiResultModel<string>
+           {
+               result = "not lost auctions Here",
+               success = false,
+               StatusCode = 404,
+               Message = "fetching data is not completed"
+           });
+       }
 */
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddAuction(AddAuctionModel _item)
         {
@@ -108,26 +109,35 @@ namespace FinalApi.Controllers
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category
-            List<string> usersIDs = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID).Select(f=>f.BuyerID).ToList();
-            if (usersIDs.Any())
+            var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
+                .Select(f=>new { buyerID=f.BuyerID,categoryName=f.Category.Name }).ToList();
+            if (favCatDetail.Any())
             {
-                foreach (var id in usersIDs)
+                foreach (var id in favCatDetail)
                 {
                     if (await notificationManager.Add(new Notification
                     {
                         Title = Enums.NotificationType.auction,
-                        UserId = id,
+                        UserId = id.buyerID,
                         Date = DateTime.Now,
-                        Description = "New Auction Added",
+                        Description = $"New Auction Added in your Favorite Category : {id.categoryName} go and Found your Auction Detail",
                         IsReaded = false,
                     }))
                     {
-                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
-                        foreach (var notify in notificationManager.GetAll().ToList())
+                        try { 
+                        var lastNotification = notificationManager.GetAll().Where(n=>n.UserId==id.buyerID).OrderBy(n=>n.Id).LastOrDefault();
+                        if (lastNotification == null)
+                            return BadRequest(new { message = "no last notification found" });
+                        
+                        await hubContext.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
+
+                        BackgroundJob.Schedule(() => hangfireManager
+                        .AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), DateTime.Now.AddDays(auction.EndDate.Day - 1));
+                        }catch(Exception ex)
                         {
-                            notificationViewModels.Add(notify.ToViewModel());
+
                         }
-                        await hubContext.Clients.Groups(id).SendAsync("notification", notificationViewModels);
+
                     }
                 }
             }

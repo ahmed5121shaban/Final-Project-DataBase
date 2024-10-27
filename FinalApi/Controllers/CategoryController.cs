@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

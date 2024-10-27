@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Final
+namespace FinalApi
 {
     public class FinalDbContext: IdentityDbContext<User>
     {
@@ -92,7 +92,7 @@ namespace Final
                        Image = "https://picsum.photos/seed/picsum/201/300"
                    }
            );
-
+           
         }
 
 

@@ -3,7 +3,7 @@ using CloudinaryDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 
-namespace E_commerce
+namespace Managers
 {
     public class CloudinaryManager
     {
