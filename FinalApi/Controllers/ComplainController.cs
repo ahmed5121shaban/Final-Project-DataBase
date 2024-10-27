@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using FinalApi;
 using FinalApi;
 using ModelView;
+using System.Security.Claims;
 
 namespace Controllers
 {
@@ -95,9 +96,9 @@ namespace Controllers
         // دالة للحصول على ID المشتري الحالي (تأكد من طريقة استخدامك)
         private int GetCurrentBuyerId()
         {
-            // افترض أن المشتري موجود في الـ User Claims، قم بتعديل هذا الجزء حسب كيفية إدارة المستخدمين لديك
-            var buyerIdClaim = User.FindFirst("BuyerId")?.Value;
+            var buyerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return int.TryParse(buyerIdClaim, out var buyerId) ? buyerId : 0;
         }
+
     }
 }

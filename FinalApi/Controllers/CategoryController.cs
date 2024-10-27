@@ -20,6 +20,7 @@ namespace FinalApi.Controllers
         {
             manager = _manager;
         }
+        [Authorize]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add([FromForm] AddCategoryViewModel model)
@@ -82,6 +83,7 @@ namespace FinalApi.Controllers
                 id = c.ID,
                 name = c.Name,
                 image = c.Image,
+                icon=c.Icon,
                 items = c.Items.Select(i => i.toItemViewModel()).ToArray()
             }).ToList();
             if (res != null)

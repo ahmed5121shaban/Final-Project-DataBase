@@ -4,6 +4,7 @@ using FinalApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FinalDbContext))]
-    partial class FinalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241023110017_FinalMigration")]
+    partial class FinalMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,7 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FinalApi.Admin", b =>
+            modelBuilder.Entity("Final.Admin", b =>
                 {
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
@@ -42,7 +45,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Admin");
                 });
 
-            modelBuilder.Entity("FinalApi.Auction", b =>
+            modelBuilder.Entity("Final.Auction", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -92,7 +95,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Auctions");
                 });
 
-            modelBuilder.Entity("FinalApi.Bid", b =>
+            modelBuilder.Entity("Final.Bid", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -122,7 +125,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Bids");
                 });
 
-            modelBuilder.Entity("FinalApi.Buyer", b =>
+            modelBuilder.Entity("Final.Buyer", b =>
                 {
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
@@ -138,7 +141,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Buyer");
                 });
 
-            modelBuilder.Entity("FinalApi.Category", b =>
+            modelBuilder.Entity("Final.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -213,7 +216,7 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("FinalApi.Chat", b =>
+            modelBuilder.Entity("Final.Chat", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -246,7 +249,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("FinalApi.Event", b =>
+            modelBuilder.Entity("Final.Event", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -284,7 +287,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("FinalApi.Image", b =>
+            modelBuilder.Entity("Final.Image", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -307,7 +310,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("FinalApi.Item", b =>
+            modelBuilder.Entity("Final.Item", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -376,7 +379,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("FinalApi.Message", b =>
+            modelBuilder.Entity("Final.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -395,20 +398,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("UserID");
-
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("FinalApi.Notification", b =>
+            modelBuilder.Entity("Final.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -442,7 +439,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Notification");
                 });
 
-            modelBuilder.Entity("FinalApi.Payment", b =>
+            modelBuilder.Entity("Final.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -473,7 +470,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Payment");
                 });
 
-            modelBuilder.Entity("FinalApi.PhoneNumber", b =>
+            modelBuilder.Entity("Final.PhoneNumber", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -497,7 +494,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("PhoneNumbers");
                 });
 
-            modelBuilder.Entity("FinalApi.Review", b =>
+            modelBuilder.Entity("Final.Review", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -535,20 +532,17 @@ namespace Infrastructure.Migrations
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("FinalApi.Seller", b =>
+            modelBuilder.Entity("Final.Seller", b =>
                 {
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("WithdrawnAmount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("UserID");
 
                     b.ToTable("Seller");
                 });
 
-            modelBuilder.Entity("FinalApi.User", b =>
+            modelBuilder.Entity("Final.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -711,25 +705,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0bc154c0-8a12-4e7b-b1b8-16e6339ea905",
+                            Id = "bf66aad9-f6f3-494a-b4f0-dc7e52b23978",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4bd2a72b-295d-4953-9853-d39cf2e1fc52",
+                            Id = "a4388a75-e1a2-401e-9d86-a55a8f179150",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5290368c-0539-4ecf-9b91-757652cb6b09",
+                            Id = "6a0f68f3-1a65-4495-a635-d2a55e2770b5",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "a970be32-0b8a-4163-9755-f9f11930298d",
+                            Id = "2b1bb2e7-d4ef-4538-b840-5b838c771bb1",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -918,32 +912,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("FavCategories");
                 });
 
-            modelBuilder.Entity("FinalApi.Admin", b =>
+            modelBuilder.Entity("Final.Admin", b =>
                 {
-                    b.HasOne("FinalApi.User", "User")
+                    b.HasOne("Final.User", "User")
                         .WithOne("Admin")
-                        .HasForeignKey("FinalApi.Admin", "UserID")
+                        .HasForeignKey("Final.Admin", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalApi.Auction", b =>
+            modelBuilder.Entity("Final.Auction", b =>
                 {
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Auctions")
                         .HasForeignKey("BuyerID");
 
-                    b.HasOne("FinalApi.Item", "Item")
+                    b.HasOne("Final.Item", "Item")
                         .WithOne("Auction")
-                        .HasForeignKey("FinalApi.Auction", "ItemID")
+                        .HasForeignKey("Final.Auction", "ItemID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Payment", "Payment")
+                    b.HasOne("Final.Payment", "Payment")
                         .WithOne("Auction")
-                        .HasForeignKey("FinalApi.Auction", "PaymentID");
+                        .HasForeignKey("Final.Auction", "PaymentID");
 
                     b.Navigation("Buyer");
 
@@ -952,15 +946,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("FinalApi.Bid", b =>
+            modelBuilder.Entity("Final.Bid", b =>
                 {
-                    b.HasOne("FinalApi.Auction", "Auction")
+                    b.HasOne("Final.Auction", "Auction")
                         .WithMany("Bids")
                         .HasForeignKey("AuctionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Bids")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -971,26 +965,26 @@ namespace Infrastructure.Migrations
                     b.Navigation("Buyer");
                 });
 
-            modelBuilder.Entity("FinalApi.Buyer", b =>
+            modelBuilder.Entity("Final.Buyer", b =>
                 {
-                    b.HasOne("FinalApi.User", "User")
+                    b.HasOne("Final.User", "User")
                         .WithOne("Buyer")
-                        .HasForeignKey("FinalApi.Buyer", "UserID")
+                        .HasForeignKey("Final.Buyer", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalApi.Chat", b =>
+            modelBuilder.Entity("Final.Chat", b =>
                 {
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Chats")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Seller", "Seller")
+                    b.HasOne("Final.Seller", "Seller")
                         .WithMany("Chats")
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1001,9 +995,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("FinalApi.Image", b =>
+            modelBuilder.Entity("Final.Image", b =>
                 {
-                    b.HasOne("FinalApi.Item", "Item")
+                    b.HasOne("Final.Item", "Item")
                         .WithMany("Images")
                         .HasForeignKey("ItemID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1012,19 +1006,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("FinalApi.Item", b =>
+            modelBuilder.Entity("Final.Item", b =>
                 {
-                    b.HasOne("FinalApi.Category", "Category")
+                    b.HasOne("Final.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Event", "Event")
+                    b.HasOne("Final.Event", "Event")
                         .WithMany("Items")
                         .HasForeignKey("EventID");
 
-                    b.HasOne("FinalApi.Seller", "Seller")
+                    b.HasOne("Final.Seller", "Seller")
                         .WithMany("Items")
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1037,28 +1031,20 @@ namespace Infrastructure.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("FinalApi.Message", b =>
+            modelBuilder.Entity("Final.Message", b =>
                 {
-                    b.HasOne("FinalApi.Chat", "Chat")
+                    b.HasOne("Final.Chat", "Chat")
                         .WithMany("ChatMessages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.User", "User")
-                        .WithMany("Messages")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Chat");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalApi.Notification", b =>
+            modelBuilder.Entity("Final.Notification", b =>
                 {
-                    b.HasOne("FinalApi.User", "User")
+                    b.HasOne("Final.User", "User")
                         .WithMany("Notifacations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1067,9 +1053,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalApi.Payment", b =>
+            modelBuilder.Entity("Final.Payment", b =>
                 {
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("Payments")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1078,9 +1064,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("Buyer");
                 });
 
-            modelBuilder.Entity("FinalApi.PhoneNumber", b =>
+            modelBuilder.Entity("Final.PhoneNumber", b =>
                 {
-                    b.HasOne("FinalApi.User", "User")
+                    b.HasOne("Final.User", "User")
                         .WithMany("PhoneNumbers")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1089,7 +1075,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalApi.Review", b =>
+            modelBuilder.Entity("Final.Review", b =>
                 {
                     b.HasOne("Final.Auction", "Auction")
                         .WithOne("Review")
@@ -1103,7 +1089,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Seller", "Seller")
+                    b.HasOne("Final.Seller", "Seller")
                         .WithMany("Reviews")
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1116,11 +1102,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("FinalApi.Seller", b =>
+            modelBuilder.Entity("Final.Seller", b =>
                 {
-                    b.HasOne("FinalApi.User", "User")
+                    b.HasOne("Final.User", "User")
                         .WithOne("Seller")
-                        .HasForeignKey("FinalApi.Seller", "UserID")
+                        .HasForeignKey("Final.Seller", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1138,7 +1124,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("FinalApi.User", null)
+                    b.HasOne("Final.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1147,7 +1133,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("FinalApi.User", null)
+                    b.HasOne("Final.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1162,7 +1148,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.User", null)
+                    b.HasOne("Final.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1171,7 +1157,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("FinalApi.User", null)
+                    b.HasOne("Final.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1180,13 +1166,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.Models.Complain", b =>
                 {
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("ComplainesFromSeller")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Seller", "Seller")
+                    b.HasOne("Final.Seller", "Seller")
                         .WithMany("MyComplainesonBuyer")
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1199,13 +1185,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.Models.FavAuctions", b =>
                 {
-                    b.HasOne("FinalApi.Auction", "Auction")
+                    b.HasOne("Final.Auction", "Auction")
                         .WithMany("FavAuctions")
                         .HasForeignKey("AuctionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("FavAuctions")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1218,13 +1204,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Models.Models.FavCategories", b =>
                 {
-                    b.HasOne("FinalApi.Buyer", "Buyer")
+                    b.HasOne("Final.Buyer", "Buyer")
                         .WithMany("FavCategories")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinalApi.Category", "Category")
+                    b.HasOne("Final.Category", "Category")
                         .WithMany("FavCategories")
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1235,7 +1221,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("FinalApi.Auction", b =>
+            modelBuilder.Entity("Final.Auction", b =>
                 {
                     b.Navigation("Bids");
 
@@ -1245,7 +1231,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FinalApi.Buyer", b =>
+            modelBuilder.Entity("Final.Buyer", b =>
                 {
                     b.Navigation("Auctions");
 
@@ -1264,24 +1250,24 @@ namespace Infrastructure.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("FinalApi.Category", b =>
+            modelBuilder.Entity("Final.Category", b =>
                 {
                     b.Navigation("FavCategories");
 
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("FinalApi.Chat", b =>
+            modelBuilder.Entity("Final.Chat", b =>
                 {
                     b.Navigation("ChatMessages");
                 });
 
-            modelBuilder.Entity("FinalApi.Event", b =>
+            modelBuilder.Entity("Final.Event", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("FinalApi.Item", b =>
+            modelBuilder.Entity("Final.Item", b =>
                 {
                     b.Navigation("Auction")
                         .IsRequired();
@@ -1289,13 +1275,13 @@ namespace Infrastructure.Migrations
                     b.Navigation("Images");
                 });
 
-            modelBuilder.Entity("FinalApi.Payment", b =>
+            modelBuilder.Entity("Final.Payment", b =>
                 {
                     b.Navigation("Auction")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FinalApi.Seller", b =>
+            modelBuilder.Entity("Final.Seller", b =>
                 {
                     b.Navigation("Chats");
 
@@ -1306,13 +1292,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("FinalApi.User", b =>
+            modelBuilder.Entity("Final.User", b =>
                 {
                     b.Navigation("Admin");
 
                     b.Navigation("Buyer");
-
-                    b.Navigation("Messages");
 
                     b.Navigation("Notifacations");
 

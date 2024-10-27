@@ -55,6 +55,8 @@ builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<FavCategoryManager>();
 builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<NotificationManager>();
+builder.Services.AddScoped<ComplainManager>();
+builder.Services.AddScoped<UserManager>();// √÷› Â–« «·”ÿ—
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 

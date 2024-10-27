@@ -18,6 +18,9 @@ namespace FinalApi
         public virtual ICollection<Chat> Chats { get; set; }
         public virtual ICollection<Complain> MyComplainesonBuyer { get; set; }
 
+        public decimal? WithdrawnAmount { get; set; }
+
+
     }
     public class SellerConfiguration : IEntityTypeConfiguration<Seller>
     {

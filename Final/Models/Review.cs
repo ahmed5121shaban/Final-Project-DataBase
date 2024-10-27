@@ -18,7 +18,8 @@ namespace FinalApi
         public virtual Seller Seller { get; set; }
         public string BuyerID { get; set; }
         public virtual Buyer Buyer { get; set; }
-
+        public int AuctionID { get; set; }
+        public virtual Auction Auction { get; set; }
     }
 
     public class ReviewConfiguration : IEntityTypeConfiguration<Review>
@@ -30,6 +31,10 @@ namespace FinalApi
             builder.HasOne(x => x.Seller).WithMany(x => x.Reviews).HasForeignKey(r=>r.SellerID);
             // buyer add review
             builder.HasOne(x => x.Buyer).WithMany(x => x.Reviews).HasForeignKey(r=>r.BuyerID);
+
+            builder.HasOne(x => x.Auction)
+               .WithOne(a => a.Review)
+               .HasForeignKey<Review>(x => x.AuctionID);
         }
     }
 }
