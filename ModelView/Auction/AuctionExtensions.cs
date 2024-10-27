@@ -98,7 +98,7 @@ namespace ModelView
 
                 },
                 totalPrice = totalPrice,
-                BuyerName = _auction.Buyer.User.Name,
+                BuyerName = _auction.Buyer?.User?.Name,
                 BidsNumber = _auction.Bids.Count()
             };
         }
