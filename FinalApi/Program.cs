@@ -1,5 +1,3 @@
-using E_commerce;
-using Final;
 using FinalApi;
 using Hangfire;
 using Managers;
@@ -49,16 +47,15 @@ builder.Services.AddScoped<BidManager>();
 builder.Services.AddScoped<BuyerManager>();
 builder.Services.AddScoped<CategoryManager>();
 builder.Services.AddScoped<BuyerManager>();
-builder.Services.AddScoped<CloudinaryManager>();
-builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<ComplainManager>();  // √÷› Â–« «·”ÿ—
+builder.Services.AddScoped<ProfileManager>();
+builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<FavAuctionManager>();
-builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<FavCategoryManager>();
-builder.Services.AddScoped<ReviewManager>();
+builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<NotificationManager>();
-builder.Services.AddScoped<ComplainManager>();
-builder.Services.AddScoped<UserManager>();// √÷› Â–« «·”ÿ—
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -104,6 +101,24 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuer = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:Key"]))
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our SignalR hubs, we use the access token from the query string
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/bidsHub") ||
+                     path.StartsWithSegments("/notificationHub") ||
+                     path.StartsWithSegments("/chatHub")))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddCors(i => i.AddDefaultPolicy(
@@ -111,7 +126,6 @@ builder.Services.AddCors(i => i.AddDefaultPolicy(
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -119,12 +133,21 @@ if (app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 app.UseAuthorization();
-app.UseWebSockets();
 app.UseCors();
+
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseStaticFiles();
+app.UseWebSockets();
+
 app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
 app.MapControllers();
 app.UseHangfireDashboard("/hangfire");
+app.MapHub<BidsHub>("/BidsHub");
+app.MapControllers();
 
 app.Run();

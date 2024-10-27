@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -38,6 +38,28 @@ namespace FinalApi.Controllers
         }
 
 
+
+        [HttpGet("bids/{auctionID:int}")]
+        public IActionResult GetBids(int auctionID)
+        {
+            List<BidViewModel> bidViewModels = new List<BidViewModel>();
+            foreach (var bid in bidManager.GetAll().Where(b => b.AuctionID == auctionID).ToList())
+            {
+                bidViewModels.Add(bid.ToBidViewModel());
+            }
+            if (!bidViewModels.Any())
+                return BadRequest(new { message = "no bids" });
+            return new JsonResult(new ApiResultModel<List<BidViewModel>>
+            {
+                Message = "getting bids completed",
+                result = bidViewModels,
+                success = true,
+                StatusCode = 200
+
+            });
+        }
+
+
         [HttpPost("auction-payment-method")]
         public IActionResult AuctionPaymentMethod([FromBody]AddPaymentViewModel _addPaymentView)
         {
@@ -66,9 +88,8 @@ namespace FinalApi.Controllers
             _paymentView.BuyerID = userID;
 
             var user = userManager.Users.FirstOrDefault(u=>u.Id==userID);
-                
-           
             _paymentView.Currency = user?.Currency ?? "USD";
+
             string result= string.Empty;
             if (_paymentView.Method == Enums.PaymentMetod.paypal)
             {
@@ -83,9 +104,10 @@ namespace FinalApi.Controllers
         }
 
 
-        [HttpGet("user-have-payment/{itemID:int}")]
-        public IActionResult GetPaymentMethodsCount(int itemID) 
+        [HttpGet("user-have-payment/{itemID:int}/{auctionID:int}")]
+        public async Task<IActionResult> GetPaymentMethodsCount(int itemID,int auctionID) 
         {
+
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userID == null)
                 return new JsonResult(new {message="the user not found", count = 4 });
@@ -93,25 +115,19 @@ namespace FinalApi.Controllers
             if (User.IsInRole("Seller")&&item!=null)
                 return new JsonResult( new { message = "not allowed" ,count=0} );
 
-            var payments = paymentManager.GetAll().Where(p=>p.BuyerId == userID).ToList();
+            var user =await userManager.FindByIdAsync(userID);
+            var payment = paymentManager.GetAll().Where(p => p.BuyerId == userID && p.AuctionID == auctionID).FirstOrDefault();
+            if (payment != null)
+                return new JsonResult(new { message = "the user don't have any Payment Method", count = 5 ,method=payment.Method});
 
-            if (payments.Count==0)
-               return new JsonResult(new { message = "the user don't have any Payment Method", count = 1 });
-            else if (payments.Count > 1)
+            if (user.PaypalEmail == null && user.StripeEmail == null)
+                return new JsonResult(new { message = "the user don't have any Payment Method", count = 1 });
+            else if (user.PaypalEmail != null && user.StripeEmail != null)
                 return new JsonResult(new { message = "the user have more than one Payment Method", count = 2 });
-            else 
-                return new JsonResult(new { message = "the user have one Payment Method", count = 3, method = payments.Select(p => p.Method) });
-
-        }
-
-
-        [HttpGet("all-bids-auction{auctionID:int}")]
-        public IActionResult GetBids(int auctionID)
-        {
-            var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionID).ToList();
-            if (bids == null)
-                return BadRequest(new {message="no bids in this auction"});
-            return Ok(bids);
+            else if(user.PaypalEmail!=null)
+                return new JsonResult(new { message = "the user have one Payment Method", count = 3, method = Enums.PaymentMetod.paypal });
+            else
+                return new JsonResult(new { message = "the user have one Payment Method", count = 3, method = Enums.PaymentMetod.stripe });
         }
 
         [HttpPost]
@@ -127,31 +143,6 @@ namespace FinalApi.Controllers
                 var res =await bidManager.Add(_addBidView.ToModel());
                 if (res)
                 {
-                    /*List<string> usersIDs = favAuctionManager.GetAll().Where(f=>f.AuctionID== _addBidView.AuctionID)
-                        .Select(f=>f.BuyerID).ToList();
-                    if (usersIDs.Any())
-                    {
-                        foreach (var id in usersIDs)
-                        {
-                            if (await notificationManager.Add(new Notification
-                            {
-                                Title = Enums.NotificationType.auction,
-                                UserId = id,
-                                Date = DateTime.Now,
-                                Description = "New Auction Added",
-                                IsReaded = false,
-                            }))
-                                await hubContext.Clients.Groups(id).SendAsync("receive", new
-                                {
-                                    Title = Enums.NotificationType.auction,
-                                    Date = DateTime.Now,
-                                    Description = "New Bid Added",
-                                    IsReaded = false,
-                                });
-                        }
-                    }*/
-
-                    //when i call this func it be error
                     var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID).ToList();
 
                     List<BidViewModel> bidViewModels = new List<BidViewModel>();

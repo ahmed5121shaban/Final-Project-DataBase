@@ -6,7 +6,7 @@ using ModelView.Complain;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
-using Final;
+using FinalApi;
 using ModelView;
 using System.Security.Claims;
 
@@ -52,7 +52,7 @@ namespace Controllers
                 if (await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = "Sorry, You Hve Complain :( ",
+                    Description = "Sorry, You Have Complain :( ",
                     IsReaded = false,
                     Title = Enums.NotificationType.complain,
                     UserId = buyerID,
@@ -61,12 +61,11 @@ namespace Controllers
                     var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.BuyerID).FirstOrDefault();
                     if (sellerID.Any())
                     {
-                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
-                        foreach (var notify in notificationManager.GetAll().ToList())
-                        {
-                            notificationViewModels.Add(notify.ToViewModel());
-                        }
-                        await hubContext.Clients.Groups(sellerID).SendAsync("notification", notificationViewModels);
+                        Notification lastNotification = notificationManager.GetAll().Where(n=>n.UserId==sellerID).OrderBy(n => n.Id).LastOrDefault();
+                        if (lastNotification == null)
+                            return BadRequest(new { message = "no last notification found" });
+
+                        await hubContext.Clients.Groups(sellerID).SendAsync("notification", lastNotification.ToViewModel());
 
 
                     }

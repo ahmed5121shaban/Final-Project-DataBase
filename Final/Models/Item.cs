@@ -5,15 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Final.Enums;
+using static FinalApi.Enums;
 
-namespace Final
+namespace FinalApi
 {
     public class Item
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public int CategoryID { get; set; }
+        public string Name { get; set; }        public int CategoryID { get; set; }
         public virtual Category Category { get; set; }
         public string Description { get; set; }
         public DateTime AddTime { get; set; }

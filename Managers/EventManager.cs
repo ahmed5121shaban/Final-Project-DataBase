@@ -1,5 +1,4 @@
-﻿using E_commerce;
-using Final;
+﻿using FinalApi;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelView;
 using System;

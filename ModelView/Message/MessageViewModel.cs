@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,11 +10,12 @@ namespace ModelView
 {
     public class MessageViewModel
     {
-        [Required]
         public string Message { get; set; }
-        [Required,DataType(DataType.DateTime)]
         public DateTime Time { get; set; }
         public int ChatId { get; set; }
+        public string UserImage { get; set; }
+        public string UserName { get; set; }
+        public bool Sender { get; set; }
 
     }
 }

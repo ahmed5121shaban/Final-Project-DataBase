@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,10 @@ namespace ModelView
     {
         public DateTime Time { get; set; }
         public Enums.NotificationType Title { get; set; }
+        //public string TitleText { get; set; }
         public string Description { get; set; }
-        public string SenderName { get; set; }
+        public string SubjectName { get; set; }
+        public bool IsReaded { get; set; }
 
     }
 }

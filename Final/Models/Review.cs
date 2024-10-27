@@ -7,13 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Final
+namespace FinalApi
 {
     public class Review
     {
         public int ID { get; set; }
         public string Description { get; set; }
         public byte Range {  get; set; }  
+        public DateTime Date { get; set; }
         public string SellerID { get; set; }
         public virtual Seller Seller { get; set; }
         public string BuyerID { get; set; }
