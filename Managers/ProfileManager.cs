@@ -7,6 +7,8 @@ using ModelView.Profile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ModelView.Account;
+using Microsoft.IdentityModel.Tokens;
+using static Final.Enums;
 
 namespace Managers
 {
@@ -138,7 +140,7 @@ namespace Managers
 
         private static decimal CalculateProfileCompletion(User user)
         {
-            int totalFields = 11; // تحديث العدد بناءً على عدد الحقول
+            int totalFields = 13; // تحديث العدد بناءً على عدد الحقول
             int filledFields = 0;
 
             if (!string.IsNullOrEmpty(user.Name)) filledFields++;
@@ -151,9 +153,14 @@ namespace Managers
             if (!string.IsNullOrEmpty(user.TimeZone)) filledFields++;
             if (!string.IsNullOrEmpty(user.Currency)) filledFields++;
             if (user.PhoneNumbers != null && user.PhoneNumbers.Count > 0) filledFields++;
+            if (!string.IsNullOrEmpty(user.Description)) filledFields++; // إذا كانت الوصف محددة
+            if (user.Gender == Gender.male || user.Gender == Gender.female) filledFields++; // إذا كان الجنس محدد
+            if (user.Age > 0) filledFields++; // إذا كان العمر محدد
 
             return Math.Round((decimal)filledFields / totalFields * 100);
         }
+
+
     }
 
 }
