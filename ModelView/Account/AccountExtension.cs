@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -36,23 +36,31 @@ namespace ModelView.Account
                 Age = model.Age,
                 Description = model.Description,
                 Gender = model.Gender,
-                // تحويل أرقام الهاتف إذا كانت موجودة
                 PhoneNumbers = model.PhoneNumbers?.Select(phone => new PhoneNumber { Phone = phone }).ToList(),
-                // يمكنك إضافة معالجة لصورة الملف هنا إذا كنت تريد تخزينها
-                Image = model.ProfileImage != null ? ConvertToBase64(model.ProfileImage) : null
+                // تخزين مسار الصورة النسبي بدلاً من تحويلها إلى Base64
+                Image = model.ProfileImage != null ? SaveProfileImage(model.ProfileImage) : null
             };
         }
 
-        // وظيفة لتحويل صورة الملف إلى Base64
-        private static string ConvertToBase64(IFormFile file)
+        // وظيفة لحفظ صورة الملف وإرجاع المسار النسبي
+        private static string SaveProfileImage(IFormFile file)
         {
-            using (var ms = new MemoryStream())
+            // تحديد مسار الحفظ النسبي
+            var relativePath = Path.Combine("uploads", "profile_images", $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+            // التأكد من أن المجلد موجود
+            Directory.CreateDirectory(Path.GetDirectoryName(absolutePath));
+
+            // حفظ الملف في المسار المحدد
+            using (var stream = new FileStream(absolutePath, FileMode.Create))
             {
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-                return Convert.ToBase64String(fileBytes);
+                file.CopyTo(stream);
             }
+
+            return relativePath; // إرجاع المسار النسبي
         }
+
 
         public static User ToModel(this VerifyIdentityViewModel model)
         {

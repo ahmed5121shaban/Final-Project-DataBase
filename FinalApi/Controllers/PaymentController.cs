@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,7 @@ using System.Security.Claims;
 using PayPal.Api;
 using PayPal;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace FinalApi.Controllers
 {
@@ -101,12 +102,12 @@ namespace FinalApi.Controllers
                 user.StripeEmail = paymentView.StripeEmail;
             }
 
-            if(!await paymentManager.Add(new AddPaymentViewModel 
+            /*if(!await paymentManager.Add(new AddPaymentViewModel 
             { 
                  BuyerId = userid, Method = paymentView.Method 
             }
             ))
-                return BadRequest(new { message = "Not Added in Payment Table." });
+                return BadRequest(new { message = "Not Added in Payment Table." });*/
 
             var res = await userManager.UpdateAsync(user);
             if(!res.Succeeded)
@@ -365,6 +366,27 @@ namespace FinalApi.Controllers
             }
 
             
+        }
+
+
+
+        [HttpGet("user-have-payment")]
+        public IActionResult GetPaymentMethodsCount()
+        {
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userID == null)
+                return new JsonResult(new { message = "the user not found", count = 404 });
+        
+
+            var payments = paymentManager.GetAll().Where(p => p.BuyerId == userID).ToList();
+
+            if (payments.Count == 0)
+                return new JsonResult(new { message = "the user don't have any Payment Method", count = 0 });
+            else if (payments.Count > 1)
+                return new JsonResult(new { message = "the user have more than one Payment Method", count = 2 });
+            else
+                return new JsonResult(new { message = "the user have one Payment Method", count = 1, method = payments.Select(p => p.Method) });
+
         }
     }
 

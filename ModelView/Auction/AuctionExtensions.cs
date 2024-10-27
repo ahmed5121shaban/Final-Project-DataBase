@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using ModelView;
 using ModelView;
 using System;
@@ -70,12 +70,36 @@ namespace ModelView
 
         public static CompletedAuctionViewModel ToCompletedAuctionVM(this Auction _auction)
         {
+            decimal startPrice = _auction.Item.StartPrice;
+            decimal totalBids = 0;
+            foreach(var bid in _auction.Bids)
+            {
+                totalBids += bid.Amount;
+            }
+            var totalPrice = startPrice + totalBids;
             return new CompletedAuctionViewModel
             {
-                AuctionTitle = _auction.Item.Name,
+                Id=_auction.ID,
+                Name = _auction.Item.Name,
                 EndDate = _auction.EndDate,
-                StartDate = _auction.StartDate,
-                SellerName = _auction.Item.Seller.User.Name,
+                item = new AuctionItemViewModel
+                {
+                    ID = _auction.Item.ID,
+                    StartPrice = _auction.Item.StartPrice,
+                    status = _auction.Item.Status,
+                    Name = _auction.Item.Name,
+                    AddTime = _auction.Item.AddTime,
+                    Images = _auction.Item.Images.Select(i => i.Src).ToList(),
+                    Description = _auction.Item.Description,
+                    CategoryID = _auction.Item.CategoryID,
+                    Category = _auction.Item.Category.Name,
+                    SellerId = _auction.Item.SellerID,
+                    SellerName = _auction.Item.Seller.User.Name,
+
+                },
+                totalPrice = totalPrice,
+                BuyerName = _auction.Buyer.User.Name,
+                BidsNumber = _auction.Bids.Count()
             };
         }
 
@@ -135,5 +159,7 @@ namespace ModelView
             };
         }
 
+    
+    
     }
 }

@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final
+namespace FinalApi
 {
     public class Notification
     {
+        //adding string type in title remove enum
         public int Id { get; set; }
         public Enums.NotificationType Title { get; set; }
         public DateTime Date { get; set; }

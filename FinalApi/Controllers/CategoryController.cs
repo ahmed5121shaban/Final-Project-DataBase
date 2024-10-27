@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +83,7 @@ namespace FinalApi.Controllers
                 id = c.ID,
                 name = c.Name,
                 image = c.Image,
+                icon=c.Icon,
                 items = c.Items.Select(i => i.toItemViewModel()).ToArray()
             }).ToList();
             if (res != null)

@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Final
+namespace FinalApi
 {
     public class FinalDbContext: IdentityDbContext<User>
     {
@@ -92,7 +92,7 @@ namespace Final
                        Image = "https://picsum.photos/seed/picsum/201/300"
                    }
            );
-
+           
         }
 
 
@@ -113,6 +113,7 @@ namespace Final
         public virtual DbSet<FavAuctions> FavAuctions { get; set; }
         public virtual DbSet<FavCategories> FavCategories { get; set; }
         public virtual DbSet<Complain> Complains { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
     }
 }

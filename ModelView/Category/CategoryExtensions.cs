@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Final;
+using FinalApi;
 using Models;
 
 namespace ModelView
@@ -12,6 +12,17 @@ namespace ModelView
     {
         public static Category ToModel(this AddCategoryViewModel model)
         {
+            //for icon
+            string iconfileName = DateTime.Now.ToFileTime().ToString() + model.Icon.FileName;
+            string iconpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Categories", iconfileName);
+            FileStream iconstream = new(iconpath, FileMode.Create);
+            model.Icon.CopyTo(iconstream);
+            iconstream.Close();
+            var IconPath = (Path.Combine("Images", "Categories", iconfileName));
+
+
+
+            //for image
             string fileName = DateTime.Now.ToFileTime().ToString() + model.Image.FileName;
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Categories", fileName);
             FileStream stream = new(path, FileMode.Create);
@@ -23,7 +34,8 @@ namespace ModelView
                 //ID = model.Id == null ? 0 : model.Id.Value,
                 Name = model.Name,
                 Description = model.Description,
-                Image = ImagePath
+                Image = ImagePath,
+                Icon=IconPath
             };
         }
         //public static AddCategoryViewModel ToAddViewModel(this Category model)

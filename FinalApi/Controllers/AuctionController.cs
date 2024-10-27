@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Hangfire;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +16,7 @@ namespace FinalApi.Controllers
         AuctionManager auctionManager;
         BidManager bidManager;
         ItemManager itemManager;
+        SellerManager sellerManager;
         private readonly PaymentManager paymentManager;
         private readonly HangfireManager hangfireManager;
         private readonly FavCategoryManager favCategoryManager;
@@ -25,7 +26,7 @@ namespace FinalApi.Controllers
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
             ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
             FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
-            IHubContext<NotificationsHub> _hubContext)
+            IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager)
         {
             this.auctionManager = _auctionManager;
             this.bidManager = _bidManager;
@@ -35,6 +36,7 @@ namespace FinalApi.Controllers
             favCategoryManager = _favCategoryManager;
             notificationManager = _notificationManager;
             hubContext = _hubContext;
+            sellerManager = _sellerManager;
         }
 
         [Authorize]
@@ -66,33 +68,34 @@ namespace FinalApi.Controllers
             //auctions  that i lost as its buyer id is not my id,and i shared on it by bids as the auction bid list contains atleast one bid of min
             var auctions = auctionManager.GetAll().Where(a => a.BuyerID != userId && a.BuyerID != null&& a.Bids.Any(b => userBids.Contains(b))).Select(a=>a.SeeDetails()).ToList();
             return new JsonResult(auctions);
-        }
-        /*
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
-            if (auction == null)
-                return BadRequest(new { message = "no lost auctions found" });
+            /*
+           var auction = auctionManager.GetAll().Where(a => a.BuyerID== userID && a.Payment.IsDone == false).ToList();
+           if (auction == null)
+               return BadRequest(new { message = "no lost auctions found" });
 
-            List<LostAuctionViewModel> lostAuctions = new List<LostAuctionViewModel>();
-            foreach (var item in auction)
-                lostAuctions.Add(item.ToLostAuctionVM());
+           List<LostAuctionViewModel> lostAuctions = new List<LostAuctionViewModel>();
+           foreach (var item in auction)
+               lostAuctions.Add(item.ToLostAuctionVM());
 
-            if (auction != null)
-                return new JsonResult(new ApiResultModel<List<LostAuctionViewModel>>
-                {
-                    result = lostAuctions,
-                    success = true,
-                    StatusCode = 200,
-                    Message = "fetching data is completed"
-                });
-            return new JsonResult(new ApiResultModel<string>
-            {
-                result = "not lost auctions Here",
-                success = false,
-                StatusCode = 404,
-                Message = "fetching data is not completed"
-            });
-        }
+           if (auction != null)
+               return new JsonResult(new ApiResultModel<List<LostAuctionViewModel>>
+               {
+                   result = lostAuctions,
+                   success = true,
+                   StatusCode = 200,
+                   Message = "fetching data is completed"
+               });
+           return new JsonResult(new ApiResultModel<string>
+           {
+               result = "not lost auctions Here",
+               success = false,
+               StatusCode = 404,
+               Message = "fetching data is not completed"
+           });
+       }
 */
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddAuction(AddAuctionModel _item)
         {
@@ -108,26 +111,35 @@ namespace FinalApi.Controllers
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category
-            List<string> usersIDs = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID).Select(f=>f.BuyerID).ToList();
-            if (usersIDs.Any())
+            var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
+                .Select(f=>new { buyerID=f.BuyerID,categoryName=f.Category.Name }).ToList();
+            if (favCatDetail.Any())
             {
-                foreach (var id in usersIDs)
+                foreach (var id in favCatDetail)
                 {
                     if (await notificationManager.Add(new Notification
                     {
                         Title = Enums.NotificationType.auction,
-                        UserId = id,
+                        UserId = id.buyerID,
                         Date = DateTime.Now,
-                        Description = "New Auction Added",
+                        Description = $"New Auction Added in your Favorite Category : {id.categoryName} go and Found your Auction Detail",
                         IsReaded = false,
                     }))
                     {
-                        List<NotificationViewModel> notificationViewModels = new List<NotificationViewModel>();
-                        foreach (var notify in notificationManager.GetAll().ToList())
+                        try { 
+                        var lastNotification = notificationManager.GetAll().Where(n=>n.UserId==id.buyerID).OrderBy(n=>n.Id).LastOrDefault();
+                        if (lastNotification == null)
+                            return BadRequest(new { message = "no last notification found" });
+                        
+                        await hubContext.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
+
+                        BackgroundJob.Schedule(() => hangfireManager
+                        .AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), DateTime.Now.AddDays(auction.EndDate.Day - 1));
+                        }catch(Exception ex)
                         {
-                            notificationViewModels.Add(notify.ToViewModel());
+
                         }
-                        await hubContext.Clients.Groups(id).SendAsync("notification", notificationViewModels);
+
                     }
                 }
             }
@@ -284,6 +296,14 @@ namespace FinalApi.Controllers
             {
                 var auction = auctionManager.GetAll().FirstOrDefault(i => i.ID == id).SeeDetails();
 
+                decimal currentPrice = auction.Item.StartPrice;
+                
+                foreach(var bid in auction.Bids)
+                {
+                    currentPrice += bid.Amount;
+                    bid.Amount = currentPrice;
+                }
+                
                 if (auction == null)
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
@@ -425,18 +445,44 @@ namespace FinalApi.Controllers
         public IActionResult AllCompletedAuctions()
         {
             string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "the user not found" });
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Completed == true).ToList();
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userID && a.Completed == true).Select(a=>a.ToCompletedAuctionVM()).ToList();
 
-            List<CompletedAuctionViewModel> completedAuctions = new List<CompletedAuctionViewModel>();
-            foreach (var item in auction)
-                completedAuctions.Add(item.ToCompletedAuctionVM());
+           
 
-            if (completedAuctions.Any())
+            if (auctions.Any())
                 return new JsonResult(new ApiResultModel<List<CompletedAuctionViewModel>>
                 {
-                    result = completedAuctions,
+                    result = auctions,
+                    success = true,
+                    StatusCode = 200,
+                    Message = "fetching data is completed"
+                });
+            return new JsonResult(new ApiResultModel<string>
+            {
+                result = null,
+                success = false,
+                StatusCode = 404,
+                Message = "fetching data is not completed"
+            });
+        }
+        [HttpGet("AllInCompletedAuctions")]
+        public IActionResult AllInCompletedAuctions()
+        {
+            string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userID))
+                return BadRequest(new { message = "the user not found" });
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userID && a.Completed == false && a.Ended==true).Select(a => a.ToCompletedAuctionVM()).ToList();
+
+
+
+            if (auctions.Any())
+                return new JsonResult(new ApiResultModel<List<CompletedAuctionViewModel>>
+                {
+                    result = auctions,
                     success = true,
                     StatusCode = 200,
                     Message = "fetching data is completed"
@@ -451,6 +497,106 @@ namespace FinalApi.Controllers
         }
 
 
+        [HttpGet("getAvailableBalance")]
+        public async Task<IActionResult> GetAvailableBalance()
+        {
+            string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userID))
+                return BadRequest(new { message = "the user not found" });
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userID && a.Completed == true).Select(a => a.ToCompletedAuctionVM()).ToList();
+            decimal availableBalance = auctions.Sum(a => a.totalPrice);
+            var seller =await sellerManager.GetOne(userID);
+            var withdrawnAmount = (decimal)seller.WithdrawnAmount;
+            if (withdrawnAmount != null)
+            { availableBalance = auctions.Sum(a => a.totalPrice) -withdrawnAmount; }
+           
+                return new JsonResult(new ApiResultModel<object>
+                {
+                    result = new
+                    {availablebalance = availableBalance,PaymentEmail = new { paypalEmail = seller.User.PaypalEmail, StripeEmail = seller.User.StripeEmail } },
+                        success = true,
+                        StatusCode = 200,
+                        Message = "fetching data is completed"
+                    });   
+        }
+
+        [HttpGet("withdraw/{amount}")]
+        public async Task<IActionResult> WithDraw(decimal amount)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userId && a.Completed == true).Select(a => a.ToCompletedAuctionVM()).ToList();
+           
+            // get the available balance to compare it with the amount will be witdrawn only
+            var availableBalance = auctions.Sum(a => a.totalPrice) - await GetWithdrawnAmount(userId);
+            if (amount > availableBalance)
+            {
+                return BadRequest(new {message= "insufficient balance" });
+            }
+            UpdateWithdrawnAmount(userId, amount);
+
+            return Ok(new {message="withdrawn successfully"});
+        }
+
+        private async Task<decimal> GetWithdrawnAmount(string userID)
+        {
+            var seller =await sellerManager.GetOne(userID);
+            var withdrawnAmount = seller.WithdrawnAmount;
+            
+
+            return (decimal)withdrawnAmount; 
+            
+            
+        }
+
+        [HttpGet("getwithdrawnamount")]
+        public async Task<IActionResult> GetWithdrawnAmount()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var seller = await sellerManager.GetOne(userId);
+            var withdrawnAmount = seller.WithdrawnAmount;
+
+            return Ok(withdrawnAmount);
+        }
+        private async Task<IActionResult> UpdateWithdrawnAmount(string userID,decimal _amount)
+        {
+            var seller = await sellerManager.GetOne(userID);
+            seller.WithdrawnAmount += _amount;
+           var result= sellerManager.Update(seller);
+
+            return Ok(result);
+        }
+
+        [HttpGet("getUpComingBalance")]
+        public IActionResult GetUpcomingBalance()
+        {
+            string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userID))
+                return BadRequest(new { message = "the user not found" });
+            var auctions = auctionManager.GetAll().Where(a => a.Item.SellerID == userID && a.Completed == false && a.Ended == true).Select(a => a.ToCompletedAuctionVM()).ToList();
+            decimal upcomingBalance = 0;
+            foreach (var auction in auctions)
+            {
+                upcomingBalance += auction.totalPrice;
+            }
+
+            if (auctions.Any())
+                return new JsonResult(new ApiResultModel<decimal>
+                {
+                    result = upcomingBalance,
+                    success = true,
+                    StatusCode = 200,
+                    Message = "fetching data is completed"
+                });
+            return new JsonResult(new ApiResultModel<string>
+            {
+                result = null,
+                success = false,
+                StatusCode = 404,
+                Message = "fetching data is not completed"
+            });
+        }
+
         [HttpGet("CompleteAuctionPayment/{_itemID:int}")]
         public IActionResult CompleteAuctionPayment(int _itemID)
         {
@@ -461,7 +607,7 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(buyerID)) return BadRequest(new { message = "user not found" });
 
             decimal bidsAmount = 0;
-            var bids = bidManager.GetAll().Where(b => b.BuyerID == buyerID&&b.AuctionID==item.AuctionID);
+            var bids = bidManager.GetAll().Where(b => b.AuctionID==item.AuctionID);
 
             if (bids.Any()) foreach (var bid in bids) bidsAmount += bid.Amount;
             

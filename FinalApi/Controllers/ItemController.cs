@@ -1,10 +1,11 @@
-﻿using Final; 
+﻿using FinalApi; 
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Net.WebSockets;
 using System.Security.Claims;
@@ -18,12 +19,16 @@ namespace FinalApi.Controllers
     {
          ItemManager itemManager;
          AccountManager accountManager;
-       
-        public ItemController(ItemManager _itemManager,AccountManager _accountManager)
+        private readonly NotificationManager notificationManager;
+        private readonly IHubContext<NotificationsHub> hubContext;
+
+        public ItemController(ItemManager _itemManager,AccountManager _accountManager,
+            NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
-           
+            notificationManager = _notificationManager;
+            hubContext = _hubContext;
         }
         [Authorize]
         [HttpPost]
@@ -38,7 +43,7 @@ namespace FinalApi.Controllers
                 _item.sellerId = userId;
             }
             //get user by id 
-            User user =await accountManager.GetOne(userId);
+            User user = await accountManager.GetOne(userId);
             //to check if user is seller
             await accountManager.CheckIfSeller(user);
             //if user is seller, continue adding item,
@@ -199,6 +204,20 @@ namespace FinalApi.Controllers
             var res = await itemManager.Update(item);
             if (res)
             {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = item.SellerID,
+                    Date = DateTime.Now,
+                    Description = $"The {item.Name} is Accepted",
+                    IsReaded = false,
+                })
+                    ) {
+                    var lastNotification = notificationManager.GetAll()
+                        .Where(n => n.UserId == item.SellerID)
+                        .OrderBy(n => n.Id).LastOrDefault();
+                    await hubContext.Clients.Group(item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
+                }
                 return Ok(res);
             }
             else

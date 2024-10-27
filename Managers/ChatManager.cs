@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using ModelView;
 using System;
 using System.Collections.Generic;
@@ -26,10 +26,10 @@ namespace Managers
              
         }
 
-        public async Task CreateChat(ChatViewModel chatView)
+        /*public async Task CreateChat(ChatViewModel chatView)
         {
             await base.Add(chatView.MapToChat());
-        }
+        }*/
 
         public async Task DeleteChat(int id)
         {

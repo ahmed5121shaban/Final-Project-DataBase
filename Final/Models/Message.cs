@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final
+namespace FinalApi
 {
     public class Message
     {
@@ -16,7 +16,9 @@ namespace Final
         public DateTime Time { get; set; }
         public int ChatId { get; set; }
         public virtual Chat Chat { get; set; }
-        //
+        public string UserID { get; set; }
+        public virtual User User { get; set; }
+        
     }
 
     public class MessageConfiguration : IEntityTypeConfiguration<Message>
