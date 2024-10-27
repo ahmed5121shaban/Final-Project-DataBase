@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Final;
+using FinalApi;
 using Managers;
 using ModelView.Profile;
 using ModelView;

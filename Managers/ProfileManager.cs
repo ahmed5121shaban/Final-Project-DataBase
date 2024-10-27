@@ -1,5 +1,4 @@
-﻿using Final;
-using System.Linq;
+﻿using System.Linq;
 using Models;
 using Models.Models;
 using ModelView;
@@ -8,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ModelView.Account;
 using Microsoft.IdentityModel.Tokens;
-using static Final.Enums;
+using static FinalApi.Enums;
+using FinalApi;
 
 namespace Managers
 {

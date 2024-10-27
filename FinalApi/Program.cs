@@ -53,6 +53,7 @@ builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<FavAuctionManager>();
 builder.Services.AddScoped<FavCategoryManager>();
 builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<NotificationManager>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -125,17 +126,15 @@ builder.Services.AddCors(i => i.AddDefaultPolicy(
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-<<<<<<< HEAD
 app.UseStaticFiles();
 app.UseAuthorization();
 app.UseCors();
-=======
+
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -147,7 +146,6 @@ app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
 app.MapControllers();
->>>>>>> 9b1beedb26a413ef4a8c49842c8971b8e7119e2f
 app.UseHangfireDashboard("/hangfire");
 app.MapHub<BidsHub>("/BidsHub");
 app.MapControllers();
