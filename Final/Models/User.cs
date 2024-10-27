@@ -8,10 +8,10 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Final.Enums;
+using static FinalApi.Enums;
 
 
-namespace Final
+namespace FinalApi
 {
     public class User : IdentityUser
     {
@@ -40,6 +40,7 @@ namespace Final
         public virtual Admin? Admin { get; set; }
         public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public virtual ICollection<Notification> Notifacations { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
 
     }
 

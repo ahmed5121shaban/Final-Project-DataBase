@@ -16,7 +16,7 @@ namespace ModelView
         [Required]
         [StringLength(1000, ErrorMessage = "The review can't be longer than 1000 characters.")]
         public string SellerReview { get; set; }
-
+        public DateTime ReviewDate { get; set; }
         public int AuctionID { get; set; }
     }
 }

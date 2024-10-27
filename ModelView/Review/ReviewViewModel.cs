@@ -1,23 +1,39 @@
-﻿using Final;
+﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelView
 {
-    public class ReviewViewModel
+    public class ReviewPageViewModel
     {
-        public string BuyerName {  get; set; }
-        public string review { get; set; }
+        public double AverageRating { get; set; }
+        public int TotalReviews { get; set; }
+        public Dictionary<int, double> RatingPercentages { get; set; }
+        public List<ReviewDetailViewModel> Reviews { get; set; }
 
         public string BuyerId {  get; set; }
 
         public string BuyerImage {  get; set; }
-        
-        public byte ReviewRange {  get; set; }
-        public DateTime Date {  get; set; }
+
+        public ReviewPageViewModel()
+        {
+            RatingPercentages = new Dictionary<int, double> { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 } };
+            Reviews = new List<ReviewDetailViewModel>();
+        }
+    }
+
+
+    public class ReviewDetailViewModel
+    {
+        public string ReviewerID { get; set; }
+        public string ReviewerName { get; set; }
+        public string ProfileImageUrl { get; set; }
+        public byte Rating { get; set; }
+        public string ReviewText { get; set; }
+        public DateTime ReviewDate { get; set; }
+
 
     }
+
 }

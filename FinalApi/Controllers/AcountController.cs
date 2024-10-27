@@ -1,4 +1,4 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ModelView.Account;
 using ModelView;
 using System.Security.Claims;
-using static Final.Enums;
+using static FinalApi.Enums;
 using Microsoft.AspNet.Identity;
 
 namespace FinalApi.Controllers
@@ -83,7 +83,7 @@ namespace FinalApi.Controllers
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
                 Age = user.Age.HasValue ? user.Age.Value : 0,
                 Description = user.Description,
-                Gender = user.Gender.HasValue ? user.Gender.Value : Final.Enums.Gender.male,
+                Gender = user.Gender.HasValue ? user.Gender.Value : FinalApi.Enums.Gender.male,
                 Image = user.Image
             };
 
@@ -92,8 +92,7 @@ namespace FinalApi.Controllers
 
         [Authorize]
         [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfile(
-            [FromForm] UpdateProfileViewModel model)
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileViewModel model)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -108,38 +107,97 @@ namespace FinalApi.Controllers
                 return NotFound("User not found.");
             }
 
-
+            // Only update the profile image if provided
             if (model.ProfileImage != null)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                var profileImagesFolder = Path.Combine("Images", "profile_images");
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", profileImagesFolder));
 
-                var filePath = Path.Combine(uploadsFolder, model.ProfileImage.FileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(model.ProfileImage.FileName)}";
+                var relativePath = Path.Combine(profileImagesFolder, uniqueFileName);
+                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+                using (var stream = new FileStream(absolutePath, FileMode.Create))
                 {
                     await model.ProfileImage.CopyToAsync(stream);
                 }
 
-                user.Image = filePath;
+                // Store the relative path instead of the full path
+                user.Image = Path.Combine("uploads", model.ProfileImage.FileName);
             }
 
-            var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);
-            if (existingUser != null && existingUser.Id != user.Id)
+            if (!string.IsNullOrWhiteSpace(model.Email))
             {
-                return BadRequest("This email is already taken.");
+                var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);
+                if (existingUser != null && existingUser.Id != user.Id)
+                {
+                    return BadRequest("This email is already taken.");
+                }
+                user.Email = model.Email;
             }
+
+            if (!string.IsNullOrWhiteSpace(model.FirstName) || !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+            }
+            if (!string.IsNullOrWhiteSpace(model.City))
+            {
+                user.City = model.City;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Country))
+            {
+                user.Country = model.Country;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Street))
+            {
+                user.Street = model.Street;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PostalCode))
+            {
+                user.PostalCode = model.PostalCode;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.TimeZone))
+            {
+                user.TimeZone = model.TimeZone;
+            }
+
+            if (model.Age > 0)
+            {
+                user.Age = model.Age;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Description))
+            {
+                user.Description = model.Description;
+            }
+
+            if (model.Gender != null)
+            {
+                user.Gender = model.Gender;
+            }
+
+            // Handle phone numbers
+            if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
+            {
+                // If there are phone numbers provided, create a new list
+                user.PhoneNumbers = model.PhoneNumbers
+                    .Where(phone => !string.IsNullOrWhiteSpace(phone))
+                    .Select(phone => new PhoneNumber { Phone = phone })
+                    .ToList();
+            }
+          
 
             var result = await acountManager.UpdateUserProfileAsync(user, model);
 
             if (result.Succeeded)
             {
-                // بعد التحديث، يتم تعيين البريد الإلكتروني كاسم المستخدم
                 user.UserName = user.Email;
 
-                var updateResult = await acountManager.UserManager.UpdateAsync(user); // تحديث اسم المستخدم
+                var updateResult = await acountManager.UserManager.UpdateAsync(user);
 
                 if (updateResult.Succeeded)
                 {
@@ -156,6 +214,7 @@ namespace FinalApi.Controllers
             }
         }
 
+
         [Authorize]
         [HttpPost("VerifyIdentity")]
         public async Task<IActionResult> VerifyIdentity([FromForm] VerifyIdentityViewModel model)
@@ -166,7 +225,6 @@ namespace FinalApi.Controllers
             }
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-
             var frontExtension = Path.GetExtension(model.NationalIdFrontImage.FileName).ToLower();
             var backExtension = Path.GetExtension(model.NationalIdBackImage.FileName).ToLower();
 
@@ -175,27 +233,26 @@ namespace FinalApi.Controllers
                 return BadRequest("Only .jpg, .jpeg, and .png files are allowed.");
             }
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            var nationalIdImagesFolder = Path.Combine("Images", "national_id_images");
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", nationalIdImagesFolder));
 
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            var uniqueFrontFileName = $"{Guid.NewGuid()}{frontExtension}";
+            var uniqueBackFileName = $"{Guid.NewGuid()}{backExtension}";
 
-            var uniqueFrontFileName = Guid.NewGuid().ToString() + frontExtension;
-            var uniqueBackFileName = Guid.NewGuid().ToString() + backExtension;
+            var nationalIdFrontPath = Path.Combine(nationalIdImagesFolder, uniqueFrontFileName);
+            var nationalIdBackPath = Path.Combine(nationalIdImagesFolder, uniqueBackFileName);
 
-            var nationalIdFrontPath = Path.Combine(uploadsFolder, uniqueFrontFileName);
-            var nationalIdBackPath = Path.Combine(uploadsFolder, uniqueBackFileName);
+            var absoluteFrontPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", nationalIdFrontPath);
+            var absoluteBackPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", nationalIdBackPath);
 
             try
             {
-                using (var stream = new FileStream(nationalIdFrontPath, FileMode.Create))
+                using (var stream = new FileStream(absoluteFrontPath, FileMode.Create))
                 {
                     await model.NationalIdFrontImage.CopyToAsync(stream);
                 }
 
-                using (var stream = new FileStream(nationalIdBackPath, FileMode.Create))
+                using (var stream = new FileStream(absoluteBackPath, FileMode.Create))
                 {
                     await model.NationalIdBackImage.CopyToAsync(stream);
                 }
@@ -209,28 +266,28 @@ namespace FinalApi.Controllers
             var user = await acountManager.UserManager.FindByIdAsync(userId);
             if (user == null)
             {
-                System.IO.File.Delete(nationalIdFrontPath);
-                System.IO.File.Delete(nationalIdBackPath);
+                System.IO.File.Delete(absoluteFrontPath);
+                System.IO.File.Delete(absoluteBackPath);
                 return NotFound("User not found.");
             }
 
-            // هنا يتم التحديث مباشرة بدون UpdateProfileViewModel
-            user.NationalId = (model.IdNumber);
-            user.NationalIdFrontImage = nationalIdFrontPath; // افترض أن الحقل موجود في كلاس المستخدم
-            user.NationalIdBackImage = nationalIdBackPath;
-            user.BarthDate = model.BarthDate; // تأكد من أن هذا الحقل موجود في المستخدم
+            user.NationalId = model.IdNumber;
+            user.NationalIdFrontImage = nationalIdFrontPath; // المسار النسبي لصورة الجهة الأمامية
+            user.NationalIdBackImage = nationalIdBackPath;   // المسار النسبي لصورة الجهة الخلفية
+            user.BarthDate = model.BarthDate;
 
             var result = await acountManager.UserManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                System.IO.File.Delete(nationalIdFrontPath);
-                System.IO.File.Delete(nationalIdBackPath);
+                System.IO.File.Delete(absoluteFrontPath);
+                System.IO.File.Delete(absoluteBackPath);
                 return BadRequest(new { Message = "Error updating user information", Errors = result.Errors.Select(e => e.Description) });
             }
 
             return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
         }
+
 
         private const long MaxImageSizeInBytes = 5 * 1024 * 1024; // 5MB as an example
 

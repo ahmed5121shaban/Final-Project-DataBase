@@ -1,8 +1,8 @@
-﻿using Final;
+﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Mvc;
 using ModelView.Account;
-using static Final.Enums;
+using static FinalApi.Enums;
 
 namespace FinalApi.Controllers
 {
