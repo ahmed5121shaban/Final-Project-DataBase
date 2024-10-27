@@ -46,7 +46,7 @@ namespace FinalApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userBids = bidManager.GetAll().Where(b => b.BuyerID == userId);
             //auctions  that still active as its buyer id is null,and i shared on it by bids as the auction bid list contains atleast one bid of min
-            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == userId && a.Bids.Any(b => userBids.Contains(b))).ToList();
+            var auctions = auctionManager.GetAll().Where(a => a.BuyerID == null &&a.Ended==false&& a.Bids.Any(b => userBids.Contains(b))).Select(a=>a.ToCompletedAuctionVM()).ToList();
             return new JsonResult(auctions);
         }
 
