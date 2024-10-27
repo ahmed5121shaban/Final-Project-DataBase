@@ -7,7 +7,7 @@ namespace ModelView
 {
     public static class ReviewExtensions
     {
-            public static Review ToModel(this AddReviewViewModel model, string sellerId, string buyerId)
+            public static Review ToModel(this AddReviewViewModel model, string sellerId, string buyerId , DateTime ReviewDate)
             {
                 return new Review
                 {
@@ -16,6 +16,7 @@ namespace ModelView
                     SellerID = sellerId, // Set from method parameter
                     BuyerID = buyerId,   // Set from method parameter
                     AuctionID = model.AuctionID,
+                    Date=model.ReviewDate
                 };
             }
 

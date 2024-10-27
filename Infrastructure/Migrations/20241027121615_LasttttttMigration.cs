@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalMigration : Migration
+    public partial class LasttttttMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -294,7 +294,8 @@ namespace Infrastructure.Migrations
                 name: "Seller",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WithdrawnAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -461,17 +462,24 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ChatId = table.Column<int>(type: "int", nullable: false)
+                    ChatId = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Message", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Message_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Message_Chats_ChatId",
                         column: x => x.ChatId,
                         principalTable: "Chats",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -592,6 +600,7 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Range = table.Column<byte>(type: "tinyint", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SellerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BuyerID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AuctionID = table.Column<int>(type: "int", nullable: false)
@@ -624,10 +633,10 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2b1bb2e7-d4ef-4538-b840-5b838c771bb1", null, "Buyer", "BUYER" },
-                    { "6a0f68f3-1a65-4495-a635-d2a55e2770b5", null, "Seller", "SELLER" },
-                    { "a4388a75-e1a2-401e-9d86-a55a8f179150", null, "User", "USER" },
-                    { "bf66aad9-f6f3-494a-b4f0-dc7e52b23978", null, "Admin", "ADMIN" }
+                    { "2c53f393-7d99-41e6-8df0-e275ee386eae", null, "User", "USER" },
+                    { "6d416706-4d4a-432e-a578-376b32bfcaf6", null, "Buyer", "BUYER" },
+                    { "7ecee15b-6e38-4eef-b595-0948b65129a9", null, "Admin", "ADMIN" },
+                    { "b0435c65-99e9-4fea-b7b4-3d62bfd34b82", null, "Seller", "SELLER" }
                 });
 
             migrationBuilder.InsertData(
@@ -780,6 +789,11 @@ namespace Infrastructure.Migrations
                 name: "IX_Message_ChatId",
                 table: "Message",
                 column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_UserID",
+                table: "Message",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notification_UserId",

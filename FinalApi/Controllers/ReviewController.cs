@@ -69,9 +69,9 @@ namespace FinalApi.Controllers
                     }
 
                     string sellerId = item.SellerID;
-
+                    DateTime ReviewDate = DateTime.Now;
                     // Convert to review model and add the review
-                    var reviewModel = model.ToModel(sellerId, buyerID);
+                    var reviewModel = model.ToModel(sellerId, buyerID, ReviewDate);
                     var result = await reviewManager.Add(reviewModel);
 
                     if (result)
@@ -160,7 +160,7 @@ namespace FinalApi.Controllers
                     ProfileImageUrl = r.Buyer?.User?.Image ,
                     Rating = r.Range,
                     ReviewText = r.Description,
-                    //ReviewDate = r.Date 
+                    ReviewDate = r.Date,
                 }).ToList();
             }
 

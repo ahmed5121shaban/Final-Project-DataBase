@@ -512,6 +512,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -711,25 +714,25 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0bc154c0-8a12-4e7b-b1b8-16e6339ea905",
+                            Id = "7ecee15b-6e38-4eef-b595-0948b65129a9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4bd2a72b-295d-4953-9853-d39cf2e1fc52",
+                            Id = "2c53f393-7d99-41e6-8df0-e275ee386eae",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5290368c-0539-4ecf-9b91-757652cb6b09",
+                            Id = "b0435c65-99e9-4fea-b7b4-3d62bfd34b82",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = "a970be32-0b8a-4163-9755-f9f11930298d",
+                            Id = "6d416706-4d4a-432e-a578-376b32bfcaf6",
                             Name = "Buyer",
                             NormalizedName = "BUYER"
                         });
@@ -1091,13 +1094,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("FinalApi.Review", b =>
                 {
-                    b.HasOne("Final.Auction", "Auction")
+                    b.HasOne("FinalApi.Auction", "Auction")
                         .WithOne("Review")
-                        .HasForeignKey("Final.Review", "AuctionID")
+                        .HasForeignKey("FinalApi.Review", "AuctionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Final.Buyer", "Buyer")
+                    b.HasOne("FinalApi.Buyer", "Buyer")
                         .WithMany("Reviews")
                         .HasForeignKey("BuyerID")
                         .OnDelete(DeleteBehavior.Cascade)
