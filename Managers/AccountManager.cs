@@ -201,7 +201,8 @@ namespace Managers
                     var res = await sellerManager.Add(new Seller
                     {
                         UserID = user.Id,
-                        User = user
+                        User = user,
+                        WithdrawnAmount = (decimal)0.00
                     });
                 }
             }
