@@ -18,7 +18,8 @@ namespace ModelView
         public string Description { get; set; }
         [Display(Name = " Choose Category Image")]
         public IFormFile Image { get; set; }
-        
+        public IFormFile Icon { get; set; }
+
 
     }
 }
