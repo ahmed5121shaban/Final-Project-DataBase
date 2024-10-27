@@ -3,27 +3,24 @@ using Final;
 using Managers;
 using ModelView.Profile;
 using ModelView;
-using Microsoft.AspNet.Identity;
-
 
 namespace FinalApi.Controllers
 {
- 
     [Route("api/profile-review")]
     [ApiController]
     public class ProfileReviewController : ControllerBase
     {
-        private readonly ProfileManager _profileManager;
+        private readonly ProfileManager profileManager;
 
         public ProfileReviewController(ProfileManager profileManager)
         {
-            _profileManager = profileManager;
+            this.profileManager = profileManager; // استخدم نفس اسم المتغير
         }
 
         [HttpGet("seller-profile/{userId}")]
-        public ActionResult<SellerProfileViewModel> GetSellerProfile(int userId)
+        public async Task<ActionResult<SellerProfileViewModel>> GetSellerProfile(string userId)
         {
-            var sellerProfile = _profileManager.GetSellerProfile(userId);
+            var sellerProfile = await profileManager.GetSellerProfile(userId);
             if (sellerProfile == null)
                 return NotFound();
 
@@ -31,13 +28,14 @@ namespace FinalApi.Controllers
         }
 
         [HttpGet("buyer-profile/{userId}")]
-        public ActionResult<BuyerProfileViewModel> GetBuyerProfile(int userId)
+        public async Task<ActionResult<BuyerProfileViewModel>> GetBuyerProfile(string userId)
         {
-            var buyerProfile = _profileManager.GetBuyerProfile(userId);
+            var buyerProfile = await profileManager.GetBuyerProfile(userId);
             if (buyerProfile == null)
                 return NotFound();
 
             return Ok(buyerProfile);
         }
+
     }
 }

@@ -113,6 +113,7 @@ namespace Final
         public virtual DbSet<FavAuctions> FavAuctions { get; set; }
         public virtual DbSet<FavCategories> FavCategories { get; set; }
         public virtual DbSet<Complain> Complains { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
     }
 }

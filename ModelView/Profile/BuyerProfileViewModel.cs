@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Final;
 
 namespace ModelView.Profile
 {
@@ -15,6 +16,7 @@ namespace ModelView.Profile
         public int WonAuctions { get; set; }
         public int LostAuctions { get; set; }
         public decimal ProfileCompletion { get; set; }
+        public List<AuctiondetailsViewModel> Auctions { get; set; } // تأكد من أن هذا هو النوع الصحيح
     }
 
 }
