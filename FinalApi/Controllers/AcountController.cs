@@ -298,7 +298,7 @@ namespace FinalApi.Controllers
             }
             decimal finalRate = range / sellerRates.Count;
 
-            return Ok( new ProfileViewModel()
+            return Ok(new ProfileViewModel()
             {
                 FullName = user.Name,
                 IsSeller = isseller,
@@ -306,10 +306,10 @@ namespace FinalApi.Controllers
                 AuctionsNumber = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).Count(),
                 Address = $"{user.City} ,{user.Country}",
                 ReviewsNumber = reviewManager.GetAll().Where(r => r.SellerID == UserId).Count(),
-                FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category).ToList(),
+                FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category.ToProfileCatViewModel()).ToList(),
                 LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).ToList(),
-                WonAuctions = auctionManager.GetAll().Where(a=>a.BuyerID == UserId).ToList(),
-                reviews = reviewManager.GetAll().Where(r=>r.SellerID ==UserId).ToList()
+                WonAuctions = auctionManager.GetAll().Where(a => a.BuyerID == UserId).ToList(),
+                reviews = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(i=>i.ToViewModel()).ToList()
 
             });
 
