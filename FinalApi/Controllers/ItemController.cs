@@ -156,7 +156,6 @@ namespace FinalApi.Controllers
 
         [Authorize(Roles = "Seller")]
         [HttpGet("Pending")]
-        [Authorize(Roles = "Seller")]
         public IActionResult GetPendingItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

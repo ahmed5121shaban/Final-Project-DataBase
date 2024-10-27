@@ -54,6 +54,10 @@ builder.Services.AddScoped<FavAuctionManager>();
 builder.Services.AddScoped<FavCategoryManager>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<NotificationManager>();
+builder.Services.AddScoped<EventManager>();
+builder.Services.AddScoped<CloudinaryManager>();
+
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -131,23 +135,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseStaticFiles();
-app.UseAuthorization();
-app.UseCors();
-
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseStaticFiles();
+app.UseCors();
+app.UseAuthentication();  // Ensure this is before UseAuthorization
+app.UseAuthorization();
+
 app.UseWebSockets();
-
 app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
 app.MapControllers();
 app.UseHangfireDashboard("/hangfire");
-app.MapHub<BidsHub>("/BidsHub");
-app.MapControllers();
 
 app.Run();
