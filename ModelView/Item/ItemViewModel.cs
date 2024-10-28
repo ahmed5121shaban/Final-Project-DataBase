@@ -20,7 +20,7 @@ namespace ModelView
         public ItemStatus status { get; set; }
         public decimal? sellPrice { get; set; }
         public decimal startPrice { get; set; }
-
+        public string? publishFeedback { get; set; }
         public string? contract { get; set; }
         public ImageViewModel[] images { get; set; }
     }
