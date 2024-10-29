@@ -28,6 +28,7 @@ namespace ModelView
                 StartDate = auction.StartDate,
                 EndDate = auction.EndDate,
                 ItemID = auction.ItemID,
+                IsEnded = auction.Ended,
                 Item = new AuctionItemViewModel
                 {
                     ID = auction.Item.ID,
