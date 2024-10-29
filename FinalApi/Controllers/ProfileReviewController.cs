@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FinalApi;
 using Managers;
-using ModelView.Profile;
 using ModelView;
 
 namespace FinalApi.Controllers

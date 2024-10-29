@@ -61,6 +61,16 @@ namespace ModelView
 
         }
 
+        public static ProfileCatViewModel ToProfileCatViewModel(this Category model)
+        {
+            return new ProfileCatViewModel()
+            {
+                id = model.ID,
+                Name = model.Name,
+                Icon = model.Icon
+
+            };
+        }
 
     }
 }

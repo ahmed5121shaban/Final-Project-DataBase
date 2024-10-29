@@ -15,10 +15,10 @@ namespace ModelView
         public int AuctionsNumber { get; set; }
         public string Address { get; set; }
         public int ReviewsNumber { get; set; }
-        public List<Category> FavCategories { get; set; }
+        public List<ProfileCatViewModel> FavCategories { get; set; }
         public List<Auction> LatestAuctions { get; set; }
         public List<Auction> WonAuctions { get; set; }
-        public List<Review> reviews { get; set; }
+        public List<ReviewDetailViewModel> Reviews { get; set; }
         
 
     }

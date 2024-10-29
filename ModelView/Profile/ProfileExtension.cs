@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FinalApi;
 
-namespace ModelView.Profile
+namespace ModelView
 {
     public static class ProfileExtension
     {

@@ -21,14 +21,20 @@ namespace FinalApi.Controllers
          AccountManager accountManager;
         private readonly NotificationManager notificationManager;
         private readonly IHubContext<NotificationsHub> hubContext;
+        private readonly IHubContext<DashboardHub> dashboardHubContext;
+        private readonly CategoryManager categoryManager;
 
         public ItemController(ItemManager _itemManager,AccountManager _accountManager,
-            NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext)
+            NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext,
+            IHubContext<DashboardHub> _dashboardHubContext,
+            CategoryManager _categoryManager)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
             notificationManager = _notificationManager;
             hubContext = _hubContext;
+            dashboardHubContext = _dashboardHubContext;
+            categoryManager = _categoryManager;
         }
         [Authorize]
         [HttpPost]
@@ -51,13 +57,15 @@ namespace FinalApi.Controllers
             var result = await itemManager.Add(_item.toItemModel());
                 if (result == true)
                 {
-                    return Ok();
+                var cat = await categoryManager.GetOne(_item.Category);
+                await dashboardHubContext.Clients.All.SendAsync("category", new { name = cat.Name, value = 1 });
+                return Ok();
                 }
                 else
                 {
                     return BadRequest(result);
                 }
-            
+
         }
 
            
@@ -153,8 +161,7 @@ namespace FinalApi.Controllers
                 .ToList();
             return Ok(res);
         }
-
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Buyer")]
         [HttpGet("Pending")]
         public IActionResult GetPendingItems()
         {
@@ -168,7 +175,7 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
 
-        [Authorize(Roles = "Seller")]
+        //[Authorize(Roles = "Seller")]
         [HttpGet("Accepted")]
         public async Task<IActionResult> GetAcceptedItems()
         {
@@ -182,7 +189,7 @@ namespace FinalApi.Controllers
 
 
 
-        [Authorize(Roles = "Seller")]
+        //[Authorize(Roles = "Seller")]
         [HttpGet("Rejected")]
         public async Task<IActionResult> GetRejectedItems()
         {
@@ -217,6 +224,8 @@ namespace FinalApi.Controllers
                         .OrderBy(n => n.Id).LastOrDefault();
                     await hubContext.Clients.Group(item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
                 }
+                // send to dashboard
+                await dashboardHubContext.Clients.All.SendAsync("topFiveSeller", new { name = item.Seller.User.Name, count = 1 });
                 return Ok(res);
             }
             else

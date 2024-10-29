@@ -1,6 +1,5 @@
 ﻿using FinalApi;
 using ModelView;
-using ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +28,7 @@ namespace ModelView
                 StartDate = auction.StartDate,
                 EndDate = auction.EndDate,
                 ItemID = auction.ItemID,
+                IsEnded = auction.Ended,
                 Item = new AuctionItemViewModel
                 {
                     ID = auction.Item.ID,

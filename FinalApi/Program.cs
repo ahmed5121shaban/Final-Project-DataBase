@@ -1,3 +1,4 @@
+
 using FinalApi;
 using Hangfire;
 using Managers;
@@ -14,8 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<FinalDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddDbContext<FinalDbContext>(
-    c => { c.UseSqlServer(builder.Configuration.GetConnectionString("LocalConn"))
-        .UseLazyLoadingProxies(); },ServiceLifetime.Scoped
+    c => {c.UseSqlServer(builder.Configuration.GetConnectionString("LocalConn"))
+        .UseLazyLoadingProxies();},ServiceLifetime.Scoped
 );
 builder.Services.AddControllers();
 
@@ -54,8 +55,8 @@ builder.Services.AddScoped<FavAuctionManager>();
 builder.Services.AddScoped<FavCategoryManager>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<NotificationManager>();
-builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<CloudinaryManager>();
+builder.Services.AddScoped<EventManager>();
 
 
 
@@ -116,7 +117,11 @@ builder.Services.AddAuthentication(options =>
                 if (!string.IsNullOrEmpty(accessToken) &&
                     (path.StartsWithSegments("/bidsHub") ||
                      path.StartsWithSegments("/notificationHub") ||
-                     path.StartsWithSegments("/chatHub")))
+                     path.StartsWithSegments("/chatHub") ||
+                     path.StartsWithSegments("/dashboardHub")||
+                     path.StartsWithSegments("/tableDashboardHub")
+                     )
+                     )
                 {
                     context.Token = accessToken;
                 }
@@ -145,7 +150,10 @@ app.UseWebSockets();
 app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<DashboardHub>("/dashboardHub");
+app.MapHub<TableDashboardHub>("/tableDashboardHub");
 app.MapControllers();
 app.UseHangfireDashboard("/hangfire");
+app.MapControllers();
 
 app.Run();
