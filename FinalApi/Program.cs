@@ -1,3 +1,4 @@
+
 using FinalApi;
 using Hangfire;
 using Managers;
@@ -14,8 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<FinalDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddDbContext<FinalDbContext>(
-    c => { c.UseSqlServer(builder.Configuration.GetConnectionString("LocalConn"))
-        .UseLazyLoadingProxies(); },ServiceLifetime.Scoped
+    c => {c.UseSqlServer(builder.Configuration.GetConnectionString("LocalConn"))
+        .UseLazyLoadingProxies();},ServiceLifetime.Scoped
 );
 builder.Services.AddControllers();
 
@@ -54,8 +55,8 @@ builder.Services.AddScoped<FavAuctionManager>();
 builder.Services.AddScoped<FavCategoryManager>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<NotificationManager>();
-builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<CloudinaryManager>();
+builder.Services.AddScoped<EventManager>();
 
 
 

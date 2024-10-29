@@ -2,15 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Managers;
 using System.Threading.Tasks;
-using ModelView.Complain;
+using ModelView;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
-using FinalApi;
 using ModelView;
-using System.Security.Claims;
 
-namespace Controllers
+namespace FinalApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ModelView.Profile;
+using FinalApi;
 using FinalApi;
 namespace Managers
 {

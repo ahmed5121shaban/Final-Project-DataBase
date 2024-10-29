@@ -3,7 +3,7 @@ using Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore; // تأكد من إضافته
 using ModelView;
-using ModelView.Users;
+
 
 public class UserManager : MainManager<User>
 {

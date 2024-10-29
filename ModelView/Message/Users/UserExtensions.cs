@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using FinalApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ModelView.Users;
+using ModelView;
 
-namespace Managers
+namespace ModelView
 {
     public static class UserExtensions
     {

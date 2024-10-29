@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FinalApi;
 
-namespace ModelView.Account
+namespace ModelView
 {
     public class ChangePasswordViewModel
     {

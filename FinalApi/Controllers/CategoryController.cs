@@ -84,6 +84,7 @@ namespace FinalApi.Controllers
                 name = c.Name,
                 image = c.Image,
                 icon=c.Icon,
+                description=c.Description,
                 items = c.Items.Select(i => i.toItemViewModel()).ToArray()
             }).ToList();
             if (res != null)

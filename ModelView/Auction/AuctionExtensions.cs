@@ -1,6 +1,5 @@
 ﻿using FinalApi;
 using ModelView;
-using ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
