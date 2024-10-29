@@ -6,6 +6,7 @@ using ModelView;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
+using ModelView;
 
 namespace FinalApi.Controllers
 {
