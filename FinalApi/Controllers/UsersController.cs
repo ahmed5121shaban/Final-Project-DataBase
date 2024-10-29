@@ -1,7 +1,7 @@
 ﻿using FinalApi;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using ModelView.Users;
+using ModelView;
 
 namespace FinalApi.Controllers
 {

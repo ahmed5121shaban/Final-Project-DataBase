@@ -1,6 +1,5 @@
 ﻿using FinalApi;
 using ModelView;
-using ModelView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +43,7 @@ namespace ModelView
                     SellerName = auction.Item.Seller.User.Name,
 
                 },
-                Bids = auction.Bids.OrderByDescending(i=>i.Time).Select(b=> new AutionBidViewModel { 
+                Bids = auction.Bids.Select(b=> new AutionBidViewModel { 
                     Amount = b.Amount,
                     BuyerID = b.BuyerID,
                     ID = b.ID,

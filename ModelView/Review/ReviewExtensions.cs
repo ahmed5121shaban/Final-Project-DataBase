@@ -31,20 +31,23 @@ namespace ModelView
                 };
             }
 
-        public static ReviewViewModel ToViewModel(this Review model) {
 
-            return new ReviewViewModel()
+        public static ReviewDetailViewModel ToViewModel(this Review model)
+        {
+
+            return new ReviewDetailViewModel()
             {
-                BuyerId =model.BuyerID,
-                BuyerName = model.Buyer.User.Name,
-                BuyerImage =model.Buyer.User.Image,
-                ReviewRange = model.Range,
-                review = model.Description,
-               
+                ReviewerID = model.BuyerID,
+                ReviewerName = model.Buyer.User.Name,
+                ProfileImageUrl = model.Buyer.User.Image,
+                Rating = model.Range,
+                ReviewText = model.Description,
+                ReviewDate = model.Date
+
 
             };
 
 
         }
-        }
+    }
     }

@@ -18,7 +18,7 @@ namespace ModelView
         public List<ProfileCatViewModel> FavCategories { get; set; }
         public List<Auction> LatestAuctions { get; set; }
         public List<Auction> WonAuctions { get; set; }
-        public List<ReviewViewModel> reviews { get; set; }
+        public List<ReviewDetailViewModel> Reviews { get; set; }
         
 
     }

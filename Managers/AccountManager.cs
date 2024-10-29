@@ -1,4 +1,4 @@
-﻿using FinalApi;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ModelView;
@@ -13,7 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ModelView.Profile;
+using FinalApi;
+
 namespace Managers
 {
     public class AccountManager : MainManager<User>
@@ -46,7 +47,7 @@ namespace Managers
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
                 result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
-                var res = buyerManager.Add(new Buyer
+                var res =await buyerManager.Add(new Buyer
                 {
                     User=user,
                     UserID=user.Id

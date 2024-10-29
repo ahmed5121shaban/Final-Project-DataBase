@@ -2,7 +2,6 @@
 using Models;
 using Models.Models;
 using ModelView;
-using ModelView.Profile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ModelView.Account;

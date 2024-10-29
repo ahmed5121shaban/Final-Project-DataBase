@@ -9,6 +9,7 @@ using System.Security.Claims;
 using static FinalApi.Enums;
 using Microsoft.AspNet.Identity;
 
+
 namespace FinalApi.Controllers
 {
     [Route("api/[controller]")]
@@ -366,7 +367,7 @@ namespace FinalApi.Controllers
                 FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category.ToProfileCatViewModel()).ToList(),
                 LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).ToList(),
                 WonAuctions = auctionManager.GetAll().Where(a => a.BuyerID == UserId).ToList(),
-                reviews = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(i=>i.ToViewModel()).ToList()
+                Reviews = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(i => i.ToViewModel()).ToList()
 
             });
 

@@ -154,7 +154,7 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
 
-        [Authorize(Roles = "Seller")]
+        
         [HttpGet("Pending")]
         [Authorize(Roles = "Seller")]
         public IActionResult GetPendingItems()
@@ -169,8 +169,9 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
 
-        [Authorize(Roles = "Seller")]
+        
         [HttpGet("Accepted")]
+        [Authorize(Roles = "Seller")]
         public async Task<IActionResult> GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
