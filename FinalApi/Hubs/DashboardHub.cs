@@ -22,22 +22,10 @@ namespace FinalApi
         public async Task Dashboard()
         {
             try { 
-            var Auctions = auctionManager.GetAll().Count();
-            await Clients.All.SendAsync("AuctionsCount", Auctions);
 
-                var sellers = sellerManager.GetAll().Where(s => s.Items.Select(i => i.Auction.ItemID)
-               .FirstOrDefault() != null).Select(u => new { u.User.Name, u.Items.Count }).OrderByDescending(s => s.Count)
-               .Take(5).ToList();
-                await Clients.All.SendAsync("topFiveSeller", sellers);
+                var Auctions = auctionManager.GetAll().Count();
+                await Clients.All.SendAsync("AuctionsCount", Auctions);
 
-                var categories = categoryManager.GetAll().Select(c => new { name = c.Name, value = c.Items.Count }).ToList();
-                await Clients.All.SendAsync("category", categories);
-
-                
-
-                var auctionsBidsAmount = auctionManager.GetAll().Where(a => a.StartDate > DateTime.Now && a.EndDate < DateTime.Now)
-                    .Select(a => new { name = a.Item.Name, value = a.Item.StartPrice + a.Bids.Select(b => b.Amount).Sum() }).ToList();
-                await Clients.All.SendAsync("auctionsBidsAmount", auctionsBidsAmount);
             }
             catch (Exception ex) { };
         }
