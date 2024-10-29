@@ -112,7 +112,11 @@ builder.Services.AddAuthentication(options =>
                 if (!string.IsNullOrEmpty(accessToken) &&
                     (path.StartsWithSegments("/bidsHub") ||
                      path.StartsWithSegments("/notificationHub") ||
-                     path.StartsWithSegments("/chatHub")))
+                     path.StartsWithSegments("/chatHub") ||
+                     path.StartsWithSegments("/dashboardHub")||
+                     path.StartsWithSegments("/tableDashboardHub")
+                     )
+                     )
                 {
                     context.Token = accessToken;
                 }
@@ -132,7 +136,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseStaticFiles();
-app.UseAuthorization();
 app.UseCors();
 
 app.UseCors();
@@ -145,9 +148,10 @@ app.UseWebSockets();
 app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<DashboardHub>("/dashboardHub");
+app.MapHub<TableDashboardHub>("/tableDashboardHub");
 app.MapControllers();
 app.UseHangfireDashboard("/hangfire");
-app.MapHub<BidsHub>("/BidsHub");
 app.MapControllers();
 
 app.Run();

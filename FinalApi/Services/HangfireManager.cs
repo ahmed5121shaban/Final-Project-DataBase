@@ -36,6 +36,7 @@ namespace FinalApi
 
             auction.Ended = true;
             if(await auctionManager.Update(auction)==false) return;
+            await hubContext.Clients.All.SendAsync("endedAuction",1);
 
             var bid = auction.Bids.LastOrDefault();
             if (bid == null) return;
