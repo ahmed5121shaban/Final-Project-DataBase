@@ -15,6 +15,7 @@ namespace ModelView
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int ItemID { get; set; }
+        public bool IsEnded {  get; set; }
         public AuctionItemViewModel Item { get; set; }
         public List<AutionBidViewModel> Bids { get; set; }
     }

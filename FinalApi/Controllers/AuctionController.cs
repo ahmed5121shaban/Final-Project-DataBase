@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
 using FinalApi;
+using Stripe;
 namespace FinalApi.Controllers
 {
     [ApiController]
@@ -18,6 +19,7 @@ namespace FinalApi.Controllers
         BidManager bidManager;
         ItemManager itemManager;
         SellerManager sellerManager;
+        ReviewManager reviewManager;
         private readonly PaymentManager paymentManager;
         private readonly HangfireManager hangfireManager;
         private readonly FavCategoryManager favCategoryManager;
@@ -27,7 +29,7 @@ namespace FinalApi.Controllers
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
             ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
             FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
-            IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager)
+            IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager , ReviewManager _reviewManager)
         {
             this.auctionManager = _auctionManager;
             this.bidManager = _bidManager;
@@ -38,6 +40,7 @@ namespace FinalApi.Controllers
             notificationManager = _notificationManager;
             hubContext = _hubContext;
             sellerManager = _sellerManager;
+            this.reviewManager = _reviewManager;
         }
 
         [Authorize]
@@ -431,6 +434,38 @@ namespace FinalApi.Controllers
             return new JsonResult(noBidsAuctions);
         }
 
+        //[HttpGet("AllDoneAuctions")]
+        //public IActionResult AllDoneAuctions()
+        //{
+        //    string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    if (string.IsNullOrEmpty(userID))
+        //        return BadRequest(new { message = "the user not found" });
+
+        //    var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true).ToList();
+        //    if (!auction.Any())
+        //        return BadRequest(new { message = "no done auctions found" });
+
+        //    List<DoneAuctionViewModel> doneAuctions = new List<DoneAuctionViewModel>();
+        //    foreach (var item in auction)
+        //    doneAuctions.Add(item.ToDoneAuctionVM());
+
+        //    if (doneAuctions.Any())
+        //        return new JsonResult(new ApiResultModel<List<DoneAuctionViewModel>>
+        //        {
+        //            result = doneAuctions,
+        //            success = true,
+        //            StatusCode = 200,
+        //            Message = "fetching data is completed"
+        //        });
+        //    return new JsonResult(new ApiResultModel<string>
+        //    {
+        //        result = "not done auction Here",
+        //        success = false,
+        //        StatusCode = 404,
+        //        Message = "fetching data is not completed"
+        //    });
+        //}
+
         [HttpGet("AllDoneAuctions")]
         public IActionResult AllDoneAuctions()
         {
@@ -438,30 +473,37 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(userID))
                 return BadRequest(new { message = "the user not found" });
 
-            var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true).ToList();
-            if (!auction.Any())
+            var auctions = auctionManager.GetAll()
+                .Where(a => a.BuyerID == userID && a.Payment.IsDone == true)
+                .ToList();
+
+            if (!auctions.Any())
                 return BadRequest(new { message = "no done auctions found" });
 
             List<DoneAuctionViewModel> doneAuctions = new List<DoneAuctionViewModel>();
-            foreach (var item in auction)
-                doneAuctions.Add(item.ToDoneAuctionVM());
 
-            if (doneAuctions.Any())
-                return new JsonResult(new ApiResultModel<List<DoneAuctionViewModel>>
-                {
-                    result = doneAuctions,
-                    success = true,
-                    StatusCode = 200,
-                    Message = "fetching data is completed"
-                });
-            return new JsonResult(new ApiResultModel<string>
+            foreach (var auction in auctions)
             {
-                result = "not done auction Here",
-                success = false,
-                StatusCode = 404,
-                Message = "fetching data is not completed"
+                // Check if the user has added a review for this auction
+                bool isReviewed = reviewManager.HasUserReviewedAuction(userID, auction.ID);
+
+                // Map auction to DoneAuctionViewModel and set IsReviewed property
+                var doneAuctionVM = auction.ToDoneAuctionVM();
+                doneAuctionVM.IsReviewd = isReviewed;
+                doneAuctionVM.AuctionID = auction.ID;
+
+                doneAuctions.Add(doneAuctionVM);
+            }
+
+            return new JsonResult(new ApiResultModel<List<DoneAuctionViewModel>>
+            {
+                result = doneAuctions,
+                success = true,
+                StatusCode = 200,
+                Message = "fetching data is completed"
             });
         }
+
 
         [HttpGet("AllCompletedAuctions")]
         public IActionResult AllCompletedAuctions()
