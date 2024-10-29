@@ -59,6 +59,8 @@ builder.Services.AddScoped<CloudinaryManager>();
 builder.Services.AddScoped<EventManager>();
 
 
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -115,7 +117,11 @@ builder.Services.AddAuthentication(options =>
                 if (!string.IsNullOrEmpty(accessToken) &&
                     (path.StartsWithSegments("/bidsHub") ||
                      path.StartsWithSegments("/notificationHub") ||
-                     path.StartsWithSegments("/chatHub")))
+                     path.StartsWithSegments("/chatHub") ||
+                     path.StartsWithSegments("/dashboardHub")||
+                     path.StartsWithSegments("/tableDashboardHub")
+                     )
+                     )
                 {
                     context.Token = accessToken;
                 }
@@ -134,23 +140,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.UseStaticFiles();
-//app.UseAuthorization();
-//app.UseCors();
 
 app.UseStaticFiles();
-app.UseAuthentication();
-app.UseAuthorization();
 app.UseCors();
+app.UseAuthentication();  // Ensure this is before UseAuthorization
+app.UseAuthorization();
 
 app.UseWebSockets();
-
 app.MapHub<BidsHub>("/bidsHub");
 app.MapHub<NotificationsHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<DashboardHub>("/dashboardHub");
+app.MapHub<TableDashboardHub>("/tableDashboardHub");
 app.MapControllers();
 app.UseHangfireDashboard("/hangfire");
-app.MapHub<BidsHub>("/BidsHub");
 app.MapControllers();
 
 app.Run();

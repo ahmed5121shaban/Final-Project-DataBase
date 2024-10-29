@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models.Models;
-using FinalApi;
-
 namespace FinalApi
 {
     public class Buyer

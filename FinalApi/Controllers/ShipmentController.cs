@@ -82,31 +82,10 @@ namespace FinalApi.Controllers
                 return Ok(shipmentDetails);
             }
 
-        //[HttpPost("UpdateShipmentStatus")]
-        //public async Task<IActionResult> UpdateShipmentStatus(int id, AuctionShippingStatus newStatus)
-        //{
-        //    var auction = await auctionManager.GetOne(id);
-        //    if (auction == null)
-        //    {
-        //        return NotFound("Auction not found.");
-        //    }
-
-        //    auction.ShippingStatus = newStatus; 
-        //    var isUpdated = await auctionManager.Update(auction);
-
-        //    if (!isUpdated)
-        //    {
-        //        return StatusCode(500, "An error occurred while updating the shipment status.");
-        //    }
-
-        //    return Ok("Shipment status updated successfully.");
-        //}
         [HttpPost("UpdateShipmentStatus")]
         public async Task<IActionResult> UpdateShipmentStatus(int id, AuctionShippingStatus newStatus)
         {
-            // Log incoming parameters
-            Console.WriteLine($"Updating shipment status for auction ID: {id}, New Status: {newStatus}");
-
+         
             var auction = await auctionManager.GetOne(id);
             if (auction == null)
             {

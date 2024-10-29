@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ModelView;
 using System.Security.Claims;
+using FinalApi;
 namespace FinalApi.Controllers
 {
     [ApiController]
@@ -185,7 +186,13 @@ namespace FinalApi.Controllers
                 // If no active auctions found
                 if (!paginatedActiveAuctions.Any())
                 {
-                    return NotFound(new { Message = "No active auctions found." });
+                    // Return the paginated active auction data
+
+                    return Ok(new
+                    {
+                        List = paginatedActiveAuctions.Select(a => a.SeeDetails()),
+                        TotalCount = activeAuctions.Count
+                    });
                 }
 
                 // Return the paginated active auction data

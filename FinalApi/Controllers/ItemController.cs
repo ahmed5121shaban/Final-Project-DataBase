@@ -21,14 +21,17 @@ namespace FinalApi.Controllers
          AccountManager accountManager;
         private readonly NotificationManager notificationManager;
         private readonly IHubContext<NotificationsHub> hubContext;
+        private readonly CategoryManager categoryManager;
 
         public ItemController(ItemManager _itemManager,AccountManager _accountManager,
-            NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext)
+            NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext,
+            CategoryManager _categoryManager)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
             notificationManager = _notificationManager;
             hubContext = _hubContext;
+            categoryManager = _categoryManager;
         }
         [Authorize]
         [HttpPost]
@@ -51,13 +54,15 @@ namespace FinalApi.Controllers
             var result = await itemManager.Add(_item.toItemModel());
                 if (result == true)
                 {
+                    //var cat =await categoryManager.GetOne(_item.Category);
+                    //await hubContext.Clients.All.SendAsync("category", new { cat.Name, count = 1 });
                     return Ok();
                 }
                 else
                 {
                     return BadRequest(result);
                 }
-            
+
         }
 
            
@@ -153,10 +158,8 @@ namespace FinalApi.Controllers
                 .ToList();
             return Ok(res);
         }
-
-        
+        [Authorize(Roles = "Buyer")]
         [HttpGet("Pending")]
-        [Authorize(Roles = "Seller")]
         public IActionResult GetPendingItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -169,9 +172,8 @@ namespace FinalApi.Controllers
             return Ok(res);
         }
 
-        
+        //[Authorize(Roles = "Seller")]
         [HttpGet("Accepted")]
-        [Authorize(Roles = "Seller")]
         public async Task<IActionResult> GetAcceptedItems()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -184,7 +186,7 @@ namespace FinalApi.Controllers
 
 
 
-        [Authorize(Roles = "Seller")]
+        //[Authorize(Roles = "Seller")]
         [HttpGet("Rejected")]
         public async Task<IActionResult> GetRejectedItems()
         {
