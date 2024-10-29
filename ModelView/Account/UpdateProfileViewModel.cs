@@ -24,10 +24,6 @@ namespace ModelView.Account
         [EmailAddress]
         public string? Email { get; set; }  
 
-        public string? City { get; set; }  
-        public string? Country { get; set; }  
-        public string? Street { get; set; }  
-        public string? PostalCode { get; set; }  
         public string? TimeZone { get; set; }  
         public string? Currency { get; set; }  
 

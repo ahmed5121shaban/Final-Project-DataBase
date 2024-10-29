@@ -10,6 +10,7 @@ using PayPal.Api;
 using PayPal;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FinalApi.Controllers
 {
@@ -21,17 +22,20 @@ namespace FinalApi.Controllers
         private readonly UserManager<User> userManager;
         private readonly PaymentManager paymentManager;
         private readonly AuctionManager auctionManager;
+        private readonly IHubContext<DashboardHub> hubContext;
         private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
         {
             { "mode", "sandbox" },
         };
 
-        public PaymentController(IConfiguration _configuration, UserManager<User> _userManager, PaymentManager _paymentManager,AuctionManager _auctionManager)
+        public PaymentController(IConfiguration _configuration, UserManager<User> _userManager, PaymentManager _paymentManager,
+            AuctionManager _auctionManager,IHubContext<DashboardHub> _hubContext)
         {
             configuration = _configuration;
             userManager = _userManager;
             paymentManager = _paymentManager;
             auctionManager = _auctionManager;
+            hubContext = _hubContext;
         }
 
 
@@ -101,13 +105,6 @@ namespace FinalApi.Controllers
             {
                 user.StripeEmail = paymentView.StripeEmail;
             }
-
-            /*if(!await paymentManager.Add(new AddPaymentViewModel 
-            { 
-                 BuyerId = userid, Method = paymentView.Method 
-            }
-            ))
-                return BadRequest(new { message = "Not Added in Payment Table." });*/
 
             var res = await userManager.UpdateAsync(user);
             if(!res.Succeeded)
@@ -199,7 +196,7 @@ namespace FinalApi.Controllers
         }
 
         [HttpPost("create-paypal-payment")]
-        public IActionResult CreatePayPalPayment([FromBody] CreatePaymentViewModel _createPayment)
+        public async Task<IActionResult> CreatePayPalPayment([FromBody] CreatePaymentViewModel _createPayment)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -233,6 +230,8 @@ namespace FinalApi.Controllers
                 };
 
                 var createdPayment = payment.Create(apiContext).GetApprovalUrl();
+
+                await hubContext.Clients.All.SendAsync("auctionAmount", _createPayment.Amount);
                 return Ok(new { result = createdPayment, status = 200 }); 
                 
             }
@@ -266,6 +265,7 @@ namespace FinalApi.Controllers
                     auction.Completed=true;
                     if(!await auctionManager.Update(auction))
                         return BadRequest(new { message = "the payment not completed", statusCode = 400 });
+                    await hubContext.Clients.All.SendAsync("completedAuction",1);
                     return Ok(new { message = "Payment successful", statusCode = 200 });
                 }
 
@@ -346,7 +346,9 @@ namespace FinalApi.Controllers
                 var service = new Stripe.Checkout.SessionService();
                 Stripe.Checkout.Session session = service.Create(options);
 
-
+                //send the total amount to dashboard and is completed
+                await hubContext.Clients.All.SendAsync("auctionAmount", _createPayment.Amount);
+                await hubContext.Clients.All.SendAsync("completedAuction", 1);
                 var result = session.Url;
                 if (!string.IsNullOrEmpty(result))
                 {

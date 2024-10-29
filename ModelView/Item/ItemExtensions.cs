@@ -75,6 +75,7 @@ namespace ModelView
                 categoryId = model.CategoryID,
                 description = model.Description,
                 contract=model.ContractFile,
+                publishFeedback=model.PublishFeedback,
                 images = model.Images.Select(img=>img.toImageViewModel()).ToArray(),
 
             };

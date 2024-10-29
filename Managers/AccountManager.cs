@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FinalApi;
+
 using ModelView.Profile;
 using FinalApi;
 namespace Managers
@@ -132,17 +134,6 @@ namespace Managers
                 user.Name = $"{model.FirstName} {model.LastName}".Trim();
             }
 
-            if (!string.IsNullOrWhiteSpace(model.City))
-                user.City = model.City;
-
-            if (!string.IsNullOrWhiteSpace(model.Country))
-                user.Country = model.Country;
-
-            if (!string.IsNullOrWhiteSpace(model.Street))
-                user.Street = model.Street;
-
-            if (!string.IsNullOrWhiteSpace(model.PostalCode))
-                user.PostalCode = model.PostalCode;
 
             if (!string.IsNullOrWhiteSpace(model.Description))
                 user.Description = model.Description;
@@ -184,6 +175,30 @@ namespace Managers
 
             return result;
         
+        }
+
+        public async Task<IdentityResult> UpdateUserAddressAsync(User user, UpdateAddressViewModel model)
+        {
+          
+
+            if (!string.IsNullOrWhiteSpace(model.City))
+                user.City = model.City;
+
+            if (!string.IsNullOrWhiteSpace(model.Country))
+                user.Country = model.Country;
+
+            if (!string.IsNullOrWhiteSpace(model.Street))
+                user.Street = model.Street;
+
+            if (!string.IsNullOrWhiteSpace(model.PostalCode))
+                user.PostalCode = model.PostalCode;
+
+
+            // Save changes to the database
+            var result = await userManager.UpdateAsync(user);
+
+            return result;
+
         }
 
         public async Task CheckIfSeller(User user)
