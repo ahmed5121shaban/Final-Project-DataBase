@@ -26,10 +26,6 @@ namespace ModelView.Account
                 UserName = $"{model.FirstName}{model.LastName}", // تعديل لتوليد اسم المستخدم بناءً على الاسم الأول والأخير
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
-                City = model.City,
-                Country = model.Country,
-                Street = model.Street,
-                PostalCode = model.PostalCode,
                 TimeZone = model.TimeZone,
                 Currency = model.Currency,
                 Age = model.Age,
@@ -38,6 +34,18 @@ namespace ModelView.Account
                 PhoneNumbers = model.PhoneNumbers?.Select(phone => new PhoneNumber { Phone = phone }).ToList(),
                 // تخزين مسار الصورة النسبي بدلاً من تحويلها إلى Base64
                 Image = model.ProfileImage != null ? SaveProfileImage(model.ProfileImage) : null
+            };
+        }
+
+
+        public static User ToModel(this UpdateAddressViewModel model)
+        {
+            return new User
+            {
+                City = model.City,
+                Country = model.Country,
+                Street = model.Street,
+                PostalCode = model.PostalCode,
             };
         }
 

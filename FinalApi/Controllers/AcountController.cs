@@ -39,8 +39,7 @@ namespace FinalApi.Controllers
             var res = await acountManager.Login(_loginView);
             if (res == string.Empty) return BadRequest(new { Message = "Error In Login Operation" }); 
             return Ok(new {token=res,exepire=DateTime.Now.AddDays(30),status=200});
-            //if (res == null) return BadRequest(new { Message = "Error In Login Operation" });
-            //return Ok(new { token = res, exepire = DateTime.Now.AddDays(30), status = 200 });
+         
         }
 
         [HttpPost("register")]
@@ -74,10 +73,6 @@ namespace FinalApi.Controllers
                 FirstName = user.Name,
                 LastName = user.Name,
                 Email = user.Email,
-                City = user.City,
-                Country = user.Country,
-                Street = user.Street,
-                PostalCode = user.PostalCode,
                 TimeZone = user.TimeZone,
                 Currency = user.Currency,
                 PhoneNumbers = user.PhoneNumbers.Select(p => p.Phone).ToList(),
@@ -122,7 +117,6 @@ namespace FinalApi.Controllers
                     await model.ProfileImage.CopyToAsync(stream);
                 }
 
-                // Store the relative path instead of the full path
                 user.Image = Path.Combine("uploads", model.ProfileImage.FileName);
             }
 
@@ -140,30 +134,6 @@ namespace FinalApi.Controllers
             {
                 user.Name = $"{model.FirstName} {model.LastName}".Trim();
             }
-            if (!string.IsNullOrWhiteSpace(model.City))
-            {
-                user.City = model.City;
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.Country))
-            {
-                user.Country = model.Country;
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.Street))
-            {
-                user.Street = model.Street;
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.PostalCode))
-            {
-                user.PostalCode = model.PostalCode;
-            }
-
-            if (!string.IsNullOrWhiteSpace(model.TimeZone))
-            {
-                user.TimeZone = model.TimeZone;
-            }
 
             if (model.Age > 0)
             {
@@ -180,16 +150,13 @@ namespace FinalApi.Controllers
                 user.Gender = model.Gender;
             }
 
-            // Handle phone numbers
             if (model.PhoneNumbers != null && model.PhoneNumbers.Any())
             {
-                // If there are phone numbers provided, create a new list
                 user.PhoneNumbers = model.PhoneNumbers
                     .Where(phone => !string.IsNullOrWhiteSpace(phone))
                     .Select(phone => new PhoneNumber { Phone = phone })
                     .ToList();
             }
-          
 
             var result = await acountManager.UpdateUserProfileAsync(user, model);
 
@@ -214,6 +181,54 @@ namespace FinalApi.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("profile/address")]
+        public async Task<IActionResult> UpdateAddress([FromForm] UpdateAddressViewModel model)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await acountManager.UserManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.City))
+            {
+                user.City = model.City;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Country))
+            {
+                user.Country = model.Country;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Street))
+            {
+                user.Street = model.Street;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PostalCode))
+            {
+                user.PostalCode = model.PostalCode;
+            }
+
+            var result = await acountManager.UserManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok("Address updated successfully.");
+            }
+            else
+            {
+                return BadRequest(new { Message = "Error updating address", Errors = result.Errors.Select(e => e.Description) });
+            }
+        }
 
         [Authorize]
         [HttpPost("VerifyIdentity")]
