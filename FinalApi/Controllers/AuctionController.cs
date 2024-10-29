@@ -374,7 +374,8 @@ namespace FinalApi.Controllers
             var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).Select(a => a.SeeDetails()).ToList();
             return Ok(EndedAuctions);
         }
-
+        
+        [Authorize]
         [HttpGet("SellerLive")]
         public async Task<IActionResult> SellerLiveAuction()
         {
@@ -382,7 +383,21 @@ namespace FinalApi.Controllers
             var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now && i.Ended==false).ToList();
             return Ok(LiveAuctions);
         }
+        [Authorize]
+        [HttpGet("SellerUpcoming")]
+        public async Task<IActionResult> SellerUpComingAuctions()
+        {
+            var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > DateTime.Now && i.EndDate >= DateTime.Now && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
+            return Ok(upcomingAuctions);
+        }
 
+        [HttpGet("UpcomingAuctions")]
+        public async Task<IActionResult> UpComingAuctions()
+        {
+            var upcomingAuctions = auctionManager.GetAll().Where(i => i.StartDate > DateTime.Now && i.EndDate >= DateTime.Now && i.Ended == false).Select(a => a.SeeDetails()).ToList();
+            return Ok(upcomingAuctions);
+        }
 
         [HttpGet("popularAuctions")]
         public async Task<IActionResult> PopularAuctions()
