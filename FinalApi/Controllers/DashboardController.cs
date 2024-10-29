@@ -42,21 +42,29 @@ namespace FinalApi.Controllers
             return Ok(new { allAmount = allBids + allItems });
         }
 
-/*        [HttpGet("categories")]
+       [HttpGet("categories")]
         public async Task<IActionResult> GetAllCategoriesItems()
         {
             var categories = categoryManager.GetAll().Select(c => new { name=c.Name, value=c.Items.Count }).ToList();
             return Ok(categories);
-        }*/
+        }
 
-        //[HttpGet("top-five-sellers")]
-        //public async Task<IActionResult> GetTopFiveSellers()
-        //{
-        //    var sellers = sellerManager.GetAll().Where(s => s.Items.Select(i => i.Auction.ItemID)
-        //    .FirstOrDefault() != null).Select(u => new { u.User.Name, u.Items.Count }).OrderByDescending(s => s.Count)
-        //    .Take(5).ToList();
-           
-        //    return Ok(sellers);
-        //}
+        [HttpGet("top-five-sellers")]
+        public async Task<IActionResult> GetTopFiveSellers()
+        {
+            var sellers = sellerManager.GetAll().Where(s => s.Items.Select(i => i.Auction.ItemID)
+            .FirstOrDefault() != null).Select(u => new { u.User.Name, u.Items.Count }).OrderByDescending(s => s.Count)
+            .Take(5).ToList();
+
+            return Ok(sellers);
+        }
+
+        [HttpGet("auctions-bids-amounts")]
+        public async Task<IActionResult> AuctionsBidsAmount()
+        {
+            var auctionsBidsAmount = auctionManager.GetAll().Where(a => a.StartDate < DateTime.Now && a.EndDate > DateTime.Now)
+            .Select(a => new { name = a.Item.Name, value = a.Item.StartPrice + a.Bids.Select(b => b.Amount).Sum() }).ToList();
+            return Ok(auctionsBidsAmount);
+        }
     }
 }

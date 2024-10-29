@@ -21,16 +21,19 @@ namespace FinalApi.Controllers
          AccountManager accountManager;
         private readonly NotificationManager notificationManager;
         private readonly IHubContext<NotificationsHub> hubContext;
+        private readonly IHubContext<DashboardHub> dashboardHubContext;
         private readonly CategoryManager categoryManager;
 
         public ItemController(ItemManager _itemManager,AccountManager _accountManager,
             NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext,
+            IHubContext<DashboardHub> _dashboardHubContext,
             CategoryManager _categoryManager)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
             notificationManager = _notificationManager;
             hubContext = _hubContext;
+            dashboardHubContext = _dashboardHubContext;
             categoryManager = _categoryManager;
         }
         [Authorize]
@@ -54,9 +57,9 @@ namespace FinalApi.Controllers
             var result = await itemManager.Add(_item.toItemModel());
                 if (result == true)
                 {
-                    //var cat =await categoryManager.GetOne(_item.Category);
-                    //await hubContext.Clients.All.SendAsync("category", new { cat.Name, count = 1 });
-                    return Ok();
+                var cat = await categoryManager.GetOne(_item.Category);
+                await dashboardHubContext.Clients.All.SendAsync("category", new { name = cat.Name, value = 1 });
+                return Ok();
                 }
                 else
                 {
@@ -221,6 +224,8 @@ namespace FinalApi.Controllers
                         .OrderBy(n => n.Id).LastOrDefault();
                     await hubContext.Clients.Group(item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
                 }
+                // send to dashboard
+                await dashboardHubContext.Clients.All.SendAsync("topFiveSeller", new { name = item.Seller.User.Name, count = 1 });
                 return Ok(res);
             }
             else
