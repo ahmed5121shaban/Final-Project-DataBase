@@ -23,19 +23,21 @@ namespace FinalApi.Controllers
         private readonly PaymentManager paymentManager;
         private readonly AuctionManager auctionManager;
         private readonly IHubContext<DashboardHub> hubContext;
+        private readonly IHubContext<ProfileHub> profileHubContext;
         private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
         {
             { "mode", "sandbox" },
         };
 
         public PaymentController(IConfiguration _configuration, UserManager<User> _userManager, PaymentManager _paymentManager,
-            AuctionManager _auctionManager,IHubContext<DashboardHub> _hubContext)
+            AuctionManager _auctionManager,IHubContext<DashboardHub> _hubContext,IHubContext<ProfileHub> _profileHubContext)
         {
             configuration = _configuration;
             userManager = _userManager;
             paymentManager = _paymentManager;
             auctionManager = _auctionManager;
             hubContext = _hubContext;
+            profileHubContext = _profileHubContext;
         }
 
 
@@ -100,10 +102,12 @@ namespace FinalApi.Controllers
             if(paymentView.Method== Enums.PaymentMetod.paypal)
             {
                 user.PaypalEmail = paymentView.PaypalEmail;
+                await profileHubContext.Clients.All.SendAsync("paypalEmail", user.PaypalEmail);
             }
             if (paymentView.Method == Enums.PaymentMetod.stripe)
             {
                 user.StripeEmail = paymentView.StripeEmail;
+                await profileHubContext.Clients.All.SendAsync("stripeEmail", user.StripeEmail);
             }
 
             var res = await userManager.UpdateAsync(user);
@@ -122,11 +126,11 @@ namespace FinalApi.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found" });
             
-            var email = userManager.Users.Where(u => u.Id == userid).Select(u=>new { PaypalEmail=u.PaypalEmail, StripeEmail=u.StripeEmail}).ToList();
+            var email = userManager.Users.Where(u => u.Id == userid).Select(u=>new { u.PaypalEmail, u.StripeEmail}).ToList();
             if (!email.Any()) 
                 return NotFound(new {message="No Emails in this account"});
             
-            
+           
             return Ok(email);
         }
 
@@ -135,34 +139,25 @@ namespace FinalApi.Controllers
         {
             try
             {
-                // Initialize PayPal API context
                 var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
-               configuration["PayPalSetting:Secret"],Config).GetAccessToken());
+                configuration["PayPalSetting:Secret"],Config).GetAccessToken());
 
-                // Deduct a percentage (e.g., 10%)
-                //decimal deductionPercentage = 0.10m;
-                //decimal amountToDeduct = totalAmount * deductionPercentage;
-                //decimal amountToSend = totalAmount - amountToDeduct;
-                decimal amountToSend = 500m;
-
-                // Create a sender batch ID
                 var senderBatchId = Guid.NewGuid().ToString();
 
-                // Create payout item for the recipient (after deduction)
                 var payoutItem = new PayoutItem
                 {
                     recipient_type = PayoutRecipientType.EMAIL,
                     amount = new Currency
                     {
-                        value = amountToSend.ToString("F2"),
+                        value = totalAmount.ToString("F2"),
                         currency = "EUR"
                     },
                     receiver = recipientEmail,
-                    note = $"Payment after deducting {amountToSend}% fee",
+                    note = $"Payment after deducting {totalAmount}% fee",
                     sender_item_id = "item_" + Guid.NewGuid().ToString()
                 };
 
-                // Create the payout batch request
+
                 var payout = new PayPal.Api.Payout
                 {
                     sender_batch_header = new PayoutSenderBatchHeader
@@ -173,25 +168,18 @@ namespace FinalApi.Controllers
                     items = new List<PayoutItem> { payoutItem }
                 };
 
-                // Send the payout to the recipient
                 var createdPayout = payout.Create(apiContext, syncMode: true);
 
-                // After successful payout, return the deducted amount back to the customer
-                string customerEmail = "customer@example.com";  // Customer's PayPal email
-                //var refundResult = paymentManager.RefundCustomer(apiContext, customerEmail, amountToDeduct);
-
-                // Return a success response with details
                 return Ok(new
                 {
                     status = createdPayout.batch_header.batch_status,
                     batchId = createdPayout.batch_header.payout_batch_id,
-                    //refundedAmount = refundResult.amount
+                    statusCode = 200
                 });
             }
             catch (Exception ex)
             {
-                // Handle errors (like insufficient funds or invalid recipients)
-                return BadRequest(ex.Message);
+                return BadRequest(new { ex.Message, statusCode = 400 });
             }
         }
 
@@ -200,6 +188,14 @@ namespace FinalApi.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(buyerID))
+                return BadRequest(new { message = "the user not found" });
+
+            var user = userManager.FindByIdAsync(buyerID).Result.City;
+            if (string.IsNullOrEmpty(user))
+                return BadRequest(new { result = "http://localhost:4200/user/shipping", status = 400 });
 
             try
             {
@@ -310,9 +306,13 @@ namespace FinalApi.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(new {message = "this data is not completed"});
+
             var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(buyerID))
                 return BadRequest(new { message = "the user not found" });
+            var user = userManager.FindByIdAsync(buyerID).Result.City;
+            if (string.IsNullOrEmpty(user))
+                return BadRequest(new { result= "http://localhost:4200/user/shipping", status = 400 });
             try
             {
                 StripeConfiguration.ApiKey = configuration["StripeSetting:SecretKey"];
@@ -371,8 +371,9 @@ namespace FinalApi.Controllers
         }
 
 
+        //this api in bid controller not here
 
-        [HttpGet("user-have-payment")]
+        /*[HttpGet("user-have-payment")]
         public IActionResult GetPaymentMethodsCount()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -389,7 +390,7 @@ namespace FinalApi.Controllers
             else
                 return new JsonResult(new { message = "the user have one Payment Method", count = 1, method = payments.Select(p => p.Method) });
 
-        }
+        }*/
     }
 
    

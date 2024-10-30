@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Stripe;
 using PayPal;
+using Microsoft.AspNetCore.Http;
 
 namespace Managers
 {
@@ -82,8 +83,6 @@ namespace Managers
 
 
         }
-
-
 
         public string AddPayPalPayment(CreatePaymentViewModel _createPayment)
         {
@@ -170,49 +169,50 @@ namespace Managers
 
         }
 
-
-        public dynamic RefundCustomer(APIContext apiContext, string customerEmail, decimal refundAmount)
+        public dynamic RefundCustomerAmount( string customerEmail, decimal totalAmount)
         {
             try
             {
-                // Create another payout item for the refund
-                var refundItem = new PayoutItem
+                var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
+                configuration["PayPalSetting:Secret"], Config).GetAccessToken());
+
+                var senderBatchId = Guid.NewGuid().ToString();
+
+                var payoutItem = new PayoutItem
                 {
                     recipient_type = PayoutRecipientType.EMAIL,
                     amount = new Currency
                     {
-                        value = refundAmount.ToString("F2"),
-                        currency = "USD"
+                        value = totalAmount.ToString("F2"),
+                        currency = "EUR"
                     },
                     receiver = customerEmail,
-                    note = "Refund of deducted fee",
-                    sender_item_id = "refund_item_" + Guid.NewGuid().ToString()
+                    note = $"Payment after deducting {totalAmount}% fee",
+                    sender_item_id = "item_" + Guid.NewGuid().ToString()
                 };
 
-                var refundPayout = new PayPal.Api.Payout
+
+                var payout = new PayPal.Api.Payout
                 {
                     sender_batch_header = new PayoutSenderBatchHeader
                     {
-                        sender_batch_id = Guid.NewGuid().ToString(),
-                        email_subject = "Refund of your deducted amount"
+                        sender_batch_id = senderBatchId,
+                        email_subject = "You have a payment"
                     },
-                    items = new List<PayoutItem> { refundItem }
+                    items = new List<PayoutItem> { payoutItem }
                 };
 
-                // Send the refund payout to the customer
-                var createdRefundPayout = refundPayout.Create(apiContext);
-
-                // Return the refund result
+                var createdPayout = payout.Create(apiContext, syncMode: true);
                 return new
                 {
-                    status = createdRefundPayout.batch_header.batch_status,
-                    amount = refundAmount
+                    status = createdPayout.batch_header.batch_status,
+                    amount = totalAmount,
+                    statusCode=200
                 };
             }
             catch (PayPalException ex)
             {
-                // Log and handle any refund-related exceptions
-                return new { status = "FAILED", message = ex.Message };
+                return new { status = "FAILED", message = ex.Message, statusCode = 400 };
             }
         }
 

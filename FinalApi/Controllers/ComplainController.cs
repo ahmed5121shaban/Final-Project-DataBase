@@ -6,7 +6,6 @@ using ModelView;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
-using ModelView;
 
 namespace FinalApi.Controllers
 {
@@ -83,7 +82,6 @@ namespace FinalApi.Controllers
         }
 
         [HttpGet("sellers")]
-        [Authorize(Roles = "Buyer")] // يتطلب أن يكون المستخدم Buyer
         public async Task<IActionResult> GetSellers()
         {
             var buyerId = GetCurrentBuyerId(); // يجب أن تضيف دالة للحصول على ID المشتري الحالي

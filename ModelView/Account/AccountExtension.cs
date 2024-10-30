@@ -16,6 +16,8 @@ namespace ModelView.Account
                 UserName = model.Email,
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
+                Image = "Images/profile_images/blank-profile-picture-973460_1920.png" // الصورة الافتراضية
+
             };
             }
 
