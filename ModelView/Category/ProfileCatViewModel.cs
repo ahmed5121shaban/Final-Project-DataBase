@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModelView
 {
-    public class SellerViewModel
+    public class ProfileCatViewModel
     {
-        public int Id { get; set; }
+        public int id { get; set; }
+        public String Icon { get; set; }
         public string Name { get; set; }
+
     }
 }

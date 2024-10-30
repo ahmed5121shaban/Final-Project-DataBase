@@ -46,13 +46,13 @@ namespace Managers
     string? filterOption = null
 )
         {
-            var builder = PredicateBuilder.New<Auction>();
+            var builder = PredicateBuilder.New<Auction>(true); 
             var old = builder;
 
             // Filter by search text (if provided)
             if (!string.IsNullOrEmpty(searchtxt))
             {
-                builder = builder.Or(p => p.Item.Name.Contains(searchtxt));
+                builder = builder.And(p => p.Item.Name.Contains(searchtxt));
             }
 
             // Filter by category (if provided)

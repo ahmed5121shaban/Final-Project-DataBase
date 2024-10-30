@@ -8,19 +8,29 @@ namespace FinalApi
     {
         private readonly AuctionManager auctionManager;
         private readonly UserManager<User> userManager;
+        private readonly SellerManager sellerManager;
+        private readonly CategoryManager categoryManager;
 
-        public DashboardHub(AuctionManager _auctionManager,UserManager<User> _userManager)
+        public DashboardHub(AuctionManager _auctionManager,UserManager<User> _userManager,SellerManager _sellerManager,
+            CategoryManager _categoryManager)
         {
             auctionManager = _auctionManager;
             userManager = _userManager;
+            sellerManager = _sellerManager;
+            categoryManager = _categoryManager;
         }
         public async Task Dashboard()
         {
-            var Auctions = auctionManager.GetAll().ToList();
-            await Clients.All.SendAsync("AllAuction", Auctions);
-            var allUsers = auctionManager.GetAll().Count();
-            await Clients.All.SendAsync("AllUsersCount", allUsers);
-            await Clients.All.SendAsync("SalesOfYear", null);
+            try { 
+
+                var Auctions = auctionManager.GetAll().Count();
+                await Clients.All.SendAsync("AuctionsCount", Auctions);
+
+            }
+            catch (Exception ex) { };
         }
+
+       
+       
     }
 }

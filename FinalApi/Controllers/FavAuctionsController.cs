@@ -85,13 +85,24 @@ namespace FinalApi.Controllers
             return new JsonResult(favAuctions);
         }
 
+
+        [HttpGet]
+        [Route("getallupcomingfav")]
+        public async Task<IActionResult> GetAllUpcoming()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var favAuctions = favAuctionManager.GetAll().Where(f => f.BuyerID == userId && f.Auction.Ended == false && f.Auction.StartDate > DateTime.Now).Select(a => new {auction = a.Auction.SeeDetails()}).ToList();
+
+            return new JsonResult(favAuctions);
+        }
+
         [HttpGet]
         [Route("getallendedfav")]
         public async Task<IActionResult> GetAllEnded()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var auctions = auctionManager.GetAll().ToList();
-            var favAuctions = favAuctionManager.GetAll().Where(f => f.BuyerID == userId && f.Auction.Ended == true).ToList();
+            var favAuctions = favAuctionManager.GetAll().Where(f => f.BuyerID == userId && f.Auction.Ended == true).Select(a => new { auction = a.Auction.SeeDetails() }).ToList();
 
             return new JsonResult(favAuctions);
         }

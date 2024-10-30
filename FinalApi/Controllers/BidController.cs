@@ -23,10 +23,11 @@ namespace FinalApi.Controllers
         private readonly IHubContext<BidsHub> hubContext;
         private readonly FavAuctionManager favAuctionManager;
         private readonly NotificationManager notificationManager;
+        private readonly IHubContext<DashboardHub> dashboardHubContext;
 
         public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,
             BidManager _bidManager,ItemManager _itemManager, IHubContext<BidsHub> _hubContext,
-            FavAuctionManager _favAuctionManager,NotificationManager _notificationManager)
+            FavAuctionManager _favAuctionManager,NotificationManager _notificationManager,IHubContext<DashboardHub> _dashboardHubContext)
         {
             userManager = _userManager;
             paymentManager = _paymentManager;
@@ -35,6 +36,7 @@ namespace FinalApi.Controllers
             hubContext = _hubContext;
             favAuctionManager = _favAuctionManager;
             notificationManager = _notificationManager;
+            dashboardHubContext = _dashboardHubContext;
         }
 
 
@@ -139,7 +141,7 @@ namespace FinalApi.Controllers
             {
                 _addBidView.BuyerID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 _addBidView.Time = DateTime.Now;
-
+                
                 var res =await bidManager.Add(_addBidView.ToModel());
                 if (res)
                 {
@@ -150,7 +152,9 @@ namespace FinalApi.Controllers
                         bidViewModels.Add(bid.ToBidViewModel());
                     
                     await hubContext.Clients.Group(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
-
+                    var auctionBidAmount = new { name = bids.Select(b => b.Auction.Item.Name).FirstOrDefault(), value=bids.Select(b=>b.Amount).Sum()+bids.Select(b=>b.Auction.Item.StartPrice).FirstOrDefault()};
+                    await dashboardHubContext.Clients.All.SendAsync("auctionsBidsAmount", auctionBidAmount);
+                    
                     return new JsonResult(new ApiResultModel<bool>()
                     {
                         result = res,

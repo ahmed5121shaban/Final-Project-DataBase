@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelView.Users
+namespace ModelView
 {
     public class UserViewModel
     {

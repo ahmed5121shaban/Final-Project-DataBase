@@ -36,6 +36,7 @@ namespace FinalApi
 
             auction.Ended = true;
             if(await auctionManager.Update(auction)==false) return;
+            await hubContext.Clients.All.SendAsync("endedAuction",1);
 
             var bid = auction.Bids.LastOrDefault();
             if (bid == null) return;
@@ -47,7 +48,7 @@ namespace FinalApi
             if( bids.Sum() < auction.Item.EndPrice) return;
 
             payment.IsDone= true;
-            if(await paymentManager.Update(payment)) return;
+            if(!await paymentManager.Update(payment)) return;
 
             await chatManager.Add(new Chat
             {
@@ -56,12 +57,12 @@ namespace FinalApi
                 SellerID = auction.Item.SellerID,
                 StartDate = DateTime.Now,
             });
-            //refund the payment to all lost buyer
 
-            //when the auction done (the time end with buyer bid more than expected price) i must add the buyer id and payment id
-            auction.BuyerID = payment.BuyerId;
-            auction.PaymentID = payment.Id; 
-            await auctionManager.Update(auction);
+            var refundAmount = auction.Item.StartPrice;
+            var lostBuyersEmails = paymentManager.GetAll().Where(p=>p.AuctionID == _auctionID&&p.IsDone == false).Count();
+
+            var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
+            if (result.statusCode == 400) return;
 
         }
 
