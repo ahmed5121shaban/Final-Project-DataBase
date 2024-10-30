@@ -66,5 +66,24 @@ namespace FinalApi.Controllers
             .Select(a => new { name = a.Item.Name, value = a.Item.StartPrice + a.Bids.Select(b => b.Amount).Sum() }).ToList();
             return Ok(auctionsBidsAmount);
         }
+
+        [HttpGet("last-ten-auction")]
+        public async Task<IActionResult> GetLastTenAuction()
+        {
+            var lastTenAuctions = auctionManager.GetAll()
+                .Select(a => new
+                {
+                    auctionName = a.Item.Name,
+                    sellerName = a.Item.Seller.User.Name,
+                    buyerName = a.Buyer.User.Name ?? "no buyer for now",
+                    images = a.Item.Images,
+                    a.Completed,
+                    a.Ended,
+                    a.StartDate,
+                    a.EndDate,
+                    a.ID
+                }).OrderByDescending(a => a.ID).Take(10).ToList();
+            return Ok(lastTenAuctions);
+        }
     }
 }
