@@ -388,5 +388,33 @@ namespace FinalApi.Controllers
 
             
         }
+        [Authorize]
+        [HttpGet("UserData")]
+        public async Task<IActionResult> GetUserData()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await acountManager.UserManager.FindByIdAsync(userId);
+            var userdata = new UserDataViewModel()
+            {
+                Name = user.Name,
+                Image = user.Image
+
+            };
+            return Ok(userdata);
+
+
+        }
+        [Authorize]
+        [HttpGet("userCurrency")]
+        public async Task<IActionResult> GetUserCurrency()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await acountManager.UserManager.FindByIdAsync(userId);
+            var userCurrency = user.Currency ;
+            return Ok(new ApiResultModel<string>()
+            {
+                result = userCurrency
+            });
+        }
     }
 }
