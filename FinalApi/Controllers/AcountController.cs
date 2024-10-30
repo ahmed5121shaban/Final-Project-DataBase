@@ -107,7 +107,7 @@ namespace FinalApi.Controllers
                 return NotFound("User not found.");
             }
 
-            // Only update the profile image if provided
+            // Check if a profile image was provided, otherwise use the default image
             if (model.ProfileImage != null)
             {
                 var profileImagesFolder = Path.Combine("Images", "profile_images");
@@ -123,9 +123,9 @@ namespace FinalApi.Controllers
                 }
 
                 // Store the relative path instead of the full path
-                user.Image = Path.Combine("uploads", model.ProfileImage.FileName);
+                user.Image = Path.Combine("Images", "profile_images", uniqueFileName);
             }
-
+         
             if (!string.IsNullOrWhiteSpace(model.Email))
             {
                 var existingUser = await acountManager.UserManager.FindByEmailAsync(model.Email);

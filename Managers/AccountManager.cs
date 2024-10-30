@@ -127,10 +127,12 @@ namespace Managers
         public async Task<IdentityResult> UpdateUserProfileAsync(User user, UpdateProfileViewModel model)
         {
             // Check if each field is provided and update it accordingly
-            if (!string.IsNullOrWhiteSpace(model.FirstName) && !string.IsNullOrWhiteSpace(model.LastName))
+            // التأكد من عدم وجود فراغات أو تكرار الاسم
+            if (!string.IsNullOrWhiteSpace(model.FirstName) || !string.IsNullOrWhiteSpace(model.LastName))
             {
-                user.Name = $"{model.FirstName} {model.LastName}".Trim();
+                user.Name = $"{model.FirstName?.Trim()} {model.LastName?.Trim()}".Trim();
             }
+
 
             if (!string.IsNullOrWhiteSpace(model.City))
                 user.City = model.City;
