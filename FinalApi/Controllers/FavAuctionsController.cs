@@ -68,9 +68,10 @@ namespace FinalApi.Controllers
         [Route("getfavauctionids")]
     public async Task<IActionResult> GetFavAuctionIds()
         {
+            var currentUtcTime = DateTime.UtcNow;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var auctions = auctionManager.GetAll().ToList();
-            var favAuctionIds = favAuctionManager.GetAll().Where(f => f.BuyerID == userId&&f.Auction.Ended==false && f.Auction.Ended == false && f.Auction.StartDate <= DateTime.Now && f.Auction.EndDate >= DateTime.Now).Select(f=>f.AuctionID).ToList();
+            var favAuctionIds = favAuctionManager.GetAll().Where(f => f.BuyerID == userId&&f.Auction.Ended==false).Select(f=>f.AuctionID).ToList();
             
             return new JsonResult(new { favAuctionIds });
         }

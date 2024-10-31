@@ -19,5 +19,7 @@ namespace ModelView
         public Enums.AuctionShippingStatus ShippingStatus { get; set; }
         public bool IsReviewd { get; set; }
         public List<string> ImageUrl { get; set; }
+        public decimal TotalPrice { get; set; }
+
     }
 }

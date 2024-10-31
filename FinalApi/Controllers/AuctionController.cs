@@ -272,7 +272,7 @@ namespace FinalApi.Controllers
                 }
 
                 // Paginate the filtered auctions
-                var paginatedAuctions = filteredAuctions
+                var paginatedAuctions = filteredAuctions.Select(a=>a.SeeDetails())
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToList();
@@ -344,7 +344,7 @@ namespace FinalApi.Controllers
                                 && a.EndDate >= DateTime.Now
                                 && a.ID != auction.ID
                                 && !a.Ended) // Exclude the auction itself
-                    .OrderByDescending(a => a.ID)
+                    .OrderByDescending(a => a.ID).Select(a=>a.SeeDetails())
                     .Take(3)
                     .ToList();
 

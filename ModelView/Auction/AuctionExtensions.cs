@@ -26,9 +26,10 @@ namespace ModelView
             {
                 ID = auction.ID,
                 StartDate = auction.StartDate,
-                EndDate = auction.EndDate,
+                EndDate = auction.EndDate.AddHours(2d),
                 ItemID = auction.ItemID,
                 IsEnded = auction.Ended,
+                Completed=auction.Completed,
                 Item = new AuctionItemViewModel
                 {
                     ID = auction.Item.ID,
@@ -56,6 +57,13 @@ namespace ModelView
 
         public static DoneAuctionViewModel ToDoneAuctionVM(this Auction _auction)
         {
+            decimal startPrice = _auction.Item.StartPrice;
+            decimal totalBids = 0;
+            foreach (var bid in _auction.Bids)
+            {
+                totalBids += bid.Amount;
+            }
+            var totalPrice = startPrice + totalBids;
             return new DoneAuctionViewModel
             {
                 AuctionTitle = _auction.Item.Name,
@@ -67,6 +75,7 @@ namespace ModelView
                 ItemID = _auction.Item.ID,
                 SellerName = _auction.Item.Seller.User.Name,
                 ImageUrl = _auction.Item.Images.Select(i=>i.Src).ToList(),
+                TotalPrice=totalPrice
             };
         }
 
@@ -138,16 +147,16 @@ namespace ModelView
                 CreationDate = _item.Auction.StartDate,
                 ItemDescription = _item.Description,
                 ItemName = _item.Name,
-                PhoneNumber = _item.Seller.User?.PhoneNumber?? "no PhoneNumber",
+                PhoneNumber = _item.Seller.User?.PhoneNumber ?? "no PhoneNumber",
                 StartPrice = _item.StartPrice,
                 SellerName = _item.Seller.User.Name,
                 Status = "UnPaid",
                 Taxes = 5,
                 EndPrice = _item.EndPrice,
                 TotalBids = _bidsAmount,
-                Method = method??0,
+                Method = method ?? 0,
                 Currency = "USD",
-
+                Images = _item.Images.Select(i => i.Src).ToList()
             };
         }
 
