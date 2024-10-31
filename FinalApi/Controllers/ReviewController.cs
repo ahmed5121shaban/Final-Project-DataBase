@@ -30,7 +30,7 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetReviews()
         {
 
-            var reviews = reviewManager.GetAll().ToList();
+            var reviews = reviewManager.GetAll().Select(r=>r.ToViewModel()).ToList();
             return new JsonResult(reviews);
         }
 
