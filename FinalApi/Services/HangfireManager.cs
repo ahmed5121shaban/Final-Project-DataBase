@@ -30,7 +30,6 @@ namespace FinalApi
         }
         public async Task EndAuctionAtTime(int _auctionID)
         {
-            //ended column true && without buyer => ended only || with buyer => (completed|not) | (expected salary)
             var auction =await auctionManager.GetOne(_auctionID);
             if(auction==null) return;
 

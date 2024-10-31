@@ -12,41 +12,14 @@ namespace ModelView
         public static Item toItemModel(this AddItemViewModel model)
         {
 
-                List<Image> images = new List<Image>();
-                foreach (IFormFile file in model.Images)
-                {
-
-                        string filename = DateTime.Now.ToFileTime().ToString() + file.FileName;
-                         string path = Path.Combine(
-                         Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "Images",
-                        "Items",
-                        filename
-                 );
-                FileStream filestream = new FileStream(path, FileMode.Create);
-                file.CopyTo(filestream);
-                filestream.Close();
-                Image img = new Image { Src = Path.Combine("Images", "Items", filename) };
+            List<Image> images = new List<Image>();
+                
+            foreach (string imageUrl in model.ImagesUrl)
+            {      
+                Image img = new Image { Src = imageUrl };
                 images.Add(img);
             }
-            string fileName = string.Empty;
-            if (model.Contract != null)
-            {
-                fileName = DateTime.Now.ToFileTime().ToString() + model.Contract.FileName;
-                string filePath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "Contracts",
-
-                    fileName
-                    );
-                FileStream stream = new FileStream(filePath, FileMode.Create);
-                model.Contract.CopyTo(stream);
-                stream.Close();
-                
-            }
-            var contractfile = Path.Combine("Contracts", fileName);
+            
             return new Item
             {
                 Name = model.Title,
@@ -56,7 +29,7 @@ namespace ModelView
                 EndPrice = model.sellPrice ?? 0,
                 AddTime = DateTime.Now,
                 Images = images.ToArray(),
-                ContractFile = contractfile??"N/A",
+                ContractFile = model.FileName??"N/A",
                 SellerID=model.sellerId
             };
 

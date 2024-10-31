@@ -111,7 +111,6 @@ namespace FinalApi.Controllers
             item.AuctionID = auction.ID;
             item.Auction = auction;
             await itemManager.Update(item);
-            
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category

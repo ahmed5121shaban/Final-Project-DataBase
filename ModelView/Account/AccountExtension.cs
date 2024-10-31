@@ -16,8 +16,7 @@ namespace ModelView.Account
                 UserName = model.Email,
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
-                Image = "Images/profile_images/blank-profile-picture-973460_1920.png" // الصورة الافتراضية
-
+                Image = "https://i.sstatic.net/l60Hf.png" // الصورة الافتراضية
             };
             }
 
@@ -35,7 +34,7 @@ namespace ModelView.Account
                 Gender = model.Gender,
                 PhoneNumbers = model.PhoneNumbers?.Select(phone => new PhoneNumber { Phone = phone }).ToList(),
                 // تخزين مسار الصورة النسبي بدلاً من تحويلها إلى Base64
-                Image = model.ProfileImage != null ? SaveProfileImage(model.ProfileImage) : null
+                Image = model.Image,
             };
         }
 
@@ -51,26 +50,6 @@ namespace ModelView.Account
             };
         }
 
-        // وظيفة لحفظ صورة الملف وإرجاع المسار النسبي
-        private static string SaveProfileImage(IFormFile file)
-        {
-            // تحديد مسار الحفظ النسبي
-            var relativePath = Path.Combine("uploads", "profile_images", $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
-            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
-
-            // التأكد من أن المجلد موجود
-            Directory.CreateDirectory(Path.GetDirectoryName(absolutePath));
-
-            // حفظ الملف في المسار المحدد
-            using (var stream = new FileStream(absolutePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            return relativePath; // إرجاع المسار النسبي
-        }
-
-
         public static User ToModel(this VerifyIdentityViewModel model)
         {
             return new User
@@ -82,15 +61,6 @@ namespace ModelView.Account
                 // يمكنك إضافة خصائص أخرى بناءً على النموذج
             };
         }
-        //public static User ToModel(this LoginViewModel model) 
-        //{
-        //    return new User 
-        //    {
-        //       Email = model.Email,
-
-        //    };
-        //}
-
 
     }
 }

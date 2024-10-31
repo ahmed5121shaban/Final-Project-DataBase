@@ -114,7 +114,7 @@ namespace FinalApi.Controllers
             if (userID == null)
                 return new JsonResult(new {message="the user not found", count = 4 });
             var item = itemManager.GetAll().FirstOrDefault(i=>i.ID == itemID&&i.SellerID== userID);
-            if (User.IsInRole("Seller")&&item!=null)
+            if (item!=null)
                 return new JsonResult( new { message = "not allowed" ,count=0} );
 
             var user =await userManager.FindByIdAsync(userID);

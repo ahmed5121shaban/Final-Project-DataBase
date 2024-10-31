@@ -21,7 +21,8 @@ namespace ModelView
 
         public IFormFile? Contract { get; set; }
         public List<IFormFile> Images { get; set; }
-
+        public List<string>? ImagesUrl { get; set; }
+        public string? FileName { get; set; }
 
 
     }

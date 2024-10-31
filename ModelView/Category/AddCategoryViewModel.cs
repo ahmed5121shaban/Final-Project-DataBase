@@ -21,6 +21,9 @@ namespace ModelView
         public IFormFile Image { get; set; }
         public IFormFile Icon { get; set; }
 
+        public string? ImageUrl { get; set; }
+        public string? IconUrl { get; set; }
+
 
     }
 }
