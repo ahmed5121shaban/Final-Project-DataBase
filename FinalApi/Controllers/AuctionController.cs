@@ -364,8 +364,10 @@ namespace FinalApi.Controllers
         [HttpGet("Active")]
         public async Task<IActionResult> GetAllActive()
         {
+            var currentUtcTime = DateTime.UtcNow;
+
             var auctions = auctionManager.GetAll();
-            var ActiveAuctions = auctions.Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Ended==false).Select(a => a.SeeDetails()).ToList();
+            var ActiveAuctions = auctions.Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Ended==false).Select(a => a.SeeDetails()).ToList();
             return Ok(ActiveAuctions);
         }
 
@@ -381,57 +383,81 @@ namespace FinalApi.Controllers
         [HttpGet("SellerLive")]
         public async Task<IActionResult> SellerLiveAuction()
         {
+            var currentUtcTime = DateTime.UtcNow;
+
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= DateTime.Now && i.EndDate >= DateTime.Now && i.Ended==false).ToList();
+            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= currentUtcTime && i.EndDate >= currentUtcTime && i.Ended==false).ToList();
             return Ok(LiveAuctions);
         }
         [Authorize]
         [HttpGet("SellerUpcoming")]
         public async Task<IActionResult> SellerUpComingAuctions()
         {
+            var currentUtcTime = DateTime.UtcNow;
+
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > DateTime.Now && i.EndDate >= DateTime.Now && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
+            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > currentUtcTime && i.EndDate >= DateTime.Now && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
             return Ok(upcomingAuctions);
         }
-
         [HttpGet("UpcomingAuctions")]
         public async Task<IActionResult> UpComingAuctions()
         {
-            var upcomingAuctions = auctionManager.GetAll().Where(i => i.StartDate > DateTime.Now && i.EndDate >= DateTime.Now && i.Ended == false).Select(a => a.SeeDetails()).ToList();
+            var currentUtcTime = DateTime.UtcNow;
+            var upcomingAuctions = auctionManager.GetAll()
+                .Where(i => i.StartDate > currentUtcTime && i.EndDate >= currentUtcTime && !i.Ended)
+                .Select(a => a.SeeDetails())
+                .ToList();
             return Ok(upcomingAuctions);
         }
 
         [HttpGet("popularAuctions")]
         public async Task<IActionResult> PopularAuctions()
         {
-            var popularAuctions = auctionManager.GetAll().OrderByDescending(a => a.Bids.Count).Where(a => a.Ended == false&&a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.Bids.Count() > 0).Select(a => a.SeeDetails()).ToList();
+            var currentUtcTime = DateTime.UtcNow;
+            var popularAuctions = auctionManager.GetAll()
+                .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Bids.Count() > 0)
+                .OrderByDescending(a => a.Bids.Count)
+                .Select(a => a.SeeDetails())
+                .ToList();
             return new JsonResult(popularAuctions);
         }
-
-
 
         [HttpGet("newArrivalsAuctions")]
         public async Task<IActionResult> NewArrivalsAuctions()
         {
-            var newArrivals = auctionManager.GetAll().Where(a => !a.Ended  && a.StartDate >= DateTime.Now.AddDays(-5) && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now).OrderByDescending(a => a.StartDate).Select(a => a.SeeDetails()).ToList();
+            var currentUtcTime = DateTime.UtcNow;
+            var newArrivals = auctionManager.GetAll()
+                .Where(a => !a.Ended && a.StartDate >= currentUtcTime.AddDays(-5) && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime)
+                .OrderByDescending(a => a.StartDate)
+                .Select(a => a.SeeDetails())
+                .ToList();
             return new JsonResult(newArrivals);
         }
-
 
         [HttpGet("endingSoon")]
         public async Task<IActionResult> EndingSoonAuctions()
         {
-            var endingSoonAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now&&a.EndDate<=DateTime.Now.AddDays(2)).OrderByDescending(a => a.StartDate).Select(a => a.SeeDetails()).ToList();
+            var currentUtcTime = DateTime.UtcNow;
+            var endingSoonAuctions = auctionManager.GetAll()
+                .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.EndDate <= currentUtcTime.AddDays(2))
+                .OrderByDescending(a => a.StartDate)
+                .Select(a => a.SeeDetails())
+                .ToList();
             return new JsonResult(endingSoonAuctions);
         }
 
         [HttpGet("noBids")]
         public async Task<IActionResult> NoBidsAuctions()
         {
-            var noBidsAuctions = auctionManager.GetAll().Where(a => !a.Ended && a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now &&a.Bids.Count()==0).Select(a => a.SeeDetails()).ToList();
-        
+            var currentUtcTime = DateTime.UtcNow;
+            var noBidsAuctions = auctionManager.GetAll()
+                .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Bids.Count() == 0)
+                .Select(a => a.SeeDetails())
+                .ToList();
+
             return new JsonResult(noBidsAuctions);
         }
+
 
         //[HttpGet("AllDoneAuctions")]
         //public IActionResult AllDoneAuctions()
