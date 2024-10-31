@@ -1,4 +1,5 @@
 ﻿using Managers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using ModelView;
 
@@ -7,21 +8,24 @@ namespace FinalApi
     public class BidsHub:Hub
     {
         private readonly BidManager bidManager;
+        private readonly UserManager<User> userManager;
 
-        public BidsHub(BidManager _bidManager)
+        public BidsHub(BidManager _bidManager,UserManager<User> _userManager)
         {
             bidManager = _bidManager;
+            userManager = _userManager;
         }
 
 
         public async Task AllBids(int auctionId)
         {
-            var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionId).ToList();
+            var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionId);
 
             List<BidViewModel> bidViewModels = new List<BidViewModel>();
             foreach (var bid in bids)
+            {
                 bidViewModels.Add(bid.ToBidViewModel());
-            var connId = Context.ConnectionId;
+            }
             await Clients.Group(auctionId.ToString()).SendAsync("AllBids", bidViewModels);
         }
 
