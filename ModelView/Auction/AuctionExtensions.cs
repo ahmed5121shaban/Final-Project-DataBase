@@ -29,6 +29,7 @@ namespace ModelView
                 EndDate = auction.EndDate.AddHours(2d),
                 ItemID = auction.ItemID,
                 IsEnded = auction.Ended,
+                Completed=auction.Completed,
                 Item = new AuctionItemViewModel
                 {
                     ID = auction.Item.ID,
