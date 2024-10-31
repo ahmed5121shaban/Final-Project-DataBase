@@ -22,5 +22,7 @@ namespace ModelView
         public Enums.PaymentMetod Method { get; set; }
         public string Currency { get; set; }
 
+        public List<string> Images { get; set; }
+
     }
 }

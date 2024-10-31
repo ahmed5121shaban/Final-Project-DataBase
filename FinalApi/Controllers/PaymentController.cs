@@ -195,7 +195,7 @@ namespace FinalApi.Controllers
 
             var user = userManager.FindByIdAsync(buyerID).Result.City;
             if (string.IsNullOrEmpty(user))
-                return BadRequest(new { result = "http://localhost:4200/user/shipping", status = 400 });
+                return Ok(new { result = "http://localhost:4200/user/shipping", status = 400 });
 
             try
             {
