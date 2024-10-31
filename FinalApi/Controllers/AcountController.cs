@@ -332,29 +332,51 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetUserData()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID not found.");
+            }
+
             var user = await acountManager.UserManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
             var userdata = new UserDataViewModel()
             {
                 Name = user.Name,
                 Image = user.Image
-
             };
+
             return Ok(userdata);
-
-
         }
+
 
         [Authorize]
         [HttpGet("userCurrency")]
         public async Task<IActionResult> GetUserCurrency()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is null or empty.");
+            }
+
             var user = await acountManager.UserManager.FindByIdAsync(userId);
-            var userCurrency = user.Currency ;
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var userCurrency = user.Currency;
             return Ok(new ApiResultModel<string>()
             {
                 result = userCurrency
             });
         }
+
     }
 }
