@@ -20,17 +20,19 @@ namespace FinalApi.Controllers
         private readonly ReviewManager reviewManager;
         private readonly AuctionManager auctionManager;
         private readonly FavCategoryManager favCategoryManager;
+        private readonly CloudinaryManager cloudinaryManager;
 
         public AcountController(AccountManager _acountManager,
             ReviewManager _reviewManager,
             AuctionManager _auctionManager,
-            FavCategoryManager _favCategoryManager)
+            FavCategoryManager _favCategoryManager,
+            CloudinaryManager _cloudinaryManager)
         {
             acountManager = _acountManager;
            auctionManager = _auctionManager;
             reviewManager = _reviewManager;
             favCategoryManager = _favCategoryManager;
-
+            cloudinaryManager = _cloudinaryManager;
         }
 
         [HttpPost("login")]
@@ -106,18 +108,7 @@ namespace FinalApi.Controllers
             // Check if a profile image was provided, otherwise use the default image
             if (model.ProfileImage != null)
             {
-                var profileImagesFolder = Path.Combine("Images", "profile_images");
-                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", profileImagesFolder));
-
-                var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(model.ProfileImage.FileName)}";
-                var relativePath = Path.Combine(profileImagesFolder, uniqueFileName);
-                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
-
-                using (var stream = new FileStream(absolutePath, FileMode.Create))
-                {
-                    await model.ProfileImage.CopyToAsync(stream);
-                }
-                user.Image = Path.Combine("Images", "profile_images", uniqueFileName);
+                user.Image =await cloudinaryManager.UploadFileAsync(model.ProfileImage);
             }
          
             if (!string.IsNullOrWhiteSpace(model.Email))
@@ -303,58 +294,6 @@ namespace FinalApi.Controllers
             return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
         }
 
-
-        private const long MaxImageSizeInBytes = 5 * 1024 * 1024; // 5MB as an example
-
-        private IFormFile ConvertBase64ToImage(string base64Image)
-        {
-            if (string.IsNullOrEmpty(base64Image))
-                return null;
-
-            string base64Data;
-
-            // Check if there is a comma in the base64 string (metadata prefix)
-            if (base64Image.Contains(","))
-            {
-                base64Data = base64Image.Split(',')[1]; // Extract actual base64 data
-            }
-            else
-            {
-                base64Data = base64Image; // No metadata, treat it as the base64 string itself
-            }
-
-            // Check if the remaining string is a valid Base64 string
-            if (string.IsNullOrEmpty(base64Data) || !IsBase64String(base64Data))
-            {
-                throw new FormatException("The provided string is not a valid Base64 encoded image.");
-            }
-
-            byte[] imageBytes = Convert.FromBase64String(base64Data);
-
-            // Check if the image size is too large
-            if (imageBytes.Length > MaxImageSizeInBytes)
-            {
-                throw new InvalidOperationException("Image size is too large.");
-            }
-
-            // Create a memory stream from the byte array
-            using (var ms = new MemoryStream(imageBytes))
-            {
-                var fileName = "image.png"; // or any other name you want to give
-                var file = new FormFile(ms, 0, imageBytes.Length, fileName, fileName)
-                {
-                    ContentType = "image/png" // Change according to your image type
-                };
-                return file;
-            }
-        }
-
-        private bool IsBase64String(string base64String)
-        {
-            Span<byte> buffer = new Span<byte>(new byte[base64String.Length]);
-            return Convert.TryFromBase64String(base64String, buffer, out _);
-        }
-
         [HttpGet("UserProfile/{UserId}")]
         [Authorize]
         public async Task<IActionResult> GetUserProfile(string UserId)
@@ -387,6 +326,7 @@ namespace FinalApi.Controllers
 
             
         }
+
         [Authorize]
         [HttpGet("UserData")]
         public async Task<IActionResult> GetUserData()
@@ -403,6 +343,7 @@ namespace FinalApi.Controllers
 
 
         }
+
         [Authorize]
         [HttpGet("userCurrency")]
         public async Task<IActionResult> GetUserCurrency()

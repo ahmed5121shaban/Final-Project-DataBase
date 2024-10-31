@@ -21,14 +21,27 @@ namespace Managers
 
         public async Task<string> UploadFileAsync(IFormFile file)
         {
+            UploadResult uploadResult;
             if (file.Length > 0)
             {
-                var uploadParams = new ImageUploadParams()
+                var fileType = file.ContentType.StartsWith("image");
+                if (fileType)
                 {
-                    File = new FileDescription(file.FileName, file.OpenReadStream()),
-                };
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream()),
+                    };
+                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
+                else
+                {
+                    var uploadParams = new RawUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream())
+                    };
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
 
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 return uploadResult.SecureUrl.ToString();
             }
 

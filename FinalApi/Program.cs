@@ -52,7 +52,7 @@ builder.Services.AddScoped<ProfileManager>();
 builder.Services.AddScoped<ReviewManager>();
 builder.Services.AddScoped<FavAuctionManager>();
 builder.Services.AddScoped<FavCategoryManager>();
-builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<CustomUserManager>();
 builder.Services.AddScoped<NotificationManager>();
 builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<CloudinaryManager>();

@@ -206,6 +206,7 @@ namespace Managers
         public async Task CheckIfSeller(User user)
         {
             //get roles of user
+            try { 
             var roleList = await userManager.GetRolesAsync(user);
             //if user is not seller
             if (!roleList.Contains("Seller"))
@@ -223,6 +224,7 @@ namespace Managers
                     });
                 }
             }
+            }catch(Exception ex) { }
         }
 
 

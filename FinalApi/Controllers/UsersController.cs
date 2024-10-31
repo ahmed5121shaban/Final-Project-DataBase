@@ -1,6 +1,5 @@
 ﻿using FinalApi;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using ModelView;
 
 namespace FinalApi.Controllers
@@ -9,9 +8,9 @@ namespace FinalApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager _userManager;
+        private readonly CustomUserManager _userManager;
 
-        public UsersController(UserManager userManager)
+        public UsersController(CustomUserManager userManager)
         {
             _userManager = userManager;
         }
@@ -27,6 +26,7 @@ namespace FinalApi.Controllers
 
             return Ok(user);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] string search = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {

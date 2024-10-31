@@ -23,11 +23,12 @@ namespace FinalApi.Controllers
         private readonly IHubContext<NotificationsHub> hubContext;
         private readonly IHubContext<DashboardHub> dashboardHubContext;
         private readonly CategoryManager categoryManager;
+        private readonly CloudinaryManager cloudinaryManager;
 
         public ItemController(ItemManager _itemManager,AccountManager _accountManager,
             NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext,
             IHubContext<DashboardHub> _dashboardHubContext,
-            CategoryManager _categoryManager)
+            CategoryManager _categoryManager,CloudinaryManager _cloudinaryManager)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
@@ -35,6 +36,7 @@ namespace FinalApi.Controllers
             hubContext = _hubContext;
             dashboardHubContext = _dashboardHubContext;
             categoryManager = _categoryManager;
+            cloudinaryManager = _cloudinaryManager;
         }
         [Authorize]
         [HttpPost]
@@ -54,6 +56,16 @@ namespace FinalApi.Controllers
             await accountManager.CheckIfSeller(user);
             //if user is seller, continue adding item,
             //if it was not,add seller role to user and continue adding item too
+            List<string> urls = new List<string>();
+            foreach (var image in _item.Images)
+            {
+                urls.Add(await cloudinaryManager.UploadFileAsync(image));
+            }
+            _item.ImagesUrl = urls;
+            if (_item.Contract != null) {
+                _item.FileName = await cloudinaryManager.UploadFileAsync(_item.Contract);
+            };
+
             var result = await itemManager.Add(_item.toItemModel());
                 if (result == true)
                 {

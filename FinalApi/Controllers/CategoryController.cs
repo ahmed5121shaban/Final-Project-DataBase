@@ -15,10 +15,12 @@ namespace FinalApi.Controllers
     public class CategoryController : ControllerBase
     {
         private CategoryManager manager;
+        private readonly CloudinaryManager cloudinaryManager;
 
-        public CategoryController(CategoryManager _manager)
+        public CategoryController(CategoryManager _manager, CloudinaryManager _cloudinaryManager)
         {
             manager = _manager;
+            cloudinaryManager = _cloudinaryManager;
         }
         [Authorize]
         [HttpPost]
@@ -28,7 +30,10 @@ namespace FinalApi.Controllers
 
             if (ModelState.IsValid)
             {
-
+                if(model.Icon!=null)
+                    model.IconUrl =await cloudinaryManager.UploadFileAsync(model.Icon);
+                if (model.Image != null)
+                    model.ImageUrl = await cloudinaryManager.UploadFileAsync(model.Image);
                 var res = await manager.Add(model.ToModel());
                 if (res)
                 {
