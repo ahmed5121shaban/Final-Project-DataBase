@@ -145,14 +145,16 @@ namespace FinalApi.Controllers
                 var res =await bidManager.Add(_addBidView.ToModel());
                 if (res)
                 {
-                    var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID).ToList();
+                    var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID);
 
                     List<BidViewModel> bidViewModels = new List<BidViewModel>();
                     foreach (var bid in bids)
                         bidViewModels.Add(bid.ToBidViewModel());
                     
                     await hubContext.Clients.Group(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
-                    var auctionBidAmount = new { name = bids.Select(b => b.Auction.Item.Name).FirstOrDefault(), value=bids.Select(b=>b.Amount).Sum()+bids.Select(b=>b.Auction.Item.StartPrice).FirstOrDefault()};
+                    var itemName = bids.Select(b => b.Auction.Item.Name).FirstOrDefault();
+                    var allAmount = bids.Select(b => b.Amount).Sum() + bids.Select(b => b.Auction.Item.StartPrice).FirstOrDefault();
+                    var auctionBidAmount = new { name = itemName, value= allAmount };
                     await dashboardHubContext.Clients.All.SendAsync("auctionsBidsAmount", auctionBidAmount);
                     
                     return new JsonResult(new ApiResultModel<bool>()
