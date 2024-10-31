@@ -373,7 +373,7 @@ namespace FinalApi.Controllers
 
         //this api in bid controller not here
 
-        /*[HttpGet("user-have-payment")]
+        [HttpGet("user-have-payment")]
         public IActionResult GetPaymentMethodsCount()
         {
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -390,7 +390,7 @@ namespace FinalApi.Controllers
             else
                 return new JsonResult(new { message = "the user have one Payment Method", count = 1, method = payments.Select(p => p.Method) });
 
-        }*/
+        }
     }
 
    
