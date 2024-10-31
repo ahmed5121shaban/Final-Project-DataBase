@@ -47,11 +47,12 @@ namespace Managers
 
                 User user = viewModel.ToModel();
                 var result = await userManager.CreateAsync(user, viewModel.Password);
+                //result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Admin" });
                 result = await userManager.AddToRolesAsync(user, new List<string> { "User", "Buyer" });
                 var res = buyerManager.Add(new Buyer
                 {
-                    User=user,
-                    UserID=user.Id
+                    User = user,
+                    UserID = user.Id
                 });
                 return result;
             }

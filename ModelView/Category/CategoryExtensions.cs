@@ -44,6 +44,15 @@ namespace ModelView
 
             };
         }
+         public static FavCatViewModel ToFavCatViewModel (this Category model)
+        {
+            return new FavCatViewModel()
+            {
+                Name =model.Name,
+                Description = model.Description,
+                Image= model.Image
 
+            };
+        }
     }
 }
