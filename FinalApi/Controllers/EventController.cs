@@ -40,12 +40,16 @@ namespace FinalApi
             List<string> ids = new List<string>();
             for (int i = 0; i < model.itemsID.Length; i++)
             {
-                if (!(model.itemsID[i] == '-'))
+                if (model.itemsID[i] != '-')
                 {
-                    ids.Add(itemManager.Get(int.Parse(model.itemsID[i].ToString())).Result.SellerID);
+                    var item = await itemManager.Get(int.Parse(model.itemsID[i].ToString()));
+                    if (item != null)
+                    {
+                        ids.Add(item.SellerID);
+                    }
                 }
-                
             }
+
             foreach (var id in ids)
             {
                 await notificationManager.Add(new Notification

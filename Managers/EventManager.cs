@@ -51,18 +51,20 @@ namespace Managers
             var res = base.GetAll().ToList();
             foreach (var item in res)
             {
-                var categoryName = await categoryManager.GetOne(int.Parse(item.Type));
-                events.Add( new EventViewModel
+                var category = await categoryManager.GetOne(int.Parse(item.Type));
+                var categoryName = category?.Name ?? "Unknown"; // إذا ما رجعش فئة، حط قيمة افتراضية
+                events.Add(new EventViewModel
                 {
                     Id = item.ID,
-/*                    AdminID = item.AdminID,
-*/                    Description = item.Description,
+                    // AdminID = item.AdminID,  // لو محتاج AdminID، ممكن تشيله من التعليق
+                    Description = item.Description,
                     EndDate = item.EndDate,
                     Image = item.Image,
                     StartDate = item.StartDate,
                     Title = item.Title,
-                    Type = categoryName.Name,
+                    Type = categoryName,
                 });
+
             }
             return events;
         }
