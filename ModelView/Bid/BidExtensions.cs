@@ -26,7 +26,7 @@ namespace ModelView
             {
                 BidAmount = _bid.Amount,
                 BidTime = _bid.Time,
-                BuyerName = _bid.Buyer.User.Name,
+                BuyerName = _bid?.Buyer?.User?.Name??"no name",
             };
         }
 

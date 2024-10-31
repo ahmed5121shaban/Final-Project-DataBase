@@ -44,15 +44,11 @@ namespace FinalApi
 
             if (!await messageManager.Add(chatMessage))
                 return;
-            List<MessageViewModel> messageViewModels = new List<MessageViewModel>();
-            foreach (var item in messageManager.GetAll().Where(m => m.ChatId == int.Parse(chatID)))
-            {
-                messageViewModels.Add(item.MapToMessageViewModel(userId));
-            }
-            /*var lastMessage = messageManager.GetAll().Where(m=>m.ChatId== int.Parse(chatID)).OrderBy(m=>m.Id).LastOrDefault();
+
+            var lastMessage = messageManager.GetAll().Where(m=>m.ChatId== int.Parse(chatID)).OrderBy(m=>m.Id).LastOrDefault();
             lastMessage.Chat =await chatManager.GetOne(int.Parse(chatID));
-            lastMessage.User = await userManager.FindByIdAsync(userId);*/
-            await Clients.Group(chatID).SendAsync("getMessages", messageViewModels);
+            lastMessage.User = await userManager.FindByIdAsync(userId);
+            await Clients.Group(chatID).SendAsync("getMessages", lastMessage.MapToMessageViewModel(userId));
         }
 
 
