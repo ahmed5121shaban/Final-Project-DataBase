@@ -387,7 +387,7 @@ namespace FinalApi.Controllers
             var currentUtcTime = DateTime.UtcNow;
 
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= currentUtcTime && i.EndDate >= currentUtcTime && i.Ended==false).ToList();
+            var LiveAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate <= currentUtcTime && i.EndDate >= currentUtcTime && i.Ended==false).Select(a => a.SeeDetails()).ToList();
             return Ok(LiveAuctions);
         }
         [Authorize]
