@@ -715,6 +715,32 @@ namespace FinalApi.Controllers
             var auction = await auctionManager.GetOne(id);
             auction.Ended = true;
             var res = await auctionManager.Update(auction);
+
+            var refundAmount = auction.Item.StartPrice;
+            var lostBuyersEmails = paymentManager.GetAll().Where(p => p.AuctionID == id && p.IsDone == false).Count();
+            var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
+            var Buyers = auction.Bids.Select(i => i.Buyer).ToList();
+
+            foreach(var Buyer in Buyers)
+            {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = Buyer.UserID,
+                    Date = DateTime.Now,
+                    Description = $"the seller of {auction.Item.Name} auction closed that auction",
+                    IsReaded = false,
+                })
+                   )
+                {
+                    var lastNotification = notificationManager.GetAll()
+                        .Where(n => n.UserId == Buyer.UserID)
+                        .OrderBy(n => n.Id).LastOrDefault();
+                    await hubContext.Clients.Group(Buyer.UserID).SendAsync("notification", lastNotification.ToViewModel());
+                }
+
+            }
+
             return Ok(res);
         }
 
