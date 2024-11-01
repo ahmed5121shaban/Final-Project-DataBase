@@ -111,7 +111,9 @@ namespace FinalApi.Controllers
             item.AuctionID = auction.ID;
             item.Auction = auction;
             await itemManager.Update(item);
+
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
+            BackgroundJob.Schedule(() => hangfireManager.LostAuctionNotifications(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category
             var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
@@ -136,8 +138,9 @@ namespace FinalApi.Controllers
                         
                         await hubContext.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
 
-                        BackgroundJob.Schedule(() => hangfireManager
-                        .AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), DateTime.Now.AddDays(auction.EndDate.Day - 1));
+                        BackgroundJob.Schedule(() => hangfireManager.AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), 
+                            DateTime.Now.AddDays(auction.EndDate.Day - 1));
+
                         }catch(Exception ex)
                         {
 
