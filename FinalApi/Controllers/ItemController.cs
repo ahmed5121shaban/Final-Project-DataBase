@@ -227,7 +227,7 @@ namespace FinalApi.Controllers
                     Title = Enums.NotificationType.auction,
                     UserId = item.SellerID,
                     Date = DateTime.Now,
-                    Description = $"The {item.Name} is Accepted",
+                    Description = $"admin accepted your item {item.Name} you can now start an auction",
                     IsReaded = false,
                 })
                     ) {
@@ -255,6 +255,21 @@ namespace FinalApi.Controllers
             var res = await itemManager.Update(item);
             if (res)
             {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = item.SellerID,
+                    Date = DateTime.Now,
+                    Description = $"admin rejected your item {item.Name} go to your profile to find out why",
+                    IsReaded = false,
+                })
+                 )
+                {
+                    var lastNotification = notificationManager.GetAll()
+                        .Where(n => n.UserId == item.SellerID)
+                        .OrderBy(n => n.Id).LastOrDefault();
+                    await hubContext.Clients.Group(item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
+                }
                 return Ok(res);
             }
             else
