@@ -12,5 +12,9 @@ namespace ModelView
         public string Name { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
+        public string Icon { get; set; }
+
+        public List<ItemViewModel> items { get; set; }
+
     }
 }
