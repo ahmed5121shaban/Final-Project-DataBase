@@ -46,8 +46,8 @@ namespace FinalApi
 
             var payment = paymentManager.GetAll().FirstOrDefault(p=>p.AuctionID==_auctionID&&p.BuyerId==bid.BuyerID);
             if (payment==null) return;
-
-            var bids = bidManager.GetAll().Where(b=>b.AuctionID == payment.Id).Select(b=>b.Amount);
+            //paymen.AuctionID insted of payment.ID
+            var bids = bidManager.GetAll().Where(b=>b.AuctionID == payment.AuctionID).Select(b=>b.Amount);
             if( bids.Sum() < auction.Item.EndPrice) return;
 
             payment.IsDone= true;
