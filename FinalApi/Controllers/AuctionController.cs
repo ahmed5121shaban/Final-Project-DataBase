@@ -178,8 +178,10 @@ namespace FinalApi.Controllers
                     );
 
                 // Filter for active auctions
+                var currentUtcTime = DateTime.UtcNow;
+
                 var activeAuctions = allAuctions.List
-                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended)
+                    .Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && !a.Ended)
                     .ToList();
 
                 // Paginate the filtered active auctions
