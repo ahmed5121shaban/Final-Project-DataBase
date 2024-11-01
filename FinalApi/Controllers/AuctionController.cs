@@ -111,7 +111,9 @@ namespace FinalApi.Controllers
             item.AuctionID = auction.ID;
             item.Auction = auction;
             await itemManager.Update(item);
+
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
+            BackgroundJob.Schedule(() => hangfireManager.LostAuctionNotifications(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category
             var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
@@ -136,8 +138,9 @@ namespace FinalApi.Controllers
                         
                         await hubContext.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
 
-                        BackgroundJob.Schedule(() => hangfireManager
-                        .AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), DateTime.Now.AddDays(auction.EndDate.Day - 1));
+                        BackgroundJob.Schedule(() => hangfireManager.AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), 
+                            DateTime.Now.AddDays(auction.EndDate.Day - 1));
+
                         }catch(Exception ex)
                         {
 
@@ -715,6 +718,32 @@ namespace FinalApi.Controllers
             var auction = await auctionManager.GetOne(id);
             auction.Ended = true;
             var res = await auctionManager.Update(auction);
+
+            var refundAmount = auction.Item.StartPrice;
+            var lostBuyersEmails = paymentManager.GetAll().Where(p => p.AuctionID == id && p.IsDone == false).Count();
+            var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
+            var Buyers = auction.Bids.Select(i => i.Buyer).ToList();
+
+            foreach(var Buyer in Buyers)
+            {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = Buyer.UserID,
+                    Date = DateTime.Now,
+                    Description = $"the seller of {auction.Item.Name} auction closed that auction",
+                    IsReaded = false,
+                })
+                   )
+                {
+                    var lastNotification = notificationManager.GetAll()
+                        .Where(n => n.UserId == Buyer.UserID)
+                        .OrderBy(n => n.Id).LastOrDefault();
+                    await hubContext.Clients.Group(Buyer.UserID).SendAsync("notification", lastNotification.ToViewModel());
+                }
+
+            }
+
             return Ok(res);
         }
 
