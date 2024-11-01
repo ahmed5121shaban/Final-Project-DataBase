@@ -45,6 +45,7 @@ namespace ModelView
                 sellPrice = model.EndPrice,
                 status = model.Status,
                 category = model.Category.Name,
+                sellerName = model.Seller.User.Name,
                 categoryId = model.CategoryID,
                 description = model.Description,
                 contract=model.ContractFile,

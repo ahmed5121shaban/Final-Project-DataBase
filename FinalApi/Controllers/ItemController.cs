@@ -173,6 +173,7 @@ namespace FinalApi.Controllers
                 .ToList();
             return Ok(res);
         }
+
         [Authorize(Roles = "Buyer")]
         [HttpGet("Pending")]
         public IActionResult GetPendingItems()
