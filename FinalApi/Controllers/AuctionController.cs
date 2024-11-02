@@ -113,7 +113,7 @@ namespace FinalApi.Controllers
             await itemManager.Update(item);
 
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
-            BackgroundJob.Schedule(() => hangfireManager.LostAuctionNotifications(auction.ID), auction.EndDate);
+           
 
             //check favCategory if have user send them that auction add in these category
             var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
@@ -127,7 +127,7 @@ namespace FinalApi.Controllers
                         Title = Enums.NotificationType.auction,
                         UserId = id.buyerID,
                         Date = DateTime.Now,
-                        Description = $"New Auction Added in your Favorite Category : {id.categoryName} go and Found your Auction Detail",
+                        Description = $"New Auction Added in your Favorite Category : {id.categoryName}",
                         IsReaded = false,
                     }))
                     {
@@ -178,8 +178,10 @@ namespace FinalApi.Controllers
                     );
 
                 // Filter for active auctions
+                var currentUtcTime = DateTime.UtcNow;
+
                 var activeAuctions = allAuctions.List
-                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended)
+                    .Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && !a.Ended)
                     .ToList();
 
                 // Paginate the filtered active auctions
@@ -241,23 +243,23 @@ namespace FinalApi.Controllers
                     );
 
                 IEnumerable<Auction> filteredAuctions;
-
+                var currentUtcTime = DateTime.UtcNow;
                 // Apply filtering based on filterOption
                 switch (filterOption.ToLower())
                 {
                     case "open":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.EndDate >= DateTime.Now && !a.Ended);
+                            .Where(a => a.EndDate >= currentUtcTime && !a.Ended);
                         break;
 
                     case "closed":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.EndDate < DateTime.Now || a.Ended);
+                            .Where(a => a.EndDate < currentUtcTime || a.Ended);
                         break;
 
                     case "live":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended);
+                           .Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && !a.Ended);
                         break;
                     case "paid":
                         filteredAuctions = allAuctions.List
@@ -340,11 +342,11 @@ namespace FinalApi.Controllers
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
                 }
-
+                var currentUtcTime = DateTime.UtcNow;
                 var similarActiveAuctions = auctionManager.GetAll()
                     .Where(a => a.Item.CategoryID == auction.Item.CategoryID
-                                && a.StartDate <= DateTime.Now
-                                && a.EndDate >= DateTime.Now
+                                && a.StartDate <= currentUtcTime
+                                && a.EndDate >= currentUtcTime
                                 && a.ID != auction.ID
                                 && !a.Ended) // Exclude the auction itself
                     .OrderByDescending(a => a.ID).Select(a=>a.SeeDetails())
@@ -377,8 +379,9 @@ namespace FinalApi.Controllers
         [HttpGet("Ended")]
         public async Task<IActionResult> GetAllEnded()
         {
+            var currentUtcTime = DateTime.UtcNow;
             var auctions = auctionManager.GetAll();
-            var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).Select(a => a.SeeDetails()).ToList();
+            var EndedAuctions = auctions.Where(a => a.EndDate < currentUtcTime).Select(a => a.SeeDetails()).ToList();
             return Ok(EndedAuctions);
         }
         
@@ -399,7 +402,7 @@ namespace FinalApi.Controllers
             var currentUtcTime = DateTime.UtcNow;
 
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > currentUtcTime && i.EndDate >= DateTime.Now && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
+            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > currentUtcTime && i.EndDate >= currentUtcTime && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
             return Ok(upcomingAuctions);
         }
         [HttpGet("UpcomingAuctions")]

@@ -30,12 +30,13 @@ namespace FinalApi
 
         public async Task LastThreeNotification()
         {
+            string userID = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             List<NotificationViewModel> notification = new List<NotificationViewModel>();
-            foreach (var item in notificationManager.GetAll().OrderByDescending(n => n.Id).Take(3))
+            foreach (var item in notificationManager.GetAll().Where(n=>n.UserId == userID).OrderByDescending(n => n.Id).Take(3))
             {
                 notification.Add(item.ToViewModel());
             }
-            await Clients.All.SendAsync("threeNotification", notification);
+            await Clients.Group(userID).SendAsync("threeNotification", notification);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

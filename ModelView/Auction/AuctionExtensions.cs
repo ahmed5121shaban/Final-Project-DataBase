@@ -22,6 +22,13 @@ namespace ModelView
         }
         public static AuctiondetailsViewModel SeeDetails(this Auction auction)
         {
+            decimal startPrice = auction.Item.StartPrice;
+            decimal totalBids = 0;
+            foreach (var bid in auction.Bids)
+            {
+                totalBids += bid.Amount;
+            }
+            var totalPrice = startPrice + totalBids;
             return new AuctiondetailsViewModel
             {
                 ID = auction.ID,
@@ -30,6 +37,7 @@ namespace ModelView
                 ItemID = auction.ItemID,
                 IsEnded = auction.Ended,
                 Completed=auction.Completed,
+                currentPrice=totalPrice,
                 Item = new AuctionItemViewModel
                 {
                     ID = auction.Item.ID,

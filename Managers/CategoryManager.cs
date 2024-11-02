@@ -18,8 +18,7 @@ namespace Managers
 
             }
 
-            public  Pagination<List<Category>> Get(string searchtxt, string calumnName = "Id",
-                bool isAscending = false, int pageSize = 2, int PageNumber = 1)
+            public  Pagination<List<CategoryViewModel>> Get(string searchtxt)
             {
                 var builder = PredicateBuilder.New<Category>();
                 var old = builder;
@@ -33,14 +32,13 @@ namespace Managers
                 }
 
                 int total = (builder == null) ? base.GetAll().Count() : base.GetAll().Where(builder).Count();
-                var query =  base.Filter(builder, calumnName, isAscending,
-                    pageSize, PageNumber);
-                return  new Pagination<List<Category>>()
+                var query =  base.Filter(builder);
+
+                return  new Pagination<List<CategoryViewModel>>()
                 {
-                    PageNumber = PageNumber,
-                    PageSize = pageSize,
+                   
                     TotalCount = total,
-                    List = query.ToList()
+                    List = query.Select(c=>c.ToViewModel()).ToList()
                 };
 
             }
