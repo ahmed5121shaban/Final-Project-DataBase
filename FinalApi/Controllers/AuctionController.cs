@@ -772,9 +772,20 @@ namespace FinalApi.Controllers
             var refundAmount = auction.Item.StartPrice;
             var lostBuyersEmails = paymentManager.GetAll().Where(p => p.AuctionID == id && p.IsDone == false).Count();
             var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
-            var Buyers = auction.Bids.Select(i => i.Buyer).ToList();
+            var uniqueBuyerIds = auction.Bids.Select(i => i.BuyerID).Distinct().ToList();
+            List<Buyer> buyers = new List<Buyer>();
 
-            foreach(var Buyer in Buyers)
+            foreach (var uniqueBuyerId in uniqueBuyerIds)
+            {
+                var buyer = auction.Bids.Where(i => i.BuyerID == uniqueBuyerId).Select(i => i.Buyer).FirstOrDefault();
+                if (buyer != null)
+                {
+                    buyers.Add(buyer);
+                }
+            }
+
+
+            foreach (var Buyer in buyers)
             {
                 if (await notificationManager.Add(new Notification
                 {

@@ -16,6 +16,7 @@ using FinalApi;
 
 using ModelView;
 using FinalApi;
+using Microsoft.AspNetCore.Http.HttpResults;
 namespace Managers
 {
     public class AccountManager : MainManager<User>
