@@ -166,11 +166,11 @@ namespace FinalApi
                 });
 
                 // Retrieve the latest notification for the user and send it in real-time
-                var lastNotification = notificationManager.GetAll()
+                var last = notificationManager.GetAll()
                                                           .Where(n => n.UserId == latestBid.BuyerID)
                                                           .OrderByDescending(n => n.Id)
                                                           .FirstOrDefault();
-                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", lastNotification.ToViewModel());
+                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", last.ToViewModel());
             }
 
             // Check if a chat already exists for this auction winner to avoid duplicate chats
