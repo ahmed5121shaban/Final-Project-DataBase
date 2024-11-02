@@ -41,6 +41,18 @@ namespace FinalApi
             if(await auctionManager.Update(auction)==false) return;
             await dashboardHub.Clients.All.SendAsync("endedAuction",1);
 
+            //send to seller his auction is ended
+            await notificationManager.Add(new Notification
+            {
+                Date = DateTime.Now,
+                Description = $"Your Auction is Ended {auction.Item.Name}" ,
+                IsReaded = false,
+                Title = Enums.NotificationType.auction,
+                UserId = auction.Item.SellerID
+            });
+            var lastNotification = notificationManager.GetAll().Where(n=>n.UserId == auction.Item.SellerID).OrderBy(n=>n.Id).LastOrDefault();
+            await notificationsHub.Clients.Group(auction.Item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
+
             var bid = auction.Bids.LastOrDefault();
             if (bid == null) return;
 
@@ -61,8 +73,8 @@ namespace FinalApi
                 Title = Enums.NotificationType.auction,
                 UserId = payment.BuyerId,
             });
-            var lastNotification = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id).LastOrDefault();
-            await notificationsHub.Clients.Group(payment.BuyerId).SendAsync("notification", lastNotification.ToViewModel());
+            var lastNotify = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id).LastOrDefault();
+            await notificationsHub.Clients.Group(payment.BuyerId).SendAsync("notification", lastNotify.ToViewModel());
 
 
             var chat = chatManager.GetAll().Where(c => c.BuyerID == bid.BuyerID && c.SellerID == auction.Item.SellerID);

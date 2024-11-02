@@ -74,11 +74,6 @@ namespace Managers
                 var password = await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
                 if (!password.Succeeded)
                     return string.Empty;
-                await buyerManager.Add(new Buyer
-                {
-                    UserID = user.Id,
-                    Rate=0
-                });
                 return await tokenManager.GenerateToken(user);
             }catch (Exception ex)
             {
