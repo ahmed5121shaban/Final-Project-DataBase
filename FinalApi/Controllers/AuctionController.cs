@@ -111,7 +111,9 @@ namespace FinalApi.Controllers
             item.AuctionID = auction.ID;
             item.Auction = auction;
             await itemManager.Update(item);
+
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
+            BackgroundJob.Schedule(() => hangfireManager.LostAuctionNotifications(auction.ID), auction.EndDate);
 
             //check favCategory if have user send them that auction add in these category
             var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
@@ -136,8 +138,9 @@ namespace FinalApi.Controllers
                         
                         await hubContext.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
 
-                        BackgroundJob.Schedule(() => hangfireManager
-                        .AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), DateTime.Now.AddDays(auction.EndDate.Day - 1));
+                        BackgroundJob.Schedule(() => hangfireManager.AuctionEndedNotificationBeforeOneDay(auction.ID,id.buyerID), 
+                            DateTime.Now.AddDays(auction.EndDate.Day - 1));
+
                         }catch(Exception ex)
                         {
 
@@ -175,8 +178,10 @@ namespace FinalApi.Controllers
                     );
 
                 // Filter for active auctions
+                var currentUtcTime = DateTime.UtcNow;
+
                 var activeAuctions = allAuctions.List
-                    .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended)
+                    .Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && !a.Ended)
                     .ToList();
 
                 // Paginate the filtered active auctions
@@ -238,23 +243,23 @@ namespace FinalApi.Controllers
                     );
 
                 IEnumerable<Auction> filteredAuctions;
-
+                var currentUtcTime = DateTime.UtcNow;
                 // Apply filtering based on filterOption
                 switch (filterOption.ToLower())
                 {
                     case "open":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.EndDate >= DateTime.Now && !a.Ended);
+                            .Where(a => a.EndDate >= currentUtcTime && !a.Ended);
                         break;
 
                     case "closed":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.EndDate < DateTime.Now || a.Ended);
+                            .Where(a => a.EndDate < currentUtcTime || a.Ended);
                         break;
 
                     case "live":
                         filteredAuctions = allAuctions.List
-                            .Where(a => a.StartDate <= DateTime.Now && a.EndDate >= DateTime.Now && !a.Ended);
+                           .Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && !a.Ended);
                         break;
                     case "paid":
                         filteredAuctions = allAuctions.List
@@ -272,7 +277,7 @@ namespace FinalApi.Controllers
                 }
 
                 // Paginate the filtered auctions
-                var paginatedAuctions = filteredAuctions
+                var paginatedAuctions = filteredAuctions.Select(a=>a.SeeDetails())
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToList();
@@ -337,14 +342,14 @@ namespace FinalApi.Controllers
                 {
                     return NotFound(new { Message = $"Auction with ID {id} not found." });
                 }
-
+                var currentUtcTime = DateTime.UtcNow;
                 var similarActiveAuctions = auctionManager.GetAll()
                     .Where(a => a.Item.CategoryID == auction.Item.CategoryID
-                                && a.StartDate <= DateTime.Now
-                                && a.EndDate >= DateTime.Now
+                                && a.StartDate <= currentUtcTime
+                                && a.EndDate >= currentUtcTime
                                 && a.ID != auction.ID
                                 && !a.Ended) // Exclude the auction itself
-                    .OrderByDescending(a => a.ID)
+                    .OrderByDescending(a => a.ID).Select(a=>a.SeeDetails())
                     .Take(3)
                     .ToList();
 
@@ -374,8 +379,9 @@ namespace FinalApi.Controllers
         [HttpGet("Ended")]
         public async Task<IActionResult> GetAllEnded()
         {
+            var currentUtcTime = DateTime.UtcNow;
             var auctions = auctionManager.GetAll();
-            var EndedAuctions = auctions.Where(a => a.EndDate < DateTime.Now).Select(a => a.SeeDetails()).ToList();
+            var EndedAuctions = auctions.Where(a => a.EndDate < currentUtcTime).Select(a => a.SeeDetails()).ToList();
             return Ok(EndedAuctions);
         }
         
@@ -396,7 +402,7 @@ namespace FinalApi.Controllers
             var currentUtcTime = DateTime.UtcNow;
 
             var SellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > currentUtcTime && i.EndDate >= DateTime.Now && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
+            var upcomingAuctions = auctionManager.GetAll().Where(i => i.Item.SellerID == SellerId && i.StartDate > currentUtcTime && i.EndDate >= currentUtcTime && i.Ended == false).Select(a=>a.SeeDetails()).ToList();
             return Ok(upcomingAuctions);
         }
         [HttpGet("UpcomingAuctions")]
@@ -715,6 +721,32 @@ namespace FinalApi.Controllers
             var auction = await auctionManager.GetOne(id);
             auction.Ended = true;
             var res = await auctionManager.Update(auction);
+
+            var refundAmount = auction.Item.StartPrice;
+            var lostBuyersEmails = paymentManager.GetAll().Where(p => p.AuctionID == id && p.IsDone == false).Count();
+            var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
+            var Buyers = auction.Bids.Select(i => i.Buyer).ToList();
+
+            foreach(var Buyer in Buyers)
+            {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = Buyer.UserID,
+                    Date = DateTime.Now,
+                    Description = $"the seller of {auction.Item.Name} auction closed that auction",
+                    IsReaded = false,
+                })
+                   )
+                {
+                    var lastNotification = notificationManager.GetAll()
+                        .Where(n => n.UserId == Buyer.UserID)
+                        .OrderBy(n => n.Id).LastOrDefault();
+                    await hubContext.Clients.Group(Buyer.UserID).SendAsync("notification", lastNotification.ToViewModel());
+                }
+
+            }
+
             return Ok(res);
         }
 

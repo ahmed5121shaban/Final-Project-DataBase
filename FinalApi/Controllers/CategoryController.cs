@@ -1,9 +1,11 @@
 ﻿using FinalApi;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using ModelView;
+using System.ComponentModel;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -148,14 +150,13 @@ namespace FinalApi.Controllers
             }
 
         }
-        [HttpGet]
-        [Route("Filter")]
-        public IActionResult Pagination([FromQuery] string searchText, string calumnName, bool isAscending, int pageSize, int PageNumber)
+        [HttpGet("Filter/{searchtxt}")]
+        public IActionResult Pagination(string searchtxt = "")
         {
-            var res = manager.Get(searchText, calumnName, isAscending, pageSize, PageNumber);
+            var res = manager.Get(searchtxt);
             if (res != null)
             {
-                return new JsonResult(new ApiResultModel<Pagination<List<Category>>>()
+                return new JsonResult(new ApiResultModel<Pagination<List<CategoryViewModel>>>()
                 {
                     result = res,
                     StatusCode = 200,
@@ -178,6 +179,51 @@ namespace FinalApi.Controllers
 
         }
 
+        [HttpPost("Edit")]
+        public async Task<IActionResult> Edit(AddCategoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = await manager.GetOne(1);
+                category.Name = model.Name;
+                category.Description = model.Description;
 
+                if (model.Icon != null)
+                    model.IconUrl = await cloudinaryManager.UploadFileAsync(model.Icon);
+                category.Icon = model.IconUrl;
+                if (model.Image != null)
+                    model.ImageUrl = await cloudinaryManager.UploadFileAsync(model.Image);
+                category.Image = model.ImageUrl;
+
+
+                var res = await manager.Update(category);
+                if (res)
+                {
+                    return new JsonResult(new ApiResultModel<bool> { result = res, StatusCode = 200, success = true, Message = "done successfully" });
+                }
+                else
+                {
+                    return new JsonResult(new ApiResultModel<string> { result = "", StatusCode = 200, success = false, Message = "An Error Has Occured" });
+                }
+            }
+
+            return new JsonResult(new ApiResultModel<string> { result = "Not Valid Model", StatusCode = 400, success = false });
+        }
+
+
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetCategoryById(int id)
+        {
+            try
+            {
+                var category =await manager.GetOne(id);
+                return Ok(category.ToViewModel());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while fetching the category.", Error = ex.Message });
+            }
+        }
     }
 }

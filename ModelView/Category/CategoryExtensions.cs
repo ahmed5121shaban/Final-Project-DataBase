@@ -29,7 +29,9 @@ namespace ModelView
                 Id = model.ID,
                 Name = model.Name,
                 Description = model.Description,
-                Image = model.Image
+                Image = model.Image,
+                Icon=model.Icon,
+                items=model.Items.Select(i => i.toItemViewModel()).ToList()
             };
 
         }
@@ -44,6 +46,15 @@ namespace ModelView
 
             };
         }
+         public static FavCatViewModel ToFavCatViewModel (this Category model)
+        {
+            return new FavCatViewModel()
+            {
+                Name =model.Name,
+                Description = model.Description,
+                Image= model.Image
 
+            };
+        }
     }
 }

@@ -28,6 +28,17 @@ namespace FinalApi
             await base.OnConnectedAsync();
         }
 
+        public async Task LastThreeNotification()
+        {
+            string userID = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<NotificationViewModel> notification = new List<NotificationViewModel>();
+            foreach (var item in notificationManager.GetAll().Where(n=>n.UserId == userID).OrderByDescending(n => n.Id).Take(3))
+            {
+                notification.Add(item.ToViewModel());
+            }
+            await Clients.Group(userID).SendAsync("threeNotification", notification);
+        }
+
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             string userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;

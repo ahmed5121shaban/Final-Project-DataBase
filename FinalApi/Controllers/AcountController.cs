@@ -294,8 +294,8 @@ namespace FinalApi.Controllers
             return Ok(new { message = "Identity verification is successful", data = model, FormattedBirthDate = user.BarthDate.ToString("dd/MM/yyyy") });
         }
 
+      
         [HttpGet("UserProfile/{UserId}")]
-        [Authorize]
         public async Task<IActionResult> GetUserProfile(string UserId)
         {
             var user = await acountManager.UserManager.FindByIdAsync(UserId);
@@ -303,23 +303,29 @@ namespace FinalApi.Controllers
             bool isseller = (role.Contains("Seller")) ? true : false ;
             var sellerRates = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(r => r.Range).ToList();
             int range = 0;
-            foreach (var sellerRate in sellerRates)
+            decimal finalRate = 0;
+            if (sellerRates.Count > 0)
             {
-                range += sellerRate;
+                foreach (var sellerRate in sellerRates)
+                {
+                    range += sellerRate;
+                }
+                finalRate = range / sellerRates.Count;
             }
-            decimal finalRate = range / sellerRates.Count;
+           
 
             return Ok(new ProfileViewModel()
             {
                 FullName = user.Name,
+                Image=user.Image,
                 IsSeller = isseller,
                 Rate = finalRate,
                 AuctionsNumber = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).Count(),
                 Address = $"{user.City} ,{user.Country}",
                 ReviewsNumber = reviewManager.GetAll().Where(r => r.SellerID == UserId).Count(),
                 FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category.ToProfileCatViewModel()).ToList(),
-                LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).ToList(),
-                WonAuctions = auctionManager.GetAll().Where(a => a.BuyerID == UserId).ToList(),
+                LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).Select(i=>i.SeeDetails()).ToList(),
+                WonAuctions = auctionManager.GetAll().Where(a => a.BuyerID == UserId).Select(i=>i.SeeDetails()).ToList(),
                 Reviews = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(i => i.ToViewModel()).ToList()
 
             });

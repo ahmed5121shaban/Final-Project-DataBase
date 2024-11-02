@@ -122,7 +122,7 @@ namespace FinalApi.Controllers
         public IActionResult getAllfavCategories()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var categoryList = favmanager.GetAll().Where(i => i.BuyerID == userId).Select(i=>i.Category).ToList();
+            var categoryList = favmanager.GetAll().Where(i => i.BuyerID == userId).Select(i=>i.Category.ToFavCatViewModel()).ToList();
             return Ok(categoryList);
 
         }
