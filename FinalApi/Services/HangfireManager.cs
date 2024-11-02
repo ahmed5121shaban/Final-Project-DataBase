@@ -155,7 +155,7 @@ namespace FinalApi
                                                           .Where(n => n.UserId == latestBid.BuyerID)
                                                           .OrderByDescending(n => n.Id)
                                                           .FirstOrDefault();
-                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", last.ToViewModel());
+                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", lastNotification.ToViewModel());
             }
 
             // Check if a chat already exists for this auction winner to avoid duplicate chats

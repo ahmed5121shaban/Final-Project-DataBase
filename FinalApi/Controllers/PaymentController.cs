@@ -231,8 +231,11 @@ namespace FinalApi.Controllers
                 };
 
                 var createdPayment = payment.Create(apiContext).GetApprovalUrl();
+                if (string.IsNullOrEmpty(createdPayment))
+                    return BadRequest(new { message = "adding payment is not completed" });
 
                 await hubContext.Clients.All.SendAsync("auctionAmount", _createPayment.Amount);
+               
                 return Ok(new { result = createdPayment, status = 200 }); 
                 
             }
@@ -266,6 +269,19 @@ namespace FinalApi.Controllers
                     auction.Completed=true;
                     if(!await auctionManager.Update(auction))
                         return BadRequest(new { message = "the payment not completed", statusCode = 400 });
+                    var sellerID = auctionManager.Get(auctionId).Result.Item.Seller.UserID;
+                    var notificationName = auctionManager.Get(auctionId).Result.Item.Name;
+                    await notificationManager.Add(new Notification
+                    {
+                        Date = DateTime.Now,
+                        Description = $"your Auction {notificationName} Payment is Completed",
+                        IsReaded = false,
+                        Title = Enums.NotificationType.auction,
+                        UserId = sellerID,
+
+                    });
+                    var lastNotification = notificationManager.GetAll().Where(n => n.UserId == sellerID).OrderBy(n => n.Id).LastOrDefault();
+                    await notificationHub.Clients.Group(sellerID).SendAsync("notification", lastNotification.ToViewModel());
                     await hubContext.Clients.All.SendAsync("completedAuction",1);
                     return Ok(new { message = "Payment successful", statusCode = 200 });
                 }
