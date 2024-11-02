@@ -89,7 +89,7 @@ namespace FinalApi
         {
             // Retrieve auction details based on the provided auction ID
             var auction = await auctionManager.GetOne(auctionID);
-            if (auction == null || auction.Ended) return; // Check if auction is already ended
+            if (auction == null || auction.Ended) return; 
 
             // Mark auction as ended and update the auction
             auction.Ended = true;
@@ -107,16 +107,11 @@ namespace FinalApi
                                         .FirstOrDefault(p => p.AuctionID == auctionID && p.BuyerId == latestBid.BuyerID);
             if (payment == null) return;
 
-            // Update auction with the latest BuyerID and PaymentID
-            auction.BuyerID = latestBid.BuyerID;
-            auction.PaymentID = payment.Id;
-            if (!await auctionManager.Update(auction)) return;
-
             //send to seller his auction is ended
             await notificationManager.Add(new Notification
             {
                 Date = DateTime.Now,
-                Description = $"Your Auction is Ended {auction.Item.Name}" ,
+                Description = $"Your Auction  {auction.Item.Name} is Ended" ,
                 IsReaded = false,
                 Title = Enums.NotificationType.auction,
                 UserId = auction.Item.SellerID
@@ -124,30 +119,20 @@ namespace FinalApi
             var lastNotification = notificationManager.GetAll().Where(n=>n.UserId == auction.Item.SellerID).OrderBy(n=>n.Id).LastOrDefault();
             await notificationsHub.Clients.Group(auction.Item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
 
-            var bid = auction.Bids.LastOrDefault();
-            if (bid == null) return;
             // Calculate the total bid amount and verify if it meets the auction's end price
             var totalBidAmount = bidManager.GetAll()
                                            .Where(b => b.AuctionID == auctionID)
                                            .Select(b => b.Amount)
                                            .Sum();
             if (totalBidAmount < auction.Item.EndPrice) return;
+            // Update auction with the latest BuyerID and PaymentID
+            auction.BuyerID = latestBid.BuyerID;
+            auction.PaymentID = payment.Id;
+            if (!await auctionManager.Update(auction)) return;
 
             // Mark the payment as completed and update
-            payment.IsDone = true;
-            if (!await paymentManager.Update(payment)) return;
-
             payment.IsDone= true;
             if(!await paymentManager.Update(payment)) return;
-            //send notification to won user
-            await notificationManager.Add(new Notification
-            {
-                Date = DateTime.Now,
-                Description = $"your Auction {auction.Item.Name} is Done ,Complete The payment",
-                IsReaded = false,
-                Title = Enums.NotificationType.auction,
-                UserId = payment.BuyerId,
-            });
             var lastNotify = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id).LastOrDefault();
             await notificationsHub.Clients.Group(payment.BuyerId).SendAsync("notification", lastNotify.ToViewModel());
             // Check if a notification already exists for this auction win to avoid duplicate notifications
@@ -166,7 +151,7 @@ namespace FinalApi
                 });
 
                 // Retrieve the latest notification for the user and send it in real-time
-                var last = notificationManager.GetAll()
+                 lastNotification = notificationManager.GetAll()
                                                           .Where(n => n.UserId == latestBid.BuyerID)
                                                           .OrderByDescending(n => n.Id)
                                                           .FirstOrDefault();
@@ -195,7 +180,7 @@ namespace FinalApi
 
             // Process refund for all non-winning buyers
             var refundResult = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * nonWinningBuyersCount);
-             LostAuctionNotifications(auction.ID);
+             await LostAuctionNotifications(auction.ID);
             //if (refundResult.statusCode == 400) return;
         }
 
@@ -229,7 +214,7 @@ namespace FinalApi
                 await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = $"Sorry you Lost in {payment.AuctionName} Auction",
+                    Description = $"Sorry you Lost in {payment.AuctionName??"no auction name"} Auction",
                     IsReaded = false,
                     Title = Enums.NotificationType.auction,
                     UserId = payment.BuyerId,
