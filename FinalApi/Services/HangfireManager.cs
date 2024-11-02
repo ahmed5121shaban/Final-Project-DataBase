@@ -141,21 +141,22 @@ namespace FinalApi
             if (!existingNotification)
             {
                 // Send a notification to the latest bidder (winning user)
-                await notificationManager.Add(new Notification
+                var winningNotification = new Notification
                 {
                     Date = DateTime.Now,
                     Description = $"You won '{auction.Item.Name}' auction. Please complete the payment.",
                     IsReaded = false,
                     Title = Enums.NotificationType.auction,
                     UserId = latestBid.BuyerID,
-                });
+                };
+                await notificationManager.Add(winningNotification);
 
                 // Retrieve the latest notification for the user and send it in real-time
-                 lastNotification = notificationManager.GetAll()
+                var  buyerlastNotification = notificationManager.GetAll()
                                                           .Where(n => n.UserId == latestBid.BuyerID)
                                                           .OrderByDescending(n => n.Id)
                                                           .FirstOrDefault();
-                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", lastNotification.ToViewModel());
+                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", buyerlastNotification.ToViewModel());
             }
 
             // Check if a chat already exists for this auction winner to avoid duplicate chats
@@ -207,14 +208,16 @@ namespace FinalApi
         public async Task LostAuctionNotifications(int _auctionID)
         {
            var paymentUsersIDs = paymentManager.GetAll().Where(p=>p.AuctionID == _auctionID&&p.IsDone == false)
-                .Select(p=>new { p.BuyerId ,AuctionName = p.Auction.Item.Name });
+                .Select(p=>new { p.BuyerId , AuctionId=p.Auction.ID });
             if (!paymentUsersIDs.Any()) return;
             foreach (var payment in paymentUsersIDs)
             {
+                var auction = await auctionManager.GetOne(payment.AuctionId);
+                var auctionName = auction?.Item?.Name ?? "no auction name";
                 await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = $"Sorry you Lost in {payment.AuctionName??"no auction name"} Auction",
+                    Description = $"Sorry you Lost in {auctionName} Auction",
                     IsReaded = false,
                     Title = Enums.NotificationType.auction,
                     UserId = payment.BuyerId,

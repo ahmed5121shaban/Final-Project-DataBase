@@ -9,12 +9,19 @@ using ModelView;
 using System.Security.Claims;
 using FinalApi;
 using Stripe;
+using PayPal.Api;
 namespace FinalApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuctionController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+        private static readonly Dictionary<string, string> Config = new Dictionary<string, string>
+        {
+            { "mode", "sandbox" },
+        };
+
         AuctionManager auctionManager;
         BidManager bidManager;
         ItemManager itemManager;
@@ -29,7 +36,7 @@ namespace FinalApi.Controllers
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
             ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
             FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
-            IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager , ReviewManager _reviewManager)
+            IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager , ReviewManager _reviewManager, IConfiguration _configuration)
         {
             this.auctionManager = _auctionManager;
             this.bidManager = _bidManager;
@@ -41,6 +48,8 @@ namespace FinalApi.Controllers
             hubContext = _hubContext;
             sellerManager = _sellerManager;
             this.reviewManager = _reviewManager;
+            configuration = _configuration;
+
         }
 
         [Authorize]
@@ -628,15 +637,53 @@ namespace FinalApi.Controllers
                 return BadRequest(new {message= "insufficient balance" });
             }
             UpdateWithdrawnAmount(userId, amount);
+            try
+            {
+                var apiContext = new APIContext(new OAuthTokenCredential(configuration["PayPalSetting:ClientID"],
+                    configuration["PayPalSetting:Secret"], Config).GetAccessToken());
 
-            return Ok(new {message="withdrawn successfully"});
+                var payment = new PayPal.Api.Payment
+                {
+                    intent = "sale",
+                    payer = new Payer { payment_method = "paypal" },
+                    transactions = new List<Transaction>
+            {
+                new Transaction
+                {
+                    amount = new Amount
+                    {
+                        total = amount.ToString("F2"),
+                        currency = "USD",
+                    },
+                    description = "Auction deposit"
+                }
+            },
+                    redirect_urls = new RedirectUrls
+                    {
+                        return_url = $"http://localhost:4200/user/seller-earnings",
+                        cancel_url = "http://localhost:4200/user/seller-withdraw"
+                    }
+                };
+
+                var createdPayment = payment.Create(apiContext).GetApprovalUrl();
+
+                await hubContext.Clients.All.SendAsync("withdrawn amount", amount);
+                return Ok(new { result = createdPayment, status = 200 });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "withdrawing is not completed" });
+            }
+
+            //return Ok(new {message="withdrawn successfully"});
         }
 
         private async Task<decimal> GetWithdrawnAmount(string userID)
         {
             var seller =await sellerManager.GetOne(userID);
             var withdrawnAmount = seller.WithdrawnAmount;
-            
+
 
             return (decimal)withdrawnAmount; 
             
@@ -725,9 +772,20 @@ namespace FinalApi.Controllers
             var refundAmount = auction.Item.StartPrice;
             var lostBuyersEmails = paymentManager.GetAll().Where(p => p.AuctionID == id && p.IsDone == false).Count();
             var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
-            var Buyers = auction.Bids.Select(i => i.Buyer).ToList();
+            var uniqueBuyerIds = auction.Bids.Select(i => i.BuyerID).Distinct().ToList();
+            List<Buyer> buyers = new List<Buyer>();
 
-            foreach(var Buyer in Buyers)
+            foreach (var uniqueBuyerId in uniqueBuyerIds)
+            {
+                var buyer = auction.Bids.Where(i => i.BuyerID == uniqueBuyerId).Select(i => i.Buyer).FirstOrDefault();
+                if (buyer != null)
+                {
+                    buyers.Add(buyer);
+                }
+            }
+
+
+            foreach (var Buyer in buyers)
             {
                 if (await notificationManager.Add(new Notification
                 {
