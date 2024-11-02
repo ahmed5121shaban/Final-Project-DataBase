@@ -16,6 +16,7 @@ using FinalApi;
 
 using ModelView;
 using FinalApi;
+using Microsoft.AspNetCore.Http.HttpResults;
 namespace Managers
 {
     public class AccountManager : MainManager<User>
@@ -71,13 +72,22 @@ namespace Managers
                 {
                     return string.Empty;
                 }
-                await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
-                await buyerManager.Add(new Buyer
+               var res = await signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RemeberMe, true);
+                if (res.Succeeded)
                 {
-                    UserID = user.Id,
-                    Rate=0
-                });
-                return await tokenManager.GenerateToken(user);
+                    await buyerManager.Add(new Buyer
+                    {
+                        UserID = user.Id,
+                        Rate = 0
+                    });
+                    return await tokenManager.GenerateToken(user);
+
+                }
+                else
+                {
+                    return "";
+                }
+               
             }catch (Exception ex)
             {
                 return string.Empty;
