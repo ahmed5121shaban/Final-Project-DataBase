@@ -63,20 +63,24 @@ namespace FinalApi
             });
             var lastNotification = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id).LastOrDefault();
             await notificationsHub.Clients.Group(payment.BuyerId).SendAsync("notification", lastNotification.ToViewModel());
-            
-            await chatManager.Add(new Chat
-            {
-                IsActive = false,
-                BuyerID=bid.BuyerID,
-                SellerID = auction.Item.SellerID,
-                StartDate = DateTime.Now,
-            });
+
+
+            var chat = chatManager.GetAll().Where(c => c.BuyerID == bid.BuyerID && c.SellerID == auction.Item.SellerID);
+            if (!chat.Any())
+                await chatManager.Add(new Chat
+                {
+                    IsActive = false,
+                    BuyerID = bid.BuyerID,
+                    SellerID = auction.Item.SellerID,
+                    StartDate = DateTime.Now,
+                });
 
             var refundAmount = auction.Item.StartPrice;
             var lostBuyersEmails = paymentManager.GetAll().Where(p=>p.AuctionID == _auctionID&&p.IsDone == false).Count();
 
             var result = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * lostBuyersEmails);
-            if (result.statusCode == 400) return;
+            //an error here
+            //if (result.statusCode == 400) return;
 
         }
 
