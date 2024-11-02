@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Managers;
 using ModelView;
+using Hangfire;
 namespace FinalApi
 {
     public class HangfireManager
@@ -167,7 +168,8 @@ namespace FinalApi
 
             // Process refund for all non-winning buyers
             var refundResult = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * nonWinningBuyersCount);
-            if (refundResult.statusCode == 400) return;
+             LostAuctionNotifications(auction.ID);
+            //if (refundResult.statusCode == 400) return;
         }
 
 
@@ -193,14 +195,14 @@ namespace FinalApi
         public async Task LostAuctionNotifications(int _auctionID)
         {
            var paymentUsersIDs = paymentManager.GetAll().Where(p=>p.AuctionID == _auctionID&&p.IsDone == false)
-                .Select(p=>new { p.BuyerId ,p.Auction.Item.Name});
+                .Select(p=>new { p.BuyerId ,AuctionName = p.Auction.Item.Name });
             if (!paymentUsersIDs.Any()) return;
             foreach (var payment in paymentUsersIDs)
             {
                 await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = $"You Lose this Auction {payment.Name}",
+                    Description = $"Sorry you Lost in {payment.AuctionName} Auction",
                     IsReaded = false,
                     Title = Enums.NotificationType.auction,
                     UserId = payment.BuyerId,

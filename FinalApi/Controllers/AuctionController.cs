@@ -113,7 +113,7 @@ namespace FinalApi.Controllers
             await itemManager.Update(item);
 
             BackgroundJob.Schedule(() => hangfireManager.EndAuctionAtTime(auction.ID), auction.EndDate);
-            BackgroundJob.Schedule(() => hangfireManager.LostAuctionNotifications(auction.ID), auction.EndDate);
+           
 
             //check favCategory if have user send them that auction add in these category
             var favCatDetail = favCategoryManager.GetAll().Where(f=>f.CategoryID==item.CategoryID)
@@ -127,7 +127,7 @@ namespace FinalApi.Controllers
                         Title = Enums.NotificationType.auction,
                         UserId = id.buyerID,
                         Date = DateTime.Now,
-                        Description = $"New Auction Added in your Favorite Category : {id.categoryName} go and Found your Auction Detail",
+                        Description = $"New Auction Added in your Favorite Category : {id.categoryName}",
                         IsReaded = false,
                     }))
                     {
