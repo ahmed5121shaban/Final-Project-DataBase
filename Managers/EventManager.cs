@@ -69,6 +69,9 @@ namespace Managers
             return events;
         }
 
+
+        public async Task<IQueryable<Event>> GetAllEvent() => base.GetAll().AsQueryable();
+
         public async Task<bool> Delete(int id)
         {
             var ev = await base.Get(id);
