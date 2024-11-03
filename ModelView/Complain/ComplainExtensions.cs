@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Models.Models; // تأكد من وجود الـ using المناسب
+using Models.Models;
 
 namespace ModelView
 {
     public static class ComplainExtensions
     {
-        // إذا كانت Models.Models.Complain هي كلاس، تأكد من استخدامه بالطريقة الصحيحة.
-        public static Models.Models.Complain ToModel(this ComplainAddViewModel model)
+        // تحويل من ComplainAddViewModel إلى Complain
+        public static Complain ToModel(this ComplainAddViewModel model)
         {
-            return new Models.Models.Complain() // استخدام المساحة اسم كاملة لتجنب التداخل
+            return new Complain
             {
                 Reason = model.Reason,
-                BuyerID = model.BuyerID,
-                SellerID = model.SellerID
+                BuyerID = model.BuyerID.ToString(), // التأكد من التوافق في النوع
+                SellerID = model.SellerID.ToString() // تحويل ID إلى string إن لزم الأمر
             };
         }
 
-        // يمكنك إضافة تحويلات إضافية إذا كان لديك نماذج أخرى مشابهة
+        // يمكن إضافة تحويلات أخرى إذا لزم الأمر لنماذج إضافية
     }
 }

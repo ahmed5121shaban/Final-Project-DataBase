@@ -3,6 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Models;
 using ModelView;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static FinalApi.Enums;
 
 namespace Managers
 {
@@ -18,34 +23,39 @@ namespace Managers
         // إضافة شكوى
         public async Task<bool> AddComplain(ComplainAddViewModel model)
         {
-            // التحقق من أن الدفع تم (IsDone) والتأكد من SellerID عبر Item
+            // التحقق من صحة المدخلات
             var payment = await _dbContext.Payment
-                .Include(p => p.Auction) // تضمين المزاد المرتبط بالدفع
-                .ThenInclude(a => a.Item) // تضمين الـ Item المرتبط بالمزاد
-                .FirstOrDefaultAsync(p => p.BuyerId == model.BuyerID && p.IsDone && p.Auction.Item.SellerID == model.SellerID);
+                .Include(p => p.Auction)
+                .ThenInclude(a => a.Item)
+                .FirstOrDefaultAsync(p =>
+                    p.BuyerId == model.BuyerID.ToString() &&
+                    p.IsDone &&
+                    p.Auction.Item.SellerID == model.SellerID.ToString() &&
+                    p.Auction.ShippingStatus == AuctionShippingStatus.Returned
+                );
 
             if (payment == null)
             {
-                // لم يتم العثور على دفع مكتمل
+                Console.WriteLine("No completed payment found or conditions not met for the auction.");
                 return false;
             }
 
+            // إنشاء الشكوى وإضافتها إلى قاعدة البيانات
             var complain = new Complain
             {
                 Reason = model.Reason,
-                BuyerID = model.BuyerID,
-                SellerID = payment.Auction.Item.SellerID // استخدام SellerID من الـ Item
+                BuyerID = model.BuyerID.ToString(),
+                SellerID = payment.Auction.Item.SellerID.ToString() // تأكد أن SellerID من نوع string
             };
 
-            return await Add(complain);  // إضافة الشكوى
+            return await Add(complain);
         }
 
-        // الحصول على الشكاوى
+        // الحصول على الشكاوى مع دعم التصفية والصفحات
         public async Task<Pagination<List<ComplainDisplayViewModel>>> GetComplains(int pageNumber, int pageSize, string searchText = "")
         {
             var query = _dbContext.Complains.AsQueryable();
 
-            // إضافة الفلترة حسب النص
             if (!string.IsNullOrEmpty(searchText))
             {
                 query = query.Where(c => c.Reason.Contains(searchText));
@@ -53,7 +63,6 @@ namespace Managers
 
             var totalCount = await query.CountAsync();
 
-            // تأكد من أن النتيجة هي قائمة (List)
             var complainsList = await query
                 .Include(c => c.Seller)
                 .Include(c => c.Buyer)
@@ -66,36 +75,43 @@ namespace Managers
                     SellerName = c.Seller.User.Name,
                     BuyerName = c.Buyer.User.Name
                 })
-                .ToListAsync();  // تحويل النتيجة إلى قائمة
+                .ToListAsync();
 
-            // إرجاع القائمة داخل الكائن Pagination
             return new Pagination<List<ComplainDisplayViewModel>>
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = totalCount,
-                List = complainsList  // هنا استخدام complainsList
+                List = complainsList
             };
         }
 
-        public async Task<List<SellerViewModel>> GetSellersByBuyerId(int buyerId)
+        // جلب البائعين حسب معرف المشتري
+        public async Task<List<SellerViewModel>> GetSellersByBuyerId(string buyerId) // تغيير buyerId إلى string
         {
-            var sellers = await _dbContext.Payment
-                .Include(p => p.Auction) // تضمين المزاد المرتبط بالدفع
-                .ThenInclude(a => a.Item) // تضمين الـ Item المرتبط بالمزاد
-                .Where(p => p.BuyerId == buyerId.ToString() && p.IsDone) // تحويل buyerId إلى string
-                .GroupBy(p => p.Auction.Item.SellerID) // تجميع حسب SellerID
-                .Select(g => new SellerViewModel
+            // تكوين استعلام لجلب البائعين للمشتري المحدد
+            var query = _dbContext.Payment
+                .Include(p => p.Auction)
+                .ThenInclude(a => a.Item)
+                .ThenInclude(i => i.Seller)
+                .Where(p => p.BuyerId == buyerId && p.IsDone)
+                .GroupBy(p => p.Auction.Item.Seller.UserID)
+                .Select(g => new
                 {
-                    Id = int.Parse(g.Key), // تحويل SellerID إلى int
-                    Name = g.First().Auction.Item.Seller.User.Name // تأكد من أن Seller.User.Name موجود
-                })
-                .ToListAsync();
+                    SellerId = g.Key,
+                    Name = g.Select(x => x.Auction.Item.Seller.User.Name).FirstOrDefault()
+                });
+
+            var sellersData = await query.ToListAsync();
+
+            var sellers = sellersData.Select(x => new SellerViewModel
+            {
+                Id = x.SellerId, // استخدام SellerId كـ string مباشرة
+                Name = x.Name
+            }).ToList();
 
             return sellers;
         }
-
-
 
     }
 }
