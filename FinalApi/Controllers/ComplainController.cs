@@ -6,6 +6,7 @@ using ModelView;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinalApi.Controllers
 {
@@ -16,18 +17,24 @@ namespace FinalApi.Controllers
         private readonly ComplainManager _complainManager;
         private readonly IHubContext<NotificationsHub> hubContext;
         private readonly NotificationManager notificationManager;
+        private readonly FinalDbContext _context;
 
-        public ComplainController(ComplainManager complainManager,IHubContext<NotificationsHub> _hubContext,
-            NotificationManager _notificationManager)
+        public ComplainController(ComplainManager complainManager, IHubContext<NotificationsHub> _hubContext,
+            NotificationManager _notificationManager, FinalDbContext context)
         {
             _complainManager = complainManager;
             hubContext = _hubContext;
             notificationManager = _notificationManager;
+            _context = context;
         }
 
-        // إضافة شكوى - يجب أن يكون المشتري مخولًا
+        private string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedAccessException("User not authorized.");
+        }
+
+        [Authorize]
         [HttpPost("add")]
-        [Authorize(Roles = "Buyer")] // يتطلب أن يكون المستخدم Buyer
         public async Task<IActionResult> AddComplain([FromBody] ComplainAddViewModel model)
         {
             if (!ModelState.IsValid)
@@ -41,11 +48,11 @@ namespace FinalApi.Controllers
             {
                 return BadRequest("لم يتم العثور على دفع مكتمل أو تم إدخال بيانات غير صحيحة.");
             }
-           
-            var buyerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!string.IsNullOrEmpty(buyerID))
+            try
             {
+                var buyerID = GetCurrentUserId();
+
                 if (await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
@@ -55,45 +62,58 @@ namespace FinalApi.Controllers
                     UserId = buyerID,
                 }))
                 {
-                    var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.BuyerID).FirstOrDefault();
-                    if (sellerID.Any())
+                    var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.SellerID).FirstOrDefault();
+                    if (sellerID != null)
                     {
-                        Notification lastNotification = notificationManager.GetAll().Where(n=>n.UserId==sellerID).OrderBy(n => n.Id).LastOrDefault();
+                        var lastNotification = await notificationManager.GetAll()
+                            .Where(n => n.UserId == sellerID)
+                            .OrderByDescending(n => n.Id)
+                            .FirstOrDefaultAsync();
+
                         if (lastNotification == null)
-                            return BadRequest(new { message = "no last notification found" });
+                            return BadRequest(new { message = "No last notification found" });
 
                         await hubContext.Clients.Groups(sellerID).SendAsync("notification", lastNotification.ToViewModel());
-
-
                     }
                 }
-            }
 
-            return Ok("تم إضافة الشكوى بنجاح.");
+                return Ok("تم إضافة الشكوى بنجاح.");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
-        // الحصول على الشكاوى - يجب أن يكون المستخدم مخولًا كـ Admin
+        [Authorize]
         [HttpGet("list")]
-        [Authorize(Roles = "Admin")] // يتطلب أن يكون المستخدم Admin
         public async Task<IActionResult> GetComplains(int pageNumber = 1, int pageSize = 10, string searchText = "")
         {
             var complains = await _complainManager.GetComplains(pageNumber, pageSize, searchText);
             return Ok(complains);
         }
-
+        [Authorize]
         [HttpGet("sellers")]
+
         public async Task<IActionResult> GetSellers()
         {
-            var buyerId = GetCurrentBuyerId(); // يجب أن تضيف دالة للحصول على ID المشتري الحالي
-            var sellers = await _complainManager.GetSellersByBuyerId(buyerId);
-            return Ok(sellers);
-        }
+            var buyerId = GetCurrentUserId();
+            Console.WriteLine($"Fetching sellers for BuyerID: {buyerId}");
 
-        // دالة للحصول على ID المشتري الحالي (تأكد من طريقة استخدامك)
-        private int GetCurrentBuyerId()
-        {
-            var buyerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return int.TryParse(buyerIdClaim, out var buyerId) ? buyerId : 0;
+            // استدعاء GetSellersByBuyerId من الـ Manager وإعادة النتيجة كـ ViewModel
+            var sellers = await _complainManager.GetSellersByBuyerId(buyerId);
+
+            if (sellers == null || !sellers.Any())
+            {
+                Console.WriteLine("No sellers found for this buyer.");
+                return NotFound("No sellers found for this buyer.");
+            }
+
+            return Ok(sellers);
         }
 
     }

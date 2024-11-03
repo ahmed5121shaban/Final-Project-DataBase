@@ -29,6 +29,7 @@ namespace ModelView
                 BuyerName = _bid?.Buyer?.User?.Name??"no name",
             };
         }
+    }
 
     }
-}
+

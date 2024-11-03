@@ -370,17 +370,23 @@ namespace FinalApi.Controllers
                 return Ok(resultCache);
 
             var user = await acountManager.UserManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
             var userdata = new UserDataViewModel()
             {
                 Name = user.Name,
                 Image = user.Image
+            };
 
             };
             memoryCache.Set($"UserData-{userId}", userdata);
             return Ok(userdata);
-
-
         }
+
 
         [Authorize]
         [HttpGet("userCurrency")]
@@ -389,6 +395,11 @@ namespace FinalApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (memoryCache.TryGetValue($"userCurrency-{userId}", out var resultCache))
                 return Ok(resultCache);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is null or empty.");
+            }
+
             var user = await acountManager.UserManager.FindByIdAsync(userId);
             var userCurrency = user.Currency ;
 
@@ -402,5 +413,6 @@ namespace FinalApi.Controllers
                 result = userCurrency
             });
         }
+
     }
 }
