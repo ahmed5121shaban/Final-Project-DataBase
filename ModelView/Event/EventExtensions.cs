@@ -41,5 +41,42 @@ namespace ModelView
 /*                AdminID = _addEventView.AdminID,
 */            };
         }
+
+        public static OneEventViewModel ToEventViewModel(this Event _addEventView)
+        {
+            try
+            {
+                List<EventItemsListViewModel> eventItems = new List<EventItemsListViewModel>();
+                foreach (var item in _addEventView.Items)
+                {
+                    if (item.Auction != null)
+                        eventItems.Add(new EventItemsListViewModel
+                        {
+                            AuctionId = (int)item.AuctionID,
+                            SellerName = item.Seller.User.Name,
+                            StartPrice = item.StartPrice,
+                            BidCount = item.Auction.Bids.Count,
+                            Name = item.Name,
+                            Images = item.Images.Select(i => i.Src).ToList(),
+                        });
+                }
+
+                return new OneEventViewModel
+                {
+                    Id = _addEventView.ID,
+                    EndDate = _addEventView.EndDate,
+                    StartDate = _addEventView.StartDate,
+                    Image = _addEventView.Image,
+                    Name = _addEventView.Title,
+                    Auctions = eventItems
+
+                };
+
+            }
+            catch (Exception ex) 
+            {
+                return new OneEventViewModel{};
+            }
+        }
     }
 }

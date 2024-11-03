@@ -81,19 +81,7 @@ namespace FinalApi.Controllers
         }
 
            
-
-
-        
-        //to display only items of this user by its id
-        //[Authorize]
-        //[HttpGet]
-        //public async Task<IActionResult> GetUserItems()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var items = itemManager.GetAll().Where(i=>i.SellerID==userId).Select(i=>i.toItemViewModel());
-        //    return Ok(items);
-        //}
-
+ 
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
         {
@@ -101,7 +89,7 @@ namespace FinalApi.Controllers
             return Ok(item);
         }
 
-        [HttpPut("Edit")]
+        [HttpPatch("Edit")]
         public async Task<IActionResult> Edit([FromForm]EditItemViewModel model)
         {
             if (ModelState.IsValid)

@@ -51,7 +51,6 @@ namespace ModelView
                     Category = auction.Item.Category.Name,
                     SellerId = auction.Item.SellerID,
                     SellerName = auction.Item.Seller.User.Name,
-
                 },
                 Bids = auction.Bids.Select(b=> new AutionBidViewModel { 
                     Amount = b.Amount,

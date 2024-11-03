@@ -474,37 +474,6 @@ namespace FinalApi.Controllers
         }
 
 
-        //[HttpGet("AllDoneAuctions")]
-        //public IActionResult AllDoneAuctions()
-        //{
-        //    string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    if (string.IsNullOrEmpty(userID))
-        //        return BadRequest(new { message = "the user not found" });
-
-        //    var auction = auctionManager.GetAll().Where(a => a.BuyerID == userID && a.Payment.IsDone==true).ToList();
-        //    if (!auction.Any())
-        //        return BadRequest(new { message = "no done auctions found" });
-
-        //    List<DoneAuctionViewModel> doneAuctions = new List<DoneAuctionViewModel>();
-        //    foreach (var item in auction)
-        //    doneAuctions.Add(item.ToDoneAuctionVM());
-
-        //    if (doneAuctions.Any())
-        //        return new JsonResult(new ApiResultModel<List<DoneAuctionViewModel>>
-        //        {
-        //            result = doneAuctions,
-        //            success = true,
-        //            StatusCode = 200,
-        //            Message = "fetching data is completed"
-        //        });
-        //    return new JsonResult(new ApiResultModel<string>
-        //    {
-        //        result = "not done auction Here",
-        //        success = false,
-        //        StatusCode = 404,
-        //        Message = "fetching data is not completed"
-        //    });
-        //}
 
         [HttpGet("AllDoneAuctions")]
         public IActionResult AllDoneAuctions()

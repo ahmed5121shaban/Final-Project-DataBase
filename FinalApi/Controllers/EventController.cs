@@ -73,8 +73,7 @@ namespace FinalApi
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
-            List<EventViewModel> events = await eventManager.GetAll();
-            var Event = events.FirstOrDefault();
+            var Event = await eventManager.GetAll();
             if (Event == null)
                 return new JsonResult(new ApiResultModel<string>
                 {
@@ -83,7 +82,7 @@ namespace FinalApi
                     StatusCode = 404,
                     success=false
                 });
-            return new JsonResult(new ApiResultModel<EventViewModel>
+            return new JsonResult(new ApiResultModel<List<EventViewModel>>
             {
                 Message = "result returned successfully.",
                 result = Event,
@@ -100,6 +99,35 @@ namespace FinalApi
             return Ok();
         }
 
+        [HttpGet("{_id:int}")]
+        public async Task<IActionResult> GetEvent(int _id)
+        {
+            var eventResult =await eventManager.Get(_id);
+            if (eventResult == null)
+                return BadRequest(new {Message="no event found with this id"});
 
+            return Ok(eventResult.ToEventViewModel());
+        }
+
+        [HttpGet("home-event")]
+        public async Task<IActionResult> GetHomeEvent()
+        {
+            var _event = eventManager.GetAllEvent().Result.OrderBy(e=>e.ID).LastOrDefault();
+            if (_event == null) return new JsonResult
+            (new ApiResultModel<string>{
+                Message = "the last event not found",
+                result = null,
+                StatusCode =404,
+                success = false
+            });
+            return new JsonResult
+            (new ApiResultModel<EventViewModel>
+            {
+                Message = "the data is completed",
+                result = _event.ToViewModel(),
+                StatusCode = 200,
+                success = true
+            });
+        }
     }
 }
