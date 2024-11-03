@@ -3,6 +3,7 @@ using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Models;
 using ModelView;
 using System.ComponentModel;
@@ -18,11 +19,13 @@ namespace FinalApi.Controllers
     {
         private CategoryManager manager;
         private readonly CloudinaryManager cloudinaryManager;
+        private readonly IMemoryCache memoryCache;
 
-        public CategoryController(CategoryManager _manager, CloudinaryManager _cloudinaryManager)
+        public CategoryController(CategoryManager _manager, CloudinaryManager _cloudinaryManager,IMemoryCache _memoryCache)
         {
             manager = _manager;
             cloudinaryManager = _cloudinaryManager;
+            memoryCache = _memoryCache;
         }
         [Authorize]
         [HttpPost]
@@ -85,6 +88,15 @@ namespace FinalApi.Controllers
         [Route("GetAll")]
         public IActionResult GetAll()
         {
+            if(memoryCache.TryGetValue("GetAllCategories",out var resultCache))
+                return new JsonResult(new ApiResultModel<object>()
+                {
+                    result = resultCache,
+                    StatusCode = 200,
+                    success = true,
+                    Message = "done successfully"
+
+                });
             var res = manager.GetAll().Select(c => new
             {
                 id = c.ID,
@@ -96,6 +108,7 @@ namespace FinalApi.Controllers
             }).ToList();
             if (res != null)
             {
+                memoryCache.Set("GetAllCategories", res);
                 return new JsonResult(new ApiResultModel<object>()
                 {
                     result = res,
@@ -215,9 +228,12 @@ namespace FinalApi.Controllers
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
+            if(memoryCache.TryGetValue($"GetCategoryById{id}", out var result))
+                return Ok(result);
             try
             {
                 var category =await manager.GetOne(id);
+                memoryCache.Set($"GetCategoryById{id}",category.ToViewModel());
                 return Ok(category.ToViewModel());
             }
             catch (Exception ex)

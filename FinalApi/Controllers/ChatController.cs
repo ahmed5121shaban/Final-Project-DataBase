@@ -31,6 +31,7 @@ namespace FinalApi.Controllers
             if (string.IsNullOrEmpty(userId))
                 return BadRequest(new { message = "user not found" });
 
+
             List<ChatViewModel> chats = new List<ChatViewModel>();
             foreach (var item in chatManager.GetAll().Where(c=>c.BuyerID == userId||c.SellerID==userId).ToList())
             {

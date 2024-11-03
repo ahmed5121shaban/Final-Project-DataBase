@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
 using ModelView;
 using System.Security.Claims;
 using System.Text;
@@ -21,12 +22,13 @@ namespace FinalApi.Controllers
         private readonly ItemManager itemManager;
         private readonly BidsHub bidsHub;
         private readonly IHubContext<BidsHub> hubContext;
+        private readonly IMemoryCache memoryCache;
         private readonly FavAuctionManager favAuctionManager;
         private readonly NotificationManager notificationManager;
         private readonly IHubContext<DashboardHub> dashboardHubContext;
 
         public BidController(UserManager<User> _userManager,PaymentManager _paymentManager,
-            BidManager _bidManager,ItemManager _itemManager, IHubContext<BidsHub> _hubContext,
+            BidManager _bidManager,ItemManager _itemManager, IHubContext<BidsHub> _hubContext,IMemoryCache _memoryCache,
             FavAuctionManager _favAuctionManager,NotificationManager _notificationManager,IHubContext<DashboardHub> _dashboardHubContext)
         {
             userManager = _userManager;
@@ -34,6 +36,7 @@ namespace FinalApi.Controllers
             bidManager = _bidManager;
             itemManager = _itemManager;
             hubContext = _hubContext;
+            memoryCache = _memoryCache;
             favAuctionManager = _favAuctionManager;
             notificationManager = _notificationManager;
             dashboardHubContext = _dashboardHubContext;
@@ -44,6 +47,7 @@ namespace FinalApi.Controllers
         [HttpGet("bids/{auctionID:int}")]
         public IActionResult GetBids(int auctionID)
         {
+            
             List<BidViewModel> bidViewModels = new List<BidViewModel>();
             foreach (var bid in bidManager.GetAll().Where(b => b.AuctionID == auctionID).ToList())
             {
