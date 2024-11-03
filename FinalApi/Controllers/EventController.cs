@@ -74,18 +74,19 @@ namespace FinalApi
         public async Task<IActionResult> GetAllEvents()
         {
             List<EventViewModel> events = await eventManager.GetAll();
-            if (events == null)
-                return new JsonResult(new ApiResultModel<EventViewModel>
+            var Event = events.FirstOrDefault();
+            if (Event == null)
+                return new JsonResult(new ApiResultModel<string>
                 {
                     Message = "no result found",
-                    result=null,
+                    result="",
                     StatusCode = 404,
                     success=false
                 });
-            return new JsonResult(new ApiResultModel<List<EventViewModel>>
+            return new JsonResult(new ApiResultModel<EventViewModel>
             {
                 Message = "result returned successfully.",
-                result = events,
+                result = Event,
                 StatusCode = 200,
                 success = true
             });

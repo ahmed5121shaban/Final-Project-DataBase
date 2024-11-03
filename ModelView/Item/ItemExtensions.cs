@@ -34,6 +34,32 @@ namespace ModelView
             };
 
         }
+        public static Item toItemModel(this EditItemViewModel model)
+        {
+
+            List<Image> images = new List<Image>();
+            if(model.ImagesUrl != null)
+                foreach (string imageUrl in model.ImagesUrl)
+                {
+                    Image img = new Image { Src = imageUrl };
+                    images.Add(img);
+                }
+
+            return new Item
+            {
+                ID=model.itemId,
+                Name = model.Title,
+                Description = model.Description,
+                CategoryID = (int)model.Category,
+                StartPrice = (decimal)model.startPrice,
+                EndPrice = model.sellPrice ?? 0,
+                AddTime = DateTime.Now,
+                Images = images.ToArray(),
+                ContractFile = model.FileName ?? "N/A",
+                SellerID = model.sellerId
+            };
+
+        }
 
         public static ItemViewModel toItemViewModel(this Item model)
         {

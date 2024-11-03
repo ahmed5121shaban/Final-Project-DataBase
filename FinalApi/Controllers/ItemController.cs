@@ -102,11 +102,12 @@ namespace FinalApi.Controllers
         }
 
         [HttpPut("Edit")]
-        public async Task<IActionResult> Edit(AddItemViewModel model)
+        public async Task<IActionResult> Edit([FromForm]EditItemViewModel model)
         {
             if (ModelState.IsValid)
             {
-               var res = await itemManager.Update(model.toItemModel());
+                model.sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var res = await itemManager.Update(model.toItemModel());
                 if (res)
                 {
                     return new JsonResult(new ApiResultModel<bool>()
