@@ -10,6 +10,7 @@ using System.Security.Claims;
 using FinalApi;
 using Stripe;
 using PayPal.Api;
+using Microsoft.Extensions.Caching.Memory;
 namespace FinalApi.Controllers
 {
     [ApiController]
@@ -31,11 +32,12 @@ namespace FinalApi.Controllers
         private readonly HangfireManager hangfireManager;
         private readonly FavCategoryManager favCategoryManager;
         private readonly NotificationManager notificationManager;
+        private readonly IMemoryCache memoryCache;
         private readonly IHubContext<NotificationsHub> hubContext;
 
         public AuctionController(AuctionManager _auctionManager, BidManager _bidManager,
             ItemManager _itemManager,PaymentManager _paymentManager,HangfireManager _hangfireManager,
-            FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,
+            FavCategoryManager _favCategoryManager,NotificationManager _notificationManager,IMemoryCache _memoryCache,
             IHubContext<NotificationsHub> _hubContext,SellerManager _sellerManager , ReviewManager _reviewManager, IConfiguration _configuration)
         {
             this.auctionManager = _auctionManager;
@@ -45,6 +47,7 @@ namespace FinalApi.Controllers
             hangfireManager = _hangfireManager;
             favCategoryManager = _favCategoryManager;
             notificationManager = _notificationManager;
+            memoryCache = _memoryCache;
             hubContext = _hubContext;
             sellerManager = _sellerManager;
             this.reviewManager = _reviewManager;
@@ -452,12 +455,18 @@ namespace FinalApi.Controllers
         [HttpGet("endingSoon")]
         public async Task<IActionResult> EndingSoonAuctions()
         {
+            if(memoryCache.TryGetValue("endingSoon",out var resultCache))
+                return new JsonResult(resultCache);
             var currentUtcTime = DateTime.UtcNow;
             var endingSoonAuctions = auctionManager.GetAll()
                 .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.EndDate <= currentUtcTime.AddDays(2))
                 .OrderByDescending(a => a.StartDate)
                 .Select(a => a.SeeDetails())
                 .ToList();
+            memoryCache.Set("endingSoon", endingSoonAuctions, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+            });
             return new JsonResult(endingSoonAuctions);
         }
 

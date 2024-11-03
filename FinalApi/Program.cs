@@ -56,7 +56,7 @@ builder.Services.AddScoped<CustomUserManager>();
 builder.Services.AddScoped<NotificationManager>();
 builder.Services.AddScoped<EventManager>();
 builder.Services.AddScoped<CloudinaryManager>();
-
+builder.Services.AddMemoryCache();
 
 
 

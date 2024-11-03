@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
 using ModelView;
 using System.Net.WebSockets;
 using System.Security.Claims;
@@ -24,11 +25,12 @@ namespace FinalApi.Controllers
         private readonly IHubContext<DashboardHub> dashboardHubContext;
         private readonly CategoryManager categoryManager;
         private readonly CloudinaryManager cloudinaryManager;
+        private readonly IMemoryCache memoryCache;
 
         public ItemController(ItemManager _itemManager,AccountManager _accountManager,
             NotificationManager _notificationManager,IHubContext<NotificationsHub> _hubContext,
             IHubContext<DashboardHub> _dashboardHubContext,
-            CategoryManager _categoryManager,CloudinaryManager _cloudinaryManager)
+            CategoryManager _categoryManager,CloudinaryManager _cloudinaryManager, IMemoryCache _memoryCache)
         {
             this.itemManager = _itemManager;
             this.accountManager = _accountManager;
@@ -37,6 +39,7 @@ namespace FinalApi.Controllers
             dashboardHubContext = _dashboardHubContext;
             categoryManager = _categoryManager;
             cloudinaryManager = _cloudinaryManager;
+            memoryCache = _memoryCache;
         }
         [Authorize]
         [HttpPost]
@@ -85,7 +88,12 @@ namespace FinalApi.Controllers
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
         {
+            if (memoryCache.TryGetValue($"item-{itemId}", out var result))
+                return Ok(result);
             var item = itemManager.GetAll().Where(i=>i.ID==itemId).Select(i=>i.toItemViewModel()).FirstOrDefault();
+            if (item == null)
+                return NotFound();
+            memoryCache.Set($"item-{itemId}", item);
             return Ok(item);
         }
 
