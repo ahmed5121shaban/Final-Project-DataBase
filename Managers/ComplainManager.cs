@@ -73,7 +73,9 @@ namespace Managers
                     Id = c.ID,
                     Reason = c.Reason,
                     SellerName = c.Seller.User.Name,
-                    BuyerName = c.Buyer.User.Name
+                    BuyerName = c.Buyer.User.Name,
+                    selleremail = c.Seller.User.Email,
+                    buyeremail = c.Buyer.User.Email
                 })
                 .ToListAsync();
 

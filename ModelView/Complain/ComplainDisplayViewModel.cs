@@ -11,6 +11,10 @@ namespace ModelView
         public int Id { get; set; }
         public string Reason { get; set; }
         public string SellerName { get; set; }  // معلومات البائع للعرض
-        public string BuyerName { get; set; }  // معلومات المشتري للعرض
+        public string BuyerName { get; set; }
+        public string selleremail { get; set; }
+        public string buyeremail { get; set; }
+
+        // معلومات المشتري للعرض
     }
 }
