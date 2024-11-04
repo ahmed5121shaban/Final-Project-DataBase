@@ -382,7 +382,6 @@ namespace FinalApi.Controllers
                 Image = user.Image
             };
 
-            };
             memoryCache.Set($"UserData-{userId}", userdata);
             return Ok(userdata);
         }
