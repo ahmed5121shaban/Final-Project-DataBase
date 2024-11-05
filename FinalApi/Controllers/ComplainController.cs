@@ -52,30 +52,23 @@ namespace FinalApi.Controllers
             try
             {
                 var buyerID = GetCurrentUserId();
+                var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.SellerID).FirstOrDefault();
 
-                if (await notificationManager.Add(new Notification
+                await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = "Sorry, You Have Complain :( ",
+                    Description = $"Sorry, You Have Complain :( From {User.FindFirstValue(ClaimTypes.Name)}",
                     IsReaded = false,
                     Title = Enums.NotificationType.complain,
-                    UserId = buyerID,
-                }))
-                {
-                    var sellerID = _complainManager.GetAll().Where(c => c.BuyerID == buyerID).Select(c => c.SellerID).FirstOrDefault();
-                    if (sellerID != null)
-                    {
-                        var lastNotification = await notificationManager.GetAll()
-                            .Where(n => n.UserId == sellerID)
-                            .OrderByDescending(n => n.Id)
-                            .FirstOrDefaultAsync();
+                    UserId = sellerID
+                });
 
-                        if (lastNotification == null)
-                            return BadRequest(new { message = "No last notification found" });
+                var lastNotification = await notificationManager.GetAll()
+                    .Where(n => n.UserId == sellerID)
+                    .OrderByDescending(n => n.Id)
+                    .FirstOrDefaultAsync();
 
-                        await hubContext.Clients.Groups(sellerID).SendAsync("notification", lastNotification.ToViewModel());
-                    }
-                }
+                await hubContext.Clients.Groups(sellerID).SendAsync("notification", lastNotification.ToViewModel());
 
                 return Ok("تم إضافة الشكوى بنجاح.");
             }
