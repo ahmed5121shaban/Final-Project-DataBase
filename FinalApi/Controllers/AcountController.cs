@@ -307,7 +307,11 @@ namespace FinalApi.Controllers
         [HttpGet("UserProfile/{UserId}")]
         public async Task<IActionResult> GetUserProfile(string UserId)
         {
+<<<<<<< HEAD
+            
+=======
 
+>>>>>>> 4881392af6336bfc764235c41b2e389429ed3763
             var user = await acountManager.UserManager.FindByIdAsync(UserId);
             var role = await acountManager.UserManager.GetRolesAsync(user);
             bool isseller = (role.Contains("Seller")) ? true : false ;
@@ -323,6 +327,11 @@ namespace FinalApi.Controllers
                 finalRate = range / sellerRates.Count;
             }
 
+<<<<<<< HEAD
+           
+
+=======
+>>>>>>> 4881392af6336bfc764235c41b2e389429ed3763
             return Ok(new ProfileViewModel()
             {
                 FullName = user.Name,
@@ -360,6 +369,10 @@ namespace FinalApi.Controllers
                 Image = user.Image
             };
 
+<<<<<<< HEAD
+            memoryCache.Set($"UserData-{userId}", userdata);
+=======
+>>>>>>> 4881392af6336bfc764235c41b2e389429ed3763
             return Ok(userdata);
         }
 

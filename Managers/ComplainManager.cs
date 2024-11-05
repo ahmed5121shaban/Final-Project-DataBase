@@ -20,15 +20,19 @@ namespace Managers
             _dbContext = dbContext;
         }
 
-        // إضافة شكوى
         public async Task<bool> AddComplain(ComplainAddViewModel model)
         {
-            // التحقق من صحة المدخلات
+            if (string.IsNullOrWhiteSpace(model.BuyerID))
+            {
+                Console.WriteLine("BuyerID is required but was not provided.");
+                return false;
+            }
+
             var payment = await _dbContext.Payment
                 .Include(p => p.Auction)
                 .ThenInclude(a => a.Item)
                 .FirstOrDefaultAsync(p =>
-                    p.BuyerId == model.BuyerID.ToString() &&
+                    p.BuyerId == model.BuyerID &&
                     p.IsDone &&
                     p.Auction.Item.SellerID == model.SellerID.ToString() &&
                     p.Auction.ShippingStatus == AuctionShippingStatus.Returned
@@ -40,18 +44,16 @@ namespace Managers
                 return false;
             }
 
-            // إنشاء الشكوى وإضافتها إلى قاعدة البيانات
             var complain = new Complain
             {
                 Reason = model.Reason,
-                BuyerID = model.BuyerID.ToString(),
-                SellerID = payment.Auction.Item.SellerID.ToString() // تأكد أن SellerID من نوع string
+                BuyerID = model.BuyerID,
+                SellerID = payment.Auction.Item.SellerID.ToString()
             };
 
             return await Add(complain);
         }
 
-        // الحصول على الشكاوى مع دعم التصفية والصفحات
         public async Task<Pagination<List<ComplainDisplayViewModel>>> GetComplains(int pageNumber, int pageSize, string searchText = "")
         {
             var query = _dbContext.Complains.AsQueryable();
@@ -88,10 +90,14 @@ namespace Managers
             };
         }
 
-        // جلب البائعين حسب معرف المشتري
-        public async Task<List<SellerViewModel>> GetSellersByBuyerId(string buyerId) // تغيير buyerId إلى string
+        public async Task<List<SellerViewModel>> GetSellersByBuyerId(string buyerId)
         {
-            // تكوين استعلام لجلب البائعين للمشتري المحدد
+            if (string.IsNullOrWhiteSpace(buyerId))
+            {
+                Console.WriteLine("BuyerID is required to fetch sellers.");
+                return new List<SellerViewModel>();
+            }
+
             var query = _dbContext.Payment
                 .Include(p => p.Auction)
                 .ThenInclude(a => a.Item)
@@ -108,12 +114,11 @@ namespace Managers
 
             var sellers = sellersData.Select(x => new SellerViewModel
             {
-                Id = x.SellerId, // استخدام SellerId كـ string مباشرة
+                Id = x.SellerId,
                 Name = x.Name
             }).ToList();
 
             return sellers;
         }
-
     }
 }

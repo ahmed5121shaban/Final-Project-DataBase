@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using FinalApi;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace FinalApi.Controllers
 {
@@ -28,20 +29,37 @@ namespace FinalApi.Controllers
             _context = context;
         }
 
+
         private string GetCurrentUserId()
         {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedAccessException("User not authorized.");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new UnauthorizedAccessException("User ID not found in token payload.");
+            }
+            Console.WriteLine($"User ID retrieved from token: {userId}");
+            return userId;
         }
 
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> AddComplain([FromBody] ComplainAddViewModel model)
         {
+            // تعيين BuyerID تلقائياً من المستخدم الحالي
+            model.BuyerID = GetCurrentUserId();
+
+            // التحقق من صحة النموذج بعد تعيين BuyerID
+            if (string.IsNullOrWhiteSpace(model.BuyerID))
+            {
+                return BadRequest("BuyerID is required and cannot be empty.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // إضافة الشكوى باستخدام ComplainManager
             var result = await _complainManager.AddComplain(model);
 
             if (!result)
@@ -78,6 +96,7 @@ namespace FinalApi.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"An error occurred: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
             }
         }
@@ -89,15 +108,14 @@ namespace FinalApi.Controllers
             var complains = await _complainManager.GetComplains(pageNumber, pageSize, searchText);
             return Ok(complains);
         }
+
         [Authorize]
         [HttpGet("sellers")]
-
         public async Task<IActionResult> GetSellers()
         {
             var buyerId = GetCurrentUserId();
             Console.WriteLine($"Fetching sellers for BuyerID: {buyerId}");
 
-            // استدعاء GetSellersByBuyerId من الـ Manager وإعادة النتيجة كـ ViewModel
             var sellers = await _complainManager.GetSellersByBuyerId(buyerId);
 
             if (sellers == null || !sellers.Any())
@@ -108,6 +126,5 @@ namespace FinalApi.Controllers
 
             return Ok(sellers);
         }
-
     }
 }
