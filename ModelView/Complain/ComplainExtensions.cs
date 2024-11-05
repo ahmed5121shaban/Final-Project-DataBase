@@ -11,7 +11,6 @@ namespace ModelView
             return new Complain
             {
                 Reason = model.Reason,
-                BuyerID = model.BuyerID.ToString(), // التأكد من التوافق في النوع
                 SellerID = model.SellerID.ToString() // تحويل ID إلى string إن لزم الأمر
             };
         }

@@ -10,6 +10,6 @@ namespace ModelView
     {
         public string Reason { get; set; }
         public string SellerID { get; set; }  // البائع الذي سيتم تقديم الشكوى ضده
-        public string BuyerID { get; set; }  // المشتري الذي يقدم الشكوى
+        public string ? BuyerID { get; set; }  // المشتري الذي يقدم الشكوى
     }
 }
