@@ -24,8 +24,8 @@ namespace FinalApi
         public HangfireManager(AuctionManager _auctionManager, PaymentManager _paymentManager,
             BidManager _bidManager, IHubContext<NotificationsHub> _notificationsHub,
             IHubContext<DashboardHub> _dashboardHub,
-            NotificationManager _notificationManager,FavCategoryManager _favCategoryManager,
-            ChatManager _chatManager,FavAuctionManager _favAuctionManager)
+            NotificationManager _notificationManager, FavCategoryManager _favCategoryManager,
+            ChatManager _chatManager, FavAuctionManager _favAuctionManager)
         {
             auctionManager = _auctionManager;
             paymentManager = _paymentManager;
@@ -37,7 +37,7 @@ namespace FinalApi
             favAuctionManager = _favAuctionManager;
             dashboardHub = _dashboardHub;
         }
-        
+
         public async Task EndAuctionAtTime(int auctionID)
         {
             // Retrieve auction details based on the provided auction ID
@@ -70,17 +70,6 @@ namespace FinalApi
                                         .FirstOrDefault(p => p.AuctionID == auctionID && p.BuyerId == latestBid.BuyerID);
             if (payment == null) return;
 
-            //send to seller his auction is ended
-            await notificationManager.Add(new Notification
-            {
-                Date = DateTime.Now,
-                Description = $"Your Auction  {auction.Item.Name} is Ended" ,
-                IsReaded = false,
-                Title = Enums.NotificationType.auction,
-                UserId = auction.Item.SellerID
-            });
-            var lastNotification = notificationManager.GetAll().Where(n=>n.UserId == auction.Item.SellerID).OrderBy(n=>n.Id).LastOrDefault();
-            await notificationsHub.Clients.Group(auction.Item.SellerID).SendAsync("notification", lastNotification.ToViewModel());
 
 
             // Calculate the total bid amount and verify if it meets the auction's end price
@@ -95,33 +84,9 @@ namespace FinalApi
             if (!await auctionManager.Update(auction)) return;
 
             // Mark the payment as completed and update
-            payment.IsDone= true;
-            if(!await paymentManager.Update(payment)) return;
-            var lastNotify = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id).LastOrDefault();
-            await notificationsHub.Clients.Group(payment.BuyerId).SendAsync("notification", lastNotify.ToViewModel());
-            // Check if a notification already exists for this auction win to avoid duplicate notifications
-            var existingNotification = notificationManager.GetAll()
-                                                          .Any(n => n.UserId == latestBid.BuyerID && n.Description.Contains($"You won '{auction.Item.Name}'"));
-            if (!existingNotification)
-            {
-                // Send a notification to the latest bidder (winning user)
-                var winningNotification = new Notification
-                {
-                    Date = DateTime.Now,
-                    Description = $"You won '{auction.Item.Name}' auction. Please complete the payment.",
-                    IsReaded = false,
-                    Title = Enums.NotificationType.auction,
-                    UserId = latestBid.BuyerID,
-                };
-                await notificationManager.Add(winningNotification);
+            payment.IsDone = true;
+            if (!await paymentManager.Update(payment)) return;
 
-                // Retrieve the latest notification for the user and send it in real-time
-                var  buyerlastNotification = notificationManager.GetAll()
-                                                          .Where(n => n.UserId == latestBid.BuyerID)
-                                                          .OrderByDescending(n => n.Id)
-                                                          .FirstOrDefault();
-                await notificationsHub.Clients.Group(latestBid.BuyerID.ToString()).SendAsync("notification", buyerlastNotification.ToViewModel());
-            }
 
             var existingChat = chatManager.GetAll()
                               .Any(c => c.BuyerID == latestBid.BuyerID && c.SellerID == auction.Item.SellerID && !c.IsActive);
@@ -161,7 +126,6 @@ namespace FinalApi
 
             // Process refund for all non-winning buyers
             var refundResult = paymentManager.RefundCustomerAmount("gamal-gamal@personal.example.com", refundAmount * nonWinningBuyersCount);
-             await LostAuctionNotifications(auction.ID);
             //if (refundResult.statusCode == 400) return;
 
             //sent to all lost buyers
@@ -189,60 +153,66 @@ namespace FinalApi
             {
 
             }
-            
+
         }
 
 
-        public async Task AuctionEndedNotificationBeforeOneDay(int _auctionID, string groupName)
+        public async Task AuctionEndedNotificationBeforeOneDay(int _auctionID)
         {
-            await notificationManager.Add(new Notification
-             {
-               Date = DateTime.Now,
-               Description = "This Auction have One Day To End",
-               IsReaded = false,
-               Title = Enums.NotificationType.auction,
-               UserId = groupName,
-            });
-           
-            Notification lastNotification = notificationManager.GetAll().Where(n=>n.UserId==groupName).OrderBy(n => n.Id).LastOrDefault();
-            if (lastNotification == null)
-                return ;
-
-            await notificationsHub.Clients.Groups(groupName).SendAsync("notification", lastNotification.ToViewModel());
-        }
-
-        public async Task LostAuctionNotifications(int _auctionID)
-        {
-           var paymentUsersIDs = paymentManager.GetAll().Where(p=>p.AuctionID == _auctionID&&p.IsDone == false)
-                .Select(p=>new { p.BuyerId , AuctionId=p.Auction.ID });
-            if (!paymentUsersIDs.Any()) return;
-            foreach (var payment in paymentUsersIDs)
+            var favAuctions = favAuctionManager.GetAll().Where(f => f.AuctionID == _auctionID);
+            if (!favAuctions.Any()) return;
+            foreach (var fav in favAuctions)
             {
-                var auction = await auctionManager.GetOne(payment.AuctionId);
-                var auctionName = auction?.Item?.Name ?? "no auction name";
                 await notificationManager.Add(new Notification
                 {
                     Date = DateTime.Now,
-                    Description = $"Sorry you Lost in {auctionName} Auction",
+                    Description = $"This Auction {fav.Auction.Item.Name} have One Day To End",
                     IsReaded = false,
                     Title = Enums.NotificationType.auction,
-                    UserId = payment.BuyerId,
+                    UserId = fav.BuyerID,
                 });
-                var lastNotification = notificationManager.GetAll().Where(n => n.UserId == payment.BuyerId).OrderBy(n => n.Id)
-                    .LastOrDefault();
-                if (lastNotification == null)
-                    return;
 
-                            await notificationsHub.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
-                        }
-                        catch (Exception ex)
-                        {
+                Notification lastNotification = notificationManager.GetAll().Where(n => n.UserId == fav.BuyerID).OrderBy(n => n.Id).LastOrDefault();
 
-                        }
+                await notificationsHub.Clients.Groups(fav.BuyerID).SendAsync("notification", lastNotification.ToViewModel());
+            }
+
+        }
+
+
+        public async Task SendNotificationsToUserInFavCategory(int _categoryID, int _auctionID)
+        {
+            var favCatDetail = favCategoryManager.GetAll().Where(f => f.CategoryID == _categoryID)
+                .Select(f => new { buyerID = f.BuyerID, categoryName = f.Category.Name }).ToList();
+            if (!favCatDetail.Any()) return;
+
+            foreach (var id in favCatDetail)
+            {
+                if (await notificationManager.Add(new Notification
+                {
+                    Title = Enums.NotificationType.auction,
+                    UserId = id.buyerID,
+                    Date = DateTime.Now,
+                    Description = $"New Auction Added in your Favorite Category : {id.categoryName}",
+                    IsReaded = false,
+                }))
+                {
+                    try
+                    {
+                        var lastNotification = notificationManager.GetAll().Where(n => n.UserId == id.buyerID).OrderBy(n => n.Id).LastOrDefault();
+                        if (lastNotification == null)
+                            return;
+
+                        await notificationsHub.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
+                    }
+                    catch (Exception ex)
+                    {
 
                     }
+
                 }
-            
+            }
+
         }
     }
 }
