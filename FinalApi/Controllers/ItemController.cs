@@ -95,11 +95,43 @@ namespace FinalApi.Controllers
         }
 
         [HttpPatch("Edit")]
-        public async Task<IActionResult> Edit([FromForm]EditItemViewModel model)
+        public async Task<IActionResult> Edit([FromForm] EditItemViewModel model)
         {
             if (ModelState.IsValid)
             {
                 model.sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                // حذف الصور القديمة من Cloudinary إذا كانت موجودة
+                if (model.OldImagesUrl != null && model.OldImagesUrl.Count > 0)
+                {
+                    foreach (var oldImageUrl in model.OldImagesUrl)
+                    {
+                        // استخراج publicId من رابط الصورة
+                        string publicId = ExtractPublicIdFromUrl(oldImageUrl);
+                        await cloudinaryManager.DeleteFileAsync(publicId);  // حذف الصورة القديمة
+                    }
+                }
+
+                // إعادة تعيين القائمة وتفريغها قبل إضافة الصور الجديدة
+                model.ImagesUrl = new List<string>();
+
+                // رفع الصور الجديدة إذا كانت موجودة
+                if (model.Images != null && model.Images.Count > 0)
+                {
+                    foreach (var image in model.Images)
+                    {
+                        var newImageUrl = await cloudinaryManager.UploadFileAsync(image);  // رفع الصورة الجديدة
+                        model.ImagesUrl.Add(newImageUrl);  // إضافة الرابط الجديد فقط
+                    }
+                }
+
+                // رفع العقد الجديد إذا وُجد
+                if (model.Contract != null)
+                {
+                    model.FileName = await cloudinaryManager.UploadFileAsync(model.Contract);
+                }
+
+                // تحديث العنصر
                 var res = await itemManager.Update(model.toItemModel());
                 if (res)
                 {
@@ -109,9 +141,7 @@ namespace FinalApi.Controllers
                         StatusCode = 200,
                         success = true,
                         Message = "done successfully"
-
                     });
-
                 }
                 else
                 {
@@ -121,10 +151,8 @@ namespace FinalApi.Controllers
                         StatusCode = 200,
                         success = true,
                         Message = "An Error Has Occured"
-
                     });
                 }
-
             }
             else
             {
@@ -133,7 +161,7 @@ namespace FinalApi.Controllers
                 {
                     foreach (var error in item.Errors)
                     {
-                        builder.Append(builder.ToString());
+                        builder.Append(error.ErrorMessage);
                     }
                 }
                 return new JsonResult(new ApiResultModel<string>()
@@ -145,7 +173,16 @@ namespace FinalApi.Controllers
                 });
             }
         }
-       
+
+        // دالة مساعدة لاستخراج publicId من رابط الصورة
+        private string ExtractPublicIdFromUrl(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var path = uri.AbsolutePath;
+            return Path.GetFileNameWithoutExtension(path);
+        }
+
+
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteItem(int id)

@@ -21,11 +21,11 @@ namespace FinalApi
         private readonly FavAuctionManager favAuctionManager;
         private readonly IHubContext<DashboardHub> dashboardHub;
 
-        public HangfireManager(AuctionManager _auctionManager,PaymentManager _paymentManager,
-            BidManager _bidManager,IHubContext<NotificationsHub> _notificationsHub, 
+        public HangfireManager(AuctionManager _auctionManager, PaymentManager _paymentManager,
+            BidManager _bidManager, IHubContext<NotificationsHub> _notificationsHub,
             IHubContext<DashboardHub> _dashboardHub,
-            NotificationManager _notificationManager,FavCategoryManager _favCategoryManager,
-            ChatManager _chatManager,FavAuctionManager _favAuctionManager)
+            NotificationManager _notificationManager, FavCategoryManager _favCategoryManager,
+            ChatManager _chatManager, FavAuctionManager _favAuctionManager)
         {
             auctionManager = _auctionManager;
             paymentManager = _paymentManager;
@@ -37,7 +37,7 @@ namespace FinalApi
             favAuctionManager = _favAuctionManager;
             dashboardHub = _dashboardHub;
         }
-        
+
         public async Task EndAuctionAtTime(int auctionID)
         {
             // Retrieve auction details based on the provided auction ID
@@ -171,43 +171,43 @@ namespace FinalApi
 
                 await notificationsHub.Clients.Groups(fav.BuyerID).SendAsync("notification", lastNotification.ToViewModel());
             }
-           
+
         }
 
 
-        public async Task SendNotificationsToUserInFavCategory(int _categoryID,int _auctionID)
+        public async Task SendNotificationsToUserInFavCategory(int _categoryID, int _auctionID)
         {
             var favCatDetail = favCategoryManager.GetAll().Where(f => f.CategoryID == _categoryID)
                 .Select(f => new { buyerID = f.BuyerID, categoryName = f.Category.Name }).ToList();
             if (!favCatDetail.Any()) return;
-            
-                foreach (var id in favCatDetail)
+
+            foreach (var id in favCatDetail)
+            {
+                if (await notificationManager.Add(new Notification
                 {
-                    if (await notificationManager.Add(new Notification
+                    Title = Enums.NotificationType.auction,
+                    UserId = id.buyerID,
+                    Date = DateTime.Now,
+                    Description = $"New Auction Added in your Favorite Category : {id.categoryName}",
+                    IsReaded = false,
+                }))
+                {
+                    try
                     {
-                        Title = Enums.NotificationType.auction,
-                        UserId = id.buyerID,
-                        Date = DateTime.Now,
-                        Description = $"New Auction Added in your Favorite Category : {id.categoryName}",
-                        IsReaded = false,
-                    }))
+                        var lastNotification = notificationManager.GetAll().Where(n => n.UserId == id.buyerID).OrderBy(n => n.Id).LastOrDefault();
+                        if (lastNotification == null)
+                            return;
+
+                        await notificationsHub.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            var lastNotification = notificationManager.GetAll().Where(n => n.UserId == id.buyerID).OrderBy(n => n.Id).LastOrDefault();
-                            if (lastNotification == null)
-                                return;
-
-                            await notificationsHub.Clients.Groups(id.buyerID).SendAsync("notification", lastNotification.ToViewModel());
-                        }
-                        catch (Exception ex)
-                        {
-
-                        }
 
                     }
+
                 }
-            
+            }
+
         }
     }
 }
