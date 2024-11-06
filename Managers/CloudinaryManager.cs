@@ -2,6 +2,7 @@
 using CloudinaryDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Managers
 {
@@ -31,7 +32,7 @@ namespace Managers
                     {
                         File = new FileDescription(file.FileName, file.OpenReadStream()),
                     };
-                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 }
                 else
                 {
@@ -46,6 +47,14 @@ namespace Managers
             }
 
             return null;
+        }
+
+        public async Task<bool> DeleteFileAsync(string publicId)
+        {
+            var deletionParams = new DeletionParams(publicId);
+            var deletionResult = await _cloudinary.DestroyAsync(deletionParams);
+
+            return deletionResult.Result == "ok";
         }
     }
 }
