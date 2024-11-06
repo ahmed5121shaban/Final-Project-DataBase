@@ -447,10 +447,10 @@ namespace FinalApi.Controllers
                 .Select(a => a.SeeDetails())
                 .Take(6)
                 .ToList();
-            memoryCache.Set("endingSoon", endingSoonAuctions, new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
-            });
+            //memoryCache.Set("endingSoon", endingSoonAuctions, new MemoryCacheEntryOptions
+            //{
+            //    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+            //});
             return new JsonResult(endingSoonAuctions);
         }
 
