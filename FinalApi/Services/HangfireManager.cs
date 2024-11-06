@@ -129,30 +129,25 @@ namespace FinalApi
             //if (refundResult.statusCode == 400) return;
 
             //sent to all lost buyers
-            try
-            {
-                var paymentUsersIDs = paymentManager.GetAll().Where(p => p.AuctionID == auctionID && p.IsDone == false)
-                 .Select(p => p.BuyerId).ToList();
-                if (!paymentUsersIDs.Any()) return;
-                foreach (var pay in paymentUsersIDs)
-                {
-                    await notificationManager.Add(new Notification
-                    {
-                        Date = DateTime.Now,
-                        Description = $"Sorry you Lost in {auction.Item.Name} Auction",
-                        IsReaded = false,
-                        Title = Enums.NotificationType.auction,
-                        UserId = pay,
-                    });
-                    var lostNotification = notificationManager.GetAll().Where(n => n.UserId == pay).OrderBy(n => n.Id)
-                        .LastOrDefault();
-                    await notificationsHub.Clients.Groups(pay).SendAsync("notification", lostNotification.ToViewModel());
-                }
-            }
-            catch (Exception ex)
-            {
 
-            }
+            var paymentUsersIDs = paymentManager.GetAll().Where(p => p.AuctionID == auctionID && p.IsDone == false)
+             .Select(p => p.BuyerId).ToList();
+            if (!paymentUsersIDs.Any()) return;
+               foreach (var pay in paymentUsersIDs)
+               {
+                await notificationManager.Add(new Notification
+                {
+                    Date = DateTime.Now,
+                    Description = $"Sorry you Lost in {auction.Item.Name} Auction",
+                    IsReaded = false,
+                    Title = Enums.NotificationType.auction,
+                    UserId = pay,
+                });
+                var lostNotification = notificationManager.GetAll().Where(n => n.UserId == pay).OrderBy(n => n.Id)
+                    .LastOrDefault();
+                await notificationsHub.Clients.Groups(pay).SendAsync("notification", lostNotification.ToViewModel());
+               }
+
             
         }
 

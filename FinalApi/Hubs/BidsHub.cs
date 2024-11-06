@@ -20,12 +20,11 @@ namespace FinalApi
         public async Task AllBids(int auctionId)
         {
             var bids = bidManager.GetAll().Where(b => b.AuctionID == auctionId);
-
+            var user = bids.FirstOrDefault()?.Buyer;
             List<BidViewModel> bidViewModels = new List<BidViewModel>();
             foreach (var bid in bids)
-            {
                 bidViewModels.Add(bid.ToBidViewModel());
-            }
+
             await Clients.Group(auctionId.ToString()).SendAsync("AllBids", bidViewModels);
         }
 

@@ -150,10 +150,10 @@ namespace FinalApi.Controllers
                 if (res)
                 {
                     var bids = bidManager.GetAll().Where(b => b.AuctionID == _addBidView.AuctionID);
-
                     List<BidViewModel> bidViewModels = new List<BidViewModel>();
                     foreach (var bid in bids)
                         bidViewModels.Add(bid.ToBidViewModel());
+                        
                     
                     await hubContext.Clients.Group(_addBidView.AuctionID.ToString()).SendAsync("AllBids", bidViewModels);
                     var itemName = bids.Select(b => b.Auction.Item.Name).FirstOrDefault();
