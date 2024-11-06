@@ -356,6 +356,17 @@ namespace FinalApi.Controllers
             var ActiveAuctions = auctions.Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Ended==false).Select(a => a.SeeDetails()).ToList();
             return Ok(ActiveAuctions);
         }
+        [HttpGet("HomeActive")]
+        public async Task<IActionResult> HomeGetAllActive()
+        {
+            var currentUtcTime = DateTime.UtcNow;
+
+            var auctions = auctionManager.GetAll();
+            var ActiveAuctions = auctions.Where(a => a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Ended == false).Select(a => a.SeeDetails())
+                .Take(6)
+                .ToList();
+            return Ok(ActiveAuctions);
+        }
 
         [HttpGet("Ended")]
         public async Task<IActionResult> GetAllEnded()
@@ -393,6 +404,7 @@ namespace FinalApi.Controllers
             var upcomingAuctions = auctionManager.GetAll()
                 .Where(i => i.StartDate > currentUtcTime && i.EndDate >= currentUtcTime && !i.Ended)
                 .Select(a => a.SeeDetails())
+                 .Take(6)
                 .ToList();
             return Ok(upcomingAuctions);
         }
@@ -405,6 +417,7 @@ namespace FinalApi.Controllers
                 .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Bids.Count() > 0)
                 .OrderByDescending(a => a.Bids.Count)
                 .Select(a => a.SeeDetails())
+                .Take(6)
                 .ToList();
             return new JsonResult(popularAuctions);
         }
@@ -417,6 +430,7 @@ namespace FinalApi.Controllers
                 .Where(a => !a.Ended && a.StartDate >= currentUtcTime.AddDays(-5) && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime)
                 .OrderByDescending(a => a.StartDate)
                 .Select(a => a.SeeDetails())
+                .Take(6)
                 .ToList();
             return new JsonResult(newArrivals);
         }
@@ -431,6 +445,7 @@ namespace FinalApi.Controllers
                 .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.EndDate <= currentUtcTime.AddDays(2))
                 .OrderByDescending(a => a.StartDate)
                 .Select(a => a.SeeDetails())
+                .Take(6)
                 .ToList();
             memoryCache.Set("endingSoon", endingSoonAuctions, new MemoryCacheEntryOptions
             {
@@ -446,6 +461,7 @@ namespace FinalApi.Controllers
             var noBidsAuctions = auctionManager.GetAll()
                 .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.Bids.Count() == 0)
                 .Select(a => a.SeeDetails())
+                .Take(6)
                 .ToList();
 
             return new JsonResult(noBidsAuctions);
