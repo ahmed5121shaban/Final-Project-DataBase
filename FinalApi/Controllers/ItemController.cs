@@ -87,13 +87,10 @@ namespace FinalApi.Controllers
  
         [HttpGet("{itemId}")]
         public async Task<IActionResult> GetItemById(int itemId)
-        {
-            if (memoryCache.TryGetValue($"item-{itemId}", out var result))
-                return Ok(result);
+        {    
             var item = itemManager.GetAll().Where(i=>i.ID==itemId).Select(i=>i.toItemViewModel()).FirstOrDefault();
             if (item == null)
                 return NotFound();
-            memoryCache.Set($"item-{itemId}", item);
             return Ok(item);
         }
 

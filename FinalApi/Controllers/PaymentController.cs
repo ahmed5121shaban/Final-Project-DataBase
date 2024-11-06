@@ -267,6 +267,7 @@ namespace FinalApi.Controllers
                     if (auction == null)
                         return BadRequest(new { message = "the payment not completed", statusCode = 404 });
                     auction.Completed=true;
+                    auction.ShippingStatus = Enums.AuctionShippingStatus.Pending;
                     if(!await auctionManager.Update(auction))
                         return BadRequest(new { message = "the payment not completed", statusCode = 400 });
                     var sellerID = auctionManager.Get(auctionId).Result.Item.Seller.UserID;
@@ -391,6 +392,7 @@ namespace FinalApi.Controllers
                     if (auction == null)
                         return BadRequest(new { message = "the payment not completed", statusCode = 404 });
                     auction.Completed = true;
+                    auction.ShippingStatus = Enums.AuctionShippingStatus.Pending;
                     if (!await auctionManager.Update(auction))
                         return BadRequest(new { message = "the payment not completed", statusCode = 400 });
                 }

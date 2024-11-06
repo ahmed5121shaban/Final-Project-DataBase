@@ -34,10 +34,14 @@ namespace FinalApi
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            
             string adminID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(adminID))
                 return BadRequest(new {message = "the user not found"});
             model.AdminID = adminID;
+
+            //(duration=>1)
+
             if (!await eventManager.Add(model))
                 return BadRequest(new {message="the added is not completed"});
            

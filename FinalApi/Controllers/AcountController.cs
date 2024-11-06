@@ -307,10 +307,6 @@ namespace FinalApi.Controllers
         [HttpGet("UserProfile/{UserId}")]
         public async Task<IActionResult> GetUserProfile(string UserId)
         {
-            if (memoryCache.TryGetValue($"UserProfile/{UserId}",out var resultCache))
-            {
-                return Ok(resultCache);
-            }
             var user = await acountManager.UserManager.FindByIdAsync(UserId);
             var role = await acountManager.UserManager.GetRolesAsync(user);
             bool isseller = (role.Contains("Seller")) ? true : false ;
@@ -325,23 +321,6 @@ namespace FinalApi.Controllers
                 }
                 finalRate = range / sellerRates.Count;
             }
-
-            memoryCache.Set($"UserProfile/{UserId}", new ProfileViewModel()
-            {
-                FullName = user.Name,
-                Image = user.Image,
-                IsSeller = isseller,
-                Rate = finalRate,
-                AuctionsNumber = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).Count(),
-                Address = $"{user.City} ,{user.Country}",
-                ReviewsNumber = reviewManager.GetAll().Where(r => r.SellerID == UserId).Count(),
-                FavCategories = favCategoryManager.GetAll().Where(f => f.BuyerID == UserId).Select(f => f.Category.ToProfileCatViewModel()).ToList(),
-                LatestAuctions = auctionManager.GetAll().Where(a => a.Item.SellerID == UserId).OrderByDescending(a => a.StartDate).Skip(0).Take(10).Select(i => i.SeeDetails()).ToList(),
-                WonAuctions = auctionManager.GetAll().Where(a => a.BuyerID == UserId).Select(i => i.SeeDetails()).ToList(),
-                Reviews = reviewManager.GetAll().Where(r => r.SellerID == UserId).Select(i => i.ToViewModel()).ToList()
-
-            });
-
             return Ok(new ProfileViewModel()
             {
                 FullName = user.Name,
@@ -366,9 +345,6 @@ namespace FinalApi.Controllers
         public async Task<IActionResult> GetUserData()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (memoryCache.TryGetValue($"UserData-{userId}",out var resultCache))
-                return Ok(resultCache);
-
             var user = await acountManager.UserManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -382,7 +358,6 @@ namespace FinalApi.Controllers
                 Image = user.Image
             };
 
-            memoryCache.Set($"UserData-{userId}", userdata);
             return Ok(userdata);
         }
 
