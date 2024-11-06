@@ -16,7 +16,7 @@ namespace ModelView.Account
                 UserName = model.Email,
                 Name = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
-                Image = "https://i.sstatic.net/l60Hf.png" // الصورة الافتراضية
+                Image = "https://res.cloudinary.com/dmpijaisv/image/upload/v1730921960/obvfkgrh1fsnfwftomej.png" // الصورة الافتراضية
             };
             }
 
