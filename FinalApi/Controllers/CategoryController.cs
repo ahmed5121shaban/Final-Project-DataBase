@@ -88,15 +88,15 @@ namespace FinalApi.Controllers
         [Route("GetAll")]
         public IActionResult GetAll()
         {
-            //if(memoryCache.TryGetValue("GetAllCategories",out var resultCache))
-            //    return new JsonResult(new ApiResultModel<object>()
-            //    {
-            //        result = resultCache,
-            //        StatusCode = 200,
-            //        success = true,
-            //        Message = "done successfully"
+            if (memoryCache.TryGetValue("getallcategories", out var resultcache))
+                return new JsonResult(new ApiResultModel<object>()
+                {
+                    result = resultcache,
+                    StatusCode = 200,
+                    success = true,
+                    Message = "done successfully"
 
-            //    });
+                });
             var res = manager.GetAll().Select(c => new
             {
                 id = c.ID,

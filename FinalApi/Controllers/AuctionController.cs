@@ -442,7 +442,7 @@ namespace FinalApi.Controllers
                 return new JsonResult(resultCache);
             var currentUtcTime = DateTime.UtcNow;
             var endingSoonAuctions = auctionManager.GetAll()
-                .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.EndDate <= currentUtcTime.AddDays(2))
+                .Where(a => !a.Ended && a.StartDate <= currentUtcTime && a.EndDate >= currentUtcTime && a.EndDate <= currentUtcTime.AddDays(1))
                 .OrderByDescending(a => a.StartDate)
                 .Select(a => a.SeeDetails())
                 .Take(6)
