@@ -108,7 +108,7 @@ namespace FinalApi.Controllers
             }).ToList();
             if (res != null)
             {
-                memoryCache.Set("GetAllCategories", res);
+                memoryCache.Set("getallcategories", res);
                 return new JsonResult(new ApiResultModel<object>()
                 {
                     result = res,
